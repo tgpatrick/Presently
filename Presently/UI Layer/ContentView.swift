@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var pname = ""
     @State var eid = ""
     @State var pid = ""
+    @State var errorWrapper: ErrorWrapper?
     
     var body: some View {
         ScrollView {
@@ -40,7 +41,7 @@ struct ContentView: View {
                                 personID: pid)
                         )
                     } catch {
-                        fatalError(error.localizedDescription)
+                        errorWrapper = ErrorWrapper(error: error, guidance: "Try again later.")
                     }
                 }
             }).buttonStyle(.borderedProminent)
@@ -75,7 +76,7 @@ struct ContentView: View {
                                 personID: pid)
                         )
                     } catch {
-                        fatalError(error.localizedDescription)
+                        errorWrapper = ErrorWrapper(error: error, guidance: "You'll have to re-enter your codes.")
                     }
                 }
             }).buttonStyle(.borderedProminent)

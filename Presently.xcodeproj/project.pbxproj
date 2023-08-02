@@ -27,6 +27,7 @@
 		9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9FB2A79F26B001EFD9B /* ExchangeStorage.swift */; };
 		9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9FD2A79F8DE001EFD9B /* PeopleStorage.swift */; };
 		9AE5FA002A7A0232001EFD9B /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9FF2A7A0232001EFD9B /* Storage.swift */; };
+		9AE5FA032A7A29D3001EFD9B /* ErrorWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5FA022A7A29D3001EFD9B /* ErrorWrapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		9AE5F9FB2A79F26B001EFD9B /* ExchangeStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeStorage.swift; sourceTree = "<group>"; };
 		9AE5F9FD2A79F8DE001EFD9B /* PeopleStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleStorage.swift; sourceTree = "<group>"; };
 		9AE5F9FF2A7A0232001EFD9B /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		9AE5FA022A7A29D3001EFD9B /* ErrorWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorWrapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,9 +159,9 @@
 		9AE5F9E02A79D123001EFD9B /* Model Layer */ = {
 			isa = PBXGroup;
 			children = (
-				9AE5FA012A7A0EBA001EFD9B /* Network */,
+				9AE5FA052A7A2A9B001EFD9B /* Network */,
 				9AE5F9FA2A79E7B6001EFD9B /* Storage */,
-				9AE5F9E22A79D3FE001EFD9B /* Entities */,
+				9AE5FA042A7A2A47001EFD9B /* Entities */,
 			);
 			path = "Model Layer";
 			sourceTree = "<group>";
@@ -167,22 +169,10 @@
 		9AE5F9E12A79D12C001EFD9B /* UI Layer */ = {
 			isa = PBXGroup;
 			children = (
-				9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */,
 				9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */,
+				9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */,
 			);
 			path = "UI Layer";
-			sourceTree = "<group>";
-		};
-		9AE5F9E22A79D3FE001EFD9B /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				9AE5F9E42A79D3FE001EFD9B /* Person.swift */,
-				9AE5F9E62A79D3FE001EFD9B /* HistoricalGift.swift */,
-				9AE5F9E72A79D3FE001EFD9B /* Exception.swift */,
-				9AE5F9E82A79D3FE001EFD9B /* WishListItem.swift */,
-				9AE5F9EB2A79D3FE001EFD9B /* Exchange.swift */,
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		9AE5F9FA2A79E7B6001EFD9B /* Storage */ = {
@@ -196,7 +186,20 @@
 			path = Storage;
 			sourceTree = "<group>";
 		};
-		9AE5FA012A7A0EBA001EFD9B /* Network */ = {
+		9AE5FA042A7A2A47001EFD9B /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				9AE5F9E42A79D3FE001EFD9B /* Person.swift */,
+				9AE5F9E62A79D3FE001EFD9B /* HistoricalGift.swift */,
+				9AE5F9E72A79D3FE001EFD9B /* Exception.swift */,
+				9AE5F9E82A79D3FE001EFD9B /* WishListItem.swift */,
+				9AE5F9EB2A79D3FE001EFD9B /* Exchange.swift */,
+				9AE5FA022A7A29D3001EFD9B /* ErrorWrapper.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		9AE5FA052A7A2A9B001EFD9B /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				9AE5F9E92A79D3FE001EFD9B /* Response.swift */,
@@ -342,6 +345,7 @@
 				9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */,
 				9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */,
 				9AE5F9F82A79D8FF001EFD9B /* TestFiles.swift in Sources */,
+				9AE5FA032A7A29D3001EFD9B /* ErrorWrapper.swift in Sources */,
 				9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */,
 				9AE5F9F22A79D3FE001EFD9B /* Response.swift in Sources */,
 				9AE5F9F42A79D3FE001EFD9B /* Exchange.swift in Sources */,
