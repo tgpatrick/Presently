@@ -11,11 +11,22 @@
 		9AE5F9B32A79CBA9001EFD9B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */; };
 		9AE5F9B52A79CBAC001EFD9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */; };
 		9AE5F9B82A79CBAC001EFD9B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B72A79CBAC001EFD9B /* Preview Assets.xcassets */; };
-		9AE5F9BA2A79CBAC001EFD9B /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B92A79CBAC001EFD9B /* Persistence.swift */; };
-		9AE5F9BD2A79CBAC001EFD9B /* Presently.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9BB2A79CBAC001EFD9B /* Presently.xcdatamodeld */; };
 		9AE5F9C82A79CBAD001EFD9B /* PresentlyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9C72A79CBAD001EFD9B /* PresentlyTests.swift */; };
 		9AE5F9D22A79CBAD001EFD9B /* PresentlyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9D12A79CBAD001EFD9B /* PresentlyUITests.swift */; };
 		9AE5F9D42A79CBAD001EFD9B /* PresentlyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9D32A79CBAD001EFD9B /* PresentlyUITestsLaunchTests.swift */; };
+		9AE5F9ED2A79D3FE001EFD9B /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E42A79D3FE001EFD9B /* Person.swift */; };
+		9AE5F9EF2A79D3FE001EFD9B /* HistoricalGift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E62A79D3FE001EFD9B /* HistoricalGift.swift */; };
+		9AE5F9F02A79D3FE001EFD9B /* Exception.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E72A79D3FE001EFD9B /* Exception.swift */; };
+		9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E82A79D3FE001EFD9B /* WishListItem.swift */; };
+		9AE5F9F22A79D3FE001EFD9B /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E92A79D3FE001EFD9B /* Response.swift */; };
+		9AE5F9F42A79D3FE001EFD9B /* Exchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9EB2A79D3FE001EFD9B /* Exchange.swift */; };
+		9AE5F9F62A79D5ED001EFD9B /* LoginStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9F52A79D5ED001EFD9B /* LoginStorage.swift */; };
+		9AE5F9F72A79D8FC001EFD9B /* TestFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E52A79D3FE001EFD9B /* TestFiles.swift */; };
+		9AE5F9F82A79D8FF001EFD9B /* TestFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E52A79D3FE001EFD9B /* TestFiles.swift */; };
+		9AE5F9F92A79D902001EFD9B /* TestFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9E52A79D3FE001EFD9B /* TestFiles.swift */; };
+		9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9FB2A79F26B001EFD9B /* ExchangeStorage.swift */; };
+		9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9FD2A79F8DE001EFD9B /* PeopleStorage.swift */; };
+		9AE5FA002A7A0232001EFD9B /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9FF2A7A0232001EFD9B /* Storage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,14 +52,23 @@
 		9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AE5F9B72A79CBAC001EFD9B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		9AE5F9B92A79CBAC001EFD9B /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		9AE5F9BC2A79CBAC001EFD9B /* Presently.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Presently.xcdatamodel; sourceTree = "<group>"; };
 		9AE5F9BE2A79CBAC001EFD9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9AE5F9C32A79CBAD001EFD9B /* PresentlyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PresentlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AE5F9C72A79CBAD001EFD9B /* PresentlyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentlyTests.swift; sourceTree = "<group>"; };
 		9AE5F9CD2A79CBAD001EFD9B /* PresentlyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PresentlyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AE5F9D12A79CBAD001EFD9B /* PresentlyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentlyUITests.swift; sourceTree = "<group>"; };
 		9AE5F9D32A79CBAD001EFD9B /* PresentlyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentlyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		9AE5F9E42A79D3FE001EFD9B /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		9AE5F9E52A79D3FE001EFD9B /* TestFiles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestFiles.swift; sourceTree = "<group>"; };
+		9AE5F9E62A79D3FE001EFD9B /* HistoricalGift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoricalGift.swift; sourceTree = "<group>"; };
+		9AE5F9E72A79D3FE001EFD9B /* Exception.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exception.swift; sourceTree = "<group>"; };
+		9AE5F9E82A79D3FE001EFD9B /* WishListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WishListItem.swift; sourceTree = "<group>"; };
+		9AE5F9E92A79D3FE001EFD9B /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		9AE5F9EB2A79D3FE001EFD9B /* Exchange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exchange.swift; sourceTree = "<group>"; };
+		9AE5F9F52A79D5ED001EFD9B /* LoginStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStorage.swift; sourceTree = "<group>"; };
+		9AE5F9FB2A79F26B001EFD9B /* ExchangeStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeStorage.swift; sourceTree = "<group>"; };
+		9AE5F9FD2A79F8DE001EFD9B /* PeopleStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleStorage.swift; sourceTree = "<group>"; };
+		9AE5F9FF2A7A0232001EFD9B /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,12 +119,10 @@
 		9AE5F9AF2A79CBA9001EFD9B /* Presently */ = {
 			isa = PBXGroup;
 			children = (
-				9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */,
-				9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */,
+				9AE5F9E12A79D12C001EFD9B /* UI Layer */,
+				9AE5F9E02A79D123001EFD9B /* Model Layer */,
 				9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */,
-				9AE5F9B92A79CBAC001EFD9B /* Persistence.swift */,
 				9AE5F9BE2A79CBAC001EFD9B /* Info.plist */,
-				9AE5F9BB2A79CBAC001EFD9B /* Presently.xcdatamodeld */,
 				9AE5F9B62A79CBAC001EFD9B /* Preview Content */,
 			);
 			path = Presently;
@@ -121,6 +139,7 @@
 		9AE5F9C62A79CBAD001EFD9B /* PresentlyTests */ = {
 			isa = PBXGroup;
 			children = (
+				9AE5F9E52A79D3FE001EFD9B /* TestFiles.swift */,
 				9AE5F9C72A79CBAD001EFD9B /* PresentlyTests.swift */,
 			);
 			path = PresentlyTests;
@@ -133,6 +152,56 @@
 				9AE5F9D32A79CBAD001EFD9B /* PresentlyUITestsLaunchTests.swift */,
 			);
 			path = PresentlyUITests;
+			sourceTree = "<group>";
+		};
+		9AE5F9E02A79D123001EFD9B /* Model Layer */ = {
+			isa = PBXGroup;
+			children = (
+				9AE5FA012A7A0EBA001EFD9B /* Network */,
+				9AE5F9FA2A79E7B6001EFD9B /* Storage */,
+				9AE5F9E22A79D3FE001EFD9B /* Entities */,
+			);
+			path = "Model Layer";
+			sourceTree = "<group>";
+		};
+		9AE5F9E12A79D12C001EFD9B /* UI Layer */ = {
+			isa = PBXGroup;
+			children = (
+				9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */,
+				9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */,
+			);
+			path = "UI Layer";
+			sourceTree = "<group>";
+		};
+		9AE5F9E22A79D3FE001EFD9B /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				9AE5F9E42A79D3FE001EFD9B /* Person.swift */,
+				9AE5F9E62A79D3FE001EFD9B /* HistoricalGift.swift */,
+				9AE5F9E72A79D3FE001EFD9B /* Exception.swift */,
+				9AE5F9E82A79D3FE001EFD9B /* WishListItem.swift */,
+				9AE5F9EB2A79D3FE001EFD9B /* Exchange.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		9AE5F9FA2A79E7B6001EFD9B /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				9AE5F9FF2A7A0232001EFD9B /* Storage.swift */,
+				9AE5F9F52A79D5ED001EFD9B /* LoginStorage.swift */,
+				9AE5F9FB2A79F26B001EFD9B /* ExchangeStorage.swift */,
+				9AE5F9FD2A79F8DE001EFD9B /* PeopleStorage.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		9AE5FA012A7A0EBA001EFD9B /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				9AE5F9E92A79D3FE001EFD9B /* Response.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,10 +334,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9AE5F9BD2A79CBAC001EFD9B /* Presently.xcdatamodeld in Sources */,
-				9AE5F9BA2A79CBAC001EFD9B /* Persistence.swift in Sources */,
 				9AE5F9B32A79CBA9001EFD9B /* ContentView.swift in Sources */,
+				9AE5FA002A7A0232001EFD9B /* Storage.swift in Sources */,
 				9AE5F9B12A79CBA9001EFD9B /* PresentlyApp.swift in Sources */,
+				9AE5F9ED2A79D3FE001EFD9B /* Person.swift in Sources */,
+				9AE5F9F62A79D5ED001EFD9B /* LoginStorage.swift in Sources */,
+				9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */,
+				9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */,
+				9AE5F9F82A79D8FF001EFD9B /* TestFiles.swift in Sources */,
+				9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */,
+				9AE5F9F22A79D3FE001EFD9B /* Response.swift in Sources */,
+				9AE5F9F42A79D3FE001EFD9B /* Exchange.swift in Sources */,
+				9AE5F9EF2A79D3FE001EFD9B /* HistoricalGift.swift in Sources */,
+				9AE5F9F02A79D3FE001EFD9B /* Exception.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +355,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9AE5F9C82A79CBAD001EFD9B /* PresentlyTests.swift in Sources */,
+				9AE5F9F72A79D8FC001EFD9B /* TestFiles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +365,7 @@
 			files = (
 				9AE5F9D22A79CBAD001EFD9B /* PresentlyUITests.swift in Sources */,
 				9AE5F9D42A79CBAD001EFD9B /* PresentlyUITestsLaunchTests.swift in Sources */,
+				9AE5F9F92A79D902001EFD9B /* TestFiles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,16 +510,18 @@
 				DEVELOPMENT_TEAM = 5XU95W3N65;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Presently;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgp.Presently;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -459,16 +541,18 @@
 				DEVELOPMENT_TEAM = 5XU95W3N65;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Presently;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgp.Presently;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -593,19 +677,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		9AE5F9BB2A79CBAC001EFD9B /* Presently.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				9AE5F9BC2A79CBAC001EFD9B /* Presently.xcdatamodel */,
-			);
-			currentVersion = 9AE5F9BC2A79CBAC001EFD9B /* Presently.xcdatamodel */;
-			path = Presently.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 9AE5F9A52A79CBA9001EFD9B /* Project object */;
 }
