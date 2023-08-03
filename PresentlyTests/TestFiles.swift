@@ -21,7 +21,8 @@ var testPeople = [
 ]
 
 var testPerson = Person(
-    id: "0001",
+    exchangeId: "0001",
+    personId: "0001",
     name: "Tester McTesterson",
     setUp: false,
     giftHistory: [
@@ -41,7 +42,8 @@ var testPerson = Person(
     recipient: "0002",
     organizer: true)
 var testPerson2 = Person(
-    id: "0002",
+    exchangeId: "0001",
+    personId: "0002",
     name: "Tes2 McTes2son",
     setUp: false,
     giftHistory: [],
@@ -59,7 +61,8 @@ var testPerson2 = Person(
     recipient: "",
     organizer: false)
 var testPerson3 = Person(
-    id: "0003",
+    exchangeId: "0001",
+    personId: "0003",
     name: "Tes3 McTes3son",
     setUp: false,
     giftHistory: [],
@@ -68,7 +71,8 @@ var testPerson3 = Person(
     recipient: "",
     organizer: false)
 var testPerson4 = Person(
-    id: "0004",
+    exchangeId: "0001",
+    personId: "0004",
     name: "Tes4 McTes4son",
     setUp: false,
     giftHistory: [],
@@ -77,7 +81,8 @@ var testPerson4 = Person(
     recipient: "",
     organizer: false)
 var testPerson5 = Person(
-    id: "0005",
+    exchangeId: "0001",
+    personId: "0005",
     name: "Tes5 McTes5son",
     setUp: false,
     giftHistory: [],

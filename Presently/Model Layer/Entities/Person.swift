@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct Person: Codable, Identifiable, Hashable, Equatable {
-    var id: String
+struct Person: Codable, Hashable, Equatable {
+    var exchangeId: String
+    var personId: String
     var name: String
     var setUp: Bool
     var giftHistory: [HistoricalGift]
@@ -21,5 +22,11 @@ struct Person: Codable, Identifiable, Hashable, Equatable {
 extension Person: Comparable {
     static func < (lhs: Person, rhs: Person) -> Bool {
         return lhs.name < rhs.name
+    }
+}
+
+extension Person: Identifiable {
+    var id: String {
+        exchangeId + personId
     }
 }
