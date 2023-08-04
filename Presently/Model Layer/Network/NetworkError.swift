@@ -11,4 +11,5 @@ enum NetworkError: Error {
     case unknown(Error, url: String)
     case serverError(code: Int, url: String)
     case decoding(Error, url: String)
+    case request
 }

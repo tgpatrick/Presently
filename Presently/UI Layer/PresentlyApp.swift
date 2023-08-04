@@ -17,11 +17,7 @@ struct PresentlyApp: App {
         WindowGroup {
             ContentView(loginStorage: loginStorage)
                 .task {
-                    do {
-                        try await loginStorage.load()
-                    } catch {
-                        fatalError(error.localizedDescription)
-                    }
+                    await loginStorage.load()
                 }
         }
     }

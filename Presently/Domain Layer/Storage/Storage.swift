@@ -13,11 +13,12 @@ protocol Storage {
     
     static var fileName: String { get }
     var items: [DataType] { get set }
+    var loadingState: LoadingState { get set }
     
     static func fileURL() throws -> URL
-    func load() async throws
-    func save(_ item: DataType) async throws
-    func delete(_ item: DataType) async throws
+    func load() async
+    func save(_ item: DataType) async
+    func delete(_ item: DataType) async
 }
 
 extension Storage {

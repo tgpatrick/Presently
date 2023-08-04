@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9AAC8B192A7B8EBC00DF568E /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B182A7B8EBC00DF568E /* Repository.swift */; };
+		9AAC8B1B2A7C6AB600DF568E /* ExchangeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B1A2A7C6AB600DF568E /* ExchangeRepository.swift */; };
+		9AAC8B1D2A7C6E1E00DF568E /* PersonRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B1C2A7C6E1E00DF568E /* PersonRepository.swift */; };
+		9AAC8B1F2A7C704A00DF568E /* PeopleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B1E2A7C704A00DF568E /* PeopleRepository.swift */; };
 		9AE5F9B12A79CBA9001EFD9B /* PresentlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */; };
 		9AE5F9B32A79CBA9001EFD9B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */; };
 		9AE5F9B52A79CBAC001EFD9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */; };
@@ -52,6 +56,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9AAC8B182A7B8EBC00DF568E /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
+		9AAC8B1A2A7C6AB600DF568E /* ExchangeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRepository.swift; sourceTree = "<group>"; };
+		9AAC8B1C2A7C6E1E00DF568E /* PersonRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonRepository.swift; sourceTree = "<group>"; };
+		9AAC8B1E2A7C704A00DF568E /* PeopleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleRepository.swift; sourceTree = "<group>"; };
 		9AE5F9AD2A79CBA9001EFD9B /* Presently.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Presently.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentlyApp.swift; sourceTree = "<group>"; };
 		9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -106,6 +114,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9AAC8B172A7B8EAD00DF568E /* Domain Layer */ = {
+			isa = PBXGroup;
+			children = (
+				9AAC8B202A7C817F00DF568E /* Repository */,
+				9AE5F9FA2A79E7B6001EFD9B /* Storage */,
+			);
+			path = "Domain Layer";
+			sourceTree = "<group>";
+		};
+		9AAC8B202A7C817F00DF568E /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				9AAC8B182A7B8EBC00DF568E /* Repository.swift */,
+				9AAC8B1A2A7C6AB600DF568E /* ExchangeRepository.swift */,
+				9AAC8B1C2A7C6E1E00DF568E /* PersonRepository.swift */,
+				9AAC8B1E2A7C704A00DF568E /* PeopleRepository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		9AE5F9A42A79CBA9001EFD9B = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				9AE5F9E12A79D12C001EFD9B /* UI Layer */,
+				9AAC8B172A7B8EAD00DF568E /* Domain Layer */,
 				9AE5F9E02A79D123001EFD9B /* Model Layer */,
 				9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */,
 				9AE5F9BE2A79CBAC001EFD9B /* Info.plist */,
@@ -168,7 +197,6 @@
 			isa = PBXGroup;
 			children = (
 				9AE5FA052A7A2A9B001EFD9B /* Network */,
-				9AE5F9FA2A79E7B6001EFD9B /* Storage */,
 				9AE5FA042A7A2A47001EFD9B /* Entities */,
 			);
 			path = "Model Layer";
@@ -355,11 +383,15 @@
 				9AE5FA0D2A7B4112001EFD9B /* Requests.swift in Sources */,
 				9AE5FA092A7B1B10001EFD9B /* NetworkRequest.swift in Sources */,
 				9AE5F9B12A79CBA9001EFD9B /* PresentlyApp.swift in Sources */,
+				9AAC8B1F2A7C704A00DF568E /* PeopleRepository.swift in Sources */,
+				9AAC8B1D2A7C6E1E00DF568E /* PersonRepository.swift in Sources */,
 				9AE5F9ED2A79D3FE001EFD9B /* Person.swift in Sources */,
 				9AE5F9F62A79D5ED001EFD9B /* LoginStorage.swift in Sources */,
 				9AE5FA072A7AF406001EFD9B /* Network.swift in Sources */,
 				9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */,
+				9AAC8B1B2A7C6AB600DF568E /* ExchangeRepository.swift in Sources */,
 				9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */,
+				9AAC8B192A7B8EBC00DF568E /* Repository.swift in Sources */,
 				9AE5F9F82A79D8FF001EFD9B /* TestFiles.swift in Sources */,
 				9AE5FA032A7A29D3001EFD9B /* ErrorWrapper.swift in Sources */,
 				9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */,

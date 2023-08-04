@@ -12,7 +12,7 @@ typealias NetworkResult<T: Decodable> = Result<T, NetworkError>
 struct Network {
     static let baseURL = "https://4vbocehon3.execute-api.us-east-2.amazonaws.com/"
     
-    static func load<ResultType: Decodable>(request: NetworkRequest<ResultType>) async -> NetworkResult<ResultType> {
+    static func load<ResultType: Decodable>(_ request: NetworkRequest<ResultType>) async -> NetworkResult<ResultType> {
         do {
             let (data, response) = try await URLSession.shared.data(for: request.urlRequest)
             guard let httpResponse = response as? HTTPURLResponse else {
