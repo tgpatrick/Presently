@@ -1,14 +1,14 @@
 //
-//  ContentView.swift
+//  TestView.swift
 //  Presently
 //
-//  Created by Thomas Patrick on 8/1/23.
+//  Created by Thomas Patrick on 8/3/23.
 //
 
 import SwiftUI
 
-struct ContentView: View {
-    @ObservedObject var loginStorage: LoginStorage
+struct TestView: View {
+    @EnvironmentObject var loginStorage: LoginStorage
     @State var selectedLogin: LoginStorageItem?
     @State var ename = ""
     @State var pname = ""
@@ -87,7 +87,7 @@ struct ContentView: View {
                                 }
                             }
                             Button("Delete a Login", action: {
-                                if let selectedLogin = selectedLogin {
+                                if let selectedLogin {
                                     Task {
                                         await loginStorage.delete(
                                             LoginStorageItem(
@@ -171,21 +171,21 @@ struct ContentView: View {
                                 ProgressView()
                             }
                             
-                            if let exchange = exchange {
+                            if let exchange {
                                 Text("Got an exchange!")
                                     .font(.title3)
                                 Text("Name: \(exchange.name)")
                                 Text("ID: \(exchange.id)")
                             }
                             
-                            if let person = person {
+                            if let person {
                                 Text("Got a person!")
                                     .font(.title3)
                                 Text("Name: \(person.name)")
                                 Text("ID: \(person.personId)")
                             }
                             
-                            if let people = people, people.count > 0 {
+                            if let people, people.count > 0 {
                                 Text("Got all people!")
                                     .font(.title3)
                                 ForEach(people) { person in
@@ -201,7 +201,7 @@ struct ContentView: View {
                 .navigationTitle("Presently Testing")
             }
             
-            if let errorWrapper = errorWrapper {
+            if let errorWrapper {
                 VStack {
                     Text("Error")
                         .font(.title)
@@ -222,8 +222,9 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct TestView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(loginStorage: LoginStorage())
+        TestView()
+            .environmentObject(LoginStorage())
     }
 }

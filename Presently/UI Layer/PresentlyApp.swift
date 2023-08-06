@@ -10,12 +10,11 @@ import SwiftUI
 @main
 struct PresentlyApp: App {
     @StateObject var loginStorage = LoginStorage()
-    @AppStorage("CurrentExchangeID") static var exchangeID: String?
-    @AppStorage("CurrentPersonID") static var personID: String?
     
     var body: some Scene {
         WindowGroup {
-            ContentView(loginStorage: loginStorage)
+            ContentView()
+                .environmentObject(loginStorage)
                 .task {
                     await loginStorage.load()
                 }
