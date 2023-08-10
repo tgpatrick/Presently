@@ -19,8 +19,18 @@ protocol Repository: ObservableObject {
     
     var storage: T? { get set }
     var loadingState: LoadingState { get set }
+    var isLoading: Bool { get }
     
     func get(_ id: String) async
     func put(_ : T) async
     func delete(_ id: String) async
+}
+
+extension Repository {
+    var isLoading: Bool {
+        if case .loading = loadingState {
+            return true
+        }
+        return false
+    }
 }

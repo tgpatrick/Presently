@@ -16,6 +16,11 @@
 		9AAC8B292A7DB32000DF568E /* RibbonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B282A7DB32000DF568E /* RibbonShape.swift */; };
 		9AAC8B2C2A7F1A5E00DF568E /* BounceTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B2B2A7F1A5E00DF568E /* BounceTransition.swift */; };
 		9AAC8B2F2A7F34AE00DF568E /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B2E2A7F34AE00DF568E /* Animation.swift */; };
+		9AAC8B312A7F5DE400DF568E /* LoginViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B302A7F5DE400DF568E /* LoginViews.swift */; };
+		9AAC8B332A7F5DF900DF568E /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B322A7F5DF900DF568E /* LoginViewModel.swift */; };
+		9AAC8B352A80995400DF568E /* InsetTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B342A80995400DF568E /* InsetTextFieldStyle.swift */; };
+		9AAC8B372A81C99A00DF568E /* CapsuleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B362A81C99A00DF568E /* CapsuleButtonStyle.swift */; };
+		9AAC8B3B2A81CC1600DF568E /* AccentColorBackgroundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B3A2A81CC1600DF568E /* AccentColorBackgroundStyle.swift */; };
 		9AE5F9B12A79CBA9001EFD9B /* PresentlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */; };
 		9AE5F9B32A79CBA9001EFD9B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */; };
 		9AE5F9B52A79CBAC001EFD9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */; };
@@ -70,6 +75,11 @@
 		9AAC8B282A7DB32000DF568E /* RibbonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RibbonShape.swift; sourceTree = "<group>"; };
 		9AAC8B2B2A7F1A5E00DF568E /* BounceTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BounceTransition.swift; sourceTree = "<group>"; };
 		9AAC8B2E2A7F34AE00DF568E /* Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
+		9AAC8B302A7F5DE400DF568E /* LoginViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViews.swift; sourceTree = "<group>"; };
+		9AAC8B322A7F5DF900DF568E /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		9AAC8B342A80995400DF568E /* InsetTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextFieldStyle.swift; sourceTree = "<group>"; };
+		9AAC8B362A81C99A00DF568E /* CapsuleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleButtonStyle.swift; sourceTree = "<group>"; };
+		9AAC8B3A2A81CC1600DF568E /* AccentColorBackgroundStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccentColorBackgroundStyle.swift; sourceTree = "<group>"; };
 		9AE5F9AD2A79CBA9001EFD9B /* Presently.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Presently.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentlyApp.swift; sourceTree = "<group>"; };
 		9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -148,9 +158,9 @@
 			isa = PBXGroup;
 			children = (
 				9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */,
+				9AAC8B302A7F5DE400DF568E /* LoginViews.swift */,
 				9AAC8B242A7C9E6E00DF568E /* TestView.swift */,
 				9AAC8B2D2A7F308200DF568E /* Components */,
-				9AAC8B2A2A7F1A4100DF568E /* Modifiers */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -158,17 +168,9 @@
 		9AAC8B232A7C9E5200DF568E /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				9AAC8B322A7F5DF900DF568E /* LoginViewModel.swift */,
 			);
 			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		9AAC8B2A2A7F1A4100DF568E /* Modifiers */ = {
-			isa = PBXGroup;
-			children = (
-				9AAC8B2B2A7F1A5E00DF568E /* BounceTransition.swift */,
-				9AAC8B2E2A7F34AE00DF568E /* Animation.swift */,
-			);
-			path = Modifiers;
 			sourceTree = "<group>";
 		};
 		9AAC8B2D2A7F308200DF568E /* Components */ = {
@@ -178,6 +180,25 @@
 				9AAC8B262A7CAAFF00DF568E /* ShiftingBackground.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		9AAC8B382A81CBBA00DF568E /* Modifiers & Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9AAC8B2B2A7F1A5E00DF568E /* BounceTransition.swift */,
+				9AAC8B2E2A7F34AE00DF568E /* Animation.swift */,
+			);
+			path = "Modifiers & Extensions";
+			sourceTree = "<group>";
+		};
+		9AAC8B392A81CBC900DF568E /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				9AAC8B342A80995400DF568E /* InsetTextFieldStyle.swift */,
+				9AAC8B362A81C99A00DF568E /* CapsuleButtonStyle.swift */,
+				9AAC8B3A2A81CC1600DF568E /* AccentColorBackgroundStyle.swift */,
+			);
+			path = Styles;
 			sourceTree = "<group>";
 		};
 		9AE5F9A42A79CBA9001EFD9B = {
@@ -254,6 +275,8 @@
 				9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */,
 				9AAC8B222A7C9E4800DF568E /* Views */,
 				9AAC8B232A7C9E5200DF568E /* ViewModels */,
+				9AAC8B392A81CBC900DF568E /* Styles */,
+				9AAC8B382A81CBBA00DF568E /* Modifiers & Extensions */,
 			);
 			path = "UI Layer";
 			sourceTree = "<group>";
@@ -430,20 +453,25 @@
 				9AE5FA002A7A0232001EFD9B /* Storage.swift in Sources */,
 				9AE5FA0D2A7B4112001EFD9B /* Requests.swift in Sources */,
 				9AE5FA092A7B1B10001EFD9B /* NetworkRequest.swift in Sources */,
+				9AAC8B312A7F5DE400DF568E /* LoginViews.swift in Sources */,
 				9AE5F9B12A79CBA9001EFD9B /* PresentlyApp.swift in Sources */,
 				9AAC8B2F2A7F34AE00DF568E /* Animation.swift in Sources */,
 				9AAC8B1F2A7C704A00DF568E /* PeopleRepository.swift in Sources */,
 				9AAC8B272A7CAAFF00DF568E /* ShiftingBackground.swift in Sources */,
 				9AAC8B1D2A7C6E1E00DF568E /* PersonRepository.swift in Sources */,
 				9AE5F9ED2A79D3FE001EFD9B /* Person.swift in Sources */,
+				9AAC8B352A80995400DF568E /* InsetTextFieldStyle.swift in Sources */,
+				9AAC8B372A81C99A00DF568E /* CapsuleButtonStyle.swift in Sources */,
 				9AE5F9F62A79D5ED001EFD9B /* LoginStorage.swift in Sources */,
 				9AE5FA072A7AF406001EFD9B /* Network.swift in Sources */,
 				9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */,
+				9AAC8B3B2A81CC1600DF568E /* AccentColorBackgroundStyle.swift in Sources */,
 				9AAC8B1B2A7C6AB600DF568E /* ExchangeRepository.swift in Sources */,
 				9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */,
 				9AAC8B192A7B8EBC00DF568E /* Repository.swift in Sources */,
 				9AE5F9F82A79D8FF001EFD9B /* TestFiles.swift in Sources */,
 				9AE5FA032A7A29D3001EFD9B /* ErrorWrapper.swift in Sources */,
+				9AAC8B332A7F5DF900DF568E /* LoginViewModel.swift in Sources */,
 				9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */,
 				9AE5F9F22A79D3FE001EFD9B /* Responses.swift in Sources */,
 				9AAC8B252A7C9E6E00DF568E /* TestView.swift in Sources */,

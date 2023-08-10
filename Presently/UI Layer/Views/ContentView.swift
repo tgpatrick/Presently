@@ -24,9 +24,11 @@ struct ContentView: View {
     @AppStorage("CurrentPersonID") var personID: String?
     @State var barState: BarState = .closed
     @State var shouldOpen: Bool = false
+    @StateObject var loginViewModel = LoginViewModel()
     var isLoggedIn: Bool {
         exchangeID != nil || personID != nil
     }
+    @State var ribbonHeight: CGFloat = 0
     
     var body: some View {
         GeometryReader { geo in
@@ -34,10 +36,20 @@ struct ContentView: View {
                 //TODO: change to isLoggedIn
                 if barState == .open {
                     ScrollView {
-                        Text("Inside Stuff")
-                            .padding(.top, geo.size.height / 10)
-                            .padding(.bottom, geo.size.height / 15)
+                        HStack {
+                            Spacer()
+                            Button("Close again") {
+                                withAnimation(.barAnimation) {
+                                    barState = .closed
+                                    shouldOpen = false
+                                }
+                            }
+                            Spacer()
+                        }
+                        .padding(.top, geo.size.height / 10)
+                        .padding(.bottom, geo.size.height / 15)
                     }
+                    .background(Color("PrimaryBackground"))
                 }
                 
                 ZStack {
@@ -56,13 +68,21 @@ struct ContentView: View {
                         if barState == .topFocus {
                             Spacer()
                         }
-                        //TODO: change to isLoggedIn
-                        if barState != .open {
-                            loginRibbon(geoProxy: geo)
-                                .bounceTransition(transition: .move(edge: .trailing).combined(with: .opacity), animation: .barAnimation, shouldStartTransition: $shouldOpen) {
+                        
+                        loginRibbon(geoProxy: geo)
+                            .bounceTransition(
+                                transition: .move(edge: .trailing).combined(with: .opacity),
+                                animation: .barAnimation,
+                                showView: .init(get: {
+                                    //TODO: change to isLoggedIn
+                                    !shouldOpen
+                                }, set: { _ in })) {
                                     barState = .open
                                 }
-                        }
+                                .onAppear {
+                                    ribbonHeight = ribbonHeight(geoProxy: geo)
+                                }
+                        
                         if barState == .bottomFocus {
                             Spacer()
                         }
@@ -76,7 +96,10 @@ struct ContentView: View {
     func topBar(geoProxy: GeometryProxy) -> some View {
         HStack {
             Spacer()
-            if barState != .closed {
+            if barState == .closed && !isLoggedIn {
+                TopLoginView()
+                    .padding(.bottom, ribbonHeight / 2)
+            } else {
                 Button(action: {
                     withAnimation(.barAnimation) {
                         if barState == .topFocus {
@@ -92,74 +115,91 @@ struct ContentView: View {
                         Text("Focus")
                     }
                 }
-                Spacer()
             }
+            Spacer()
         }
         .frame(height: barHeight(geoProxy: geoProxy, bar: .top))
         .backgroundStyle(.thickMaterial)
-        .background(ShiftingBackground().opacity(barState == .open ? 0.9 : 1))
+        .background(ShiftingBackground(testing: true).opacity(barState == .open ? 0.9 : 1))
         .shadow(radius: 2)
     }
     
     func bottomBar(geoProxy: GeometryProxy) -> some View {
         HStack {
             Spacer()
-            Button(action: {
-                withAnimation(.barAnimation) {
-                    if barState == .bottomFocus {
-                        barState = .open
-                    } else {
-                        barState = .bottomFocus
+            if barState == .closed && !isLoggedIn {
+                BottomLoginView(loginViewModel: loginViewModel)
+                    .padding(.top, ribbonHeight / 2)
+            } else {
+                Button(action: {
+                    withAnimation(.barAnimation) {
+                        if barState == .bottomFocus {
+                            barState = .open
+                        } else {
+                            barState = .bottomFocus
+                        }
                     }
-                }
-            }) {
-                if barState == .bottomFocus {
-                    Text("Open")
-                } else {
-                    Text("Focus")
+                }) {
+                    if barState == .bottomFocus {
+                        Text("Open")
+                    } else {
+                        Text("Focus")
+                    }
                 }
             }
             Spacer()
         }
         .frame(height: barHeight(geoProxy: geoProxy, bar: .bottom))
         .backgroundStyle(.thickMaterial)
-        .background(ShiftingBackground().opacity(barState == .open ? 0.9 : 1))
+        .background(ShiftingBackground(testing: false).opacity(barState == .open ? 0.9 : 1))
         .shadow(radius: 2)
     }
     
     func loginRibbon(geoProxy: GeometryProxy) -> some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(.red)
-                .mask(RibbonShape())
-                .offset(CGSize(width: -1 * ribbonHeight(geoProxy: geoProxy), height: 0))
-                .shadow(radius: 5)
-            
-            Rectangle()
-                .foregroundColor(.red)
-                .offset(CGSize(width: geoProxy.size.width - ribbonHeight(geoProxy: geoProxy), height: 0))
-                .shadow(radius: 5)
-            
-            VStack {
-                Divider()
-                    .padding(.top)
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button("Open") {
-                        shouldOpen = true
+        VStack {
+            Divider()
+                .padding(.top)
+            Spacer()
+            if barState == .closed {
+                RibbonLoginView(loginViewModel: loginViewModel)
+                    .onAppear {
+                        loginViewModel.setLoginSuccess {
+                            shouldOpen = true
+                        }
                     }
-                    Spacer()
-                }
-                .padding(.vertical)
-                Spacer()
-                Divider()
-                    .padding(.bottom)
             }
-            .background(Color.red)
+            Spacer()
+            Divider()
+                .padding(.bottom)
         }
-        .frame(height: ribbonHeight(geoProxy: geoProxy))
-        .offset(CGSize(width: 0, height: barState == .closed ? 0 : -1 * ribbonHeight(geoProxy: geoProxy) / 2))
+        .background {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.accentColor)
+                    .mask(RibbonShape())
+                    .overlay {
+                        LinearGradient(
+                            gradient: Gradient(
+                                colors: [
+                                    Color.white.opacity(0.2),
+                                    Color.clear,
+                                    Color.clear
+                                ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .blur(radius: 5)
+                    }
+                    .offset(CGSize(width: -1 * ribbonHeight, height: 0))
+                    .shadow(radius: 5)
+                Rectangle()
+                    .foregroundColor(.accentColor)
+                    .offset(CGSize(width: geoProxy.size.width - ribbonHeight, height: 0))
+                    .shadow(radius: 5, x: 10)
+            }
+        }
+        .frame(height: ribbonHeight)
+        .offset(CGSize(width: 0, height: barState == .closed ? 0 : -1 * ribbonHeight / 2))
     }
     
     func ribbonHeight(geoProxy: GeometryProxy) -> CGFloat {

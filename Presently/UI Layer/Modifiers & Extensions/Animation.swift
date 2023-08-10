@@ -8,5 +8,5 @@
 import SwiftUI
 
 extension Animation {
-    static let barAnimation: Animation = .spring(response: 0.6, dampingFraction: 0.6)
+    static let barAnimation: Animation = .spring(response: 0.6, dampingFraction: 0.75)
 }

@@ -22,14 +22,7 @@ struct TestView: View {
     @StateObject var personRepo = PersonRepository()
     @StateObject var peopleRepo = PeopleRepository()
     var loading: Bool {
-        if case .loading = exchangeRepo.loadingState {
-            return true
-        } else if case .loading = personRepo.loadingState {
-            return true
-        } else if case .loading = peopleRepo.loadingState {
-            return true
-        }
-        return false
+        exchangeRepo.isLoading || personRepo.isLoading || peopleRepo.isLoading
     }
     
     var body: some View {
