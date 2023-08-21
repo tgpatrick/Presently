@@ -96,16 +96,3 @@ struct BounceTransitionModifier: ViewModifier {
         }
     }
 }
-
-extension View {
-    func bounceTransition(transition: AnyTransition, animation: Animation, stepLength: Double = 0.25, showView: Binding<Bool>, onDismiss: (() -> Void)? = nil) -> some View {
-        self.modifier(
-            BounceTransitionModifier(
-                transition: transition,
-                animation: animation,
-                transitionLength: stepLength,
-                shouldShowView: showView,
-                onDismiss: onDismiss)
-        )
-    }
-}

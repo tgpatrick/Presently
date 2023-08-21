@@ -35,20 +35,24 @@ struct ContentView: View {
             ZStack {
                 //TODO: change to isLoggedIn
                 if barState == .open {
-                    ScrollView {
-                        HStack {
-                            Spacer()
-                            Button("Close again") {
-                                withAnimation(.barAnimation) {
-                                    barState = .closed
-                                    shouldOpen = false
-                                }
-                            }
-                            Spacer()
-                        }
-                        .padding(.top, geo.size.height / 10)
-                        .padding(.bottom, geo.size.height / 15)
-                    }
+                    JellyScrollView(
+                        content: [:],
+                        topInset: barHeight(geoProxy: geo, bar: .top),
+                        bottomInset: barHeight(geoProxy: geo, bar: .bottom))
+//                        HStack {
+//                            Spacer()
+//                            Button("Close again") {
+//                                withAnimation(.barAnimation) {
+//                                    barState = .closed
+//                                    shouldOpen = false
+//                                }
+//                            }
+//                            .buttonStyle(CapsuleButtonStyle())
+//                            .padding(.top)
+//                            Spacer()
+//                        }
+//                        .padding(.top, geo.size.height / 10)
+//                        .padding(.bottom, geo.size.height / 15)
                     .background(Color("PrimaryBackground"))
                 }
                 
@@ -119,8 +123,7 @@ struct ContentView: View {
             Spacer()
         }
         .frame(height: barHeight(geoProxy: geoProxy, bar: .top))
-        .backgroundStyle(.thickMaterial)
-        .background(ShiftingBackground(testing: true).opacity(barState == .open ? 0.9 : 1))
+        .background(ShiftingBackground().opacity(barState == .open ? 0.9 : 1))
         .shadow(radius: 2)
     }
     
@@ -150,8 +153,7 @@ struct ContentView: View {
             Spacer()
         }
         .frame(height: barHeight(geoProxy: geoProxy, bar: .bottom))
-        .backgroundStyle(.thickMaterial)
-        .background(ShiftingBackground(testing: false).opacity(barState == .open ? 0.9 : 1))
+        .background(ShiftingBackground().opacity(barState == .open ? 0.9 : 1))
         .shadow(radius: 2)
     }
     

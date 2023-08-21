@@ -21,28 +21,48 @@ struct CapsuleButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         ZStack {
             configuration.label
+                .scaleEffect(configuration.isPressed ? 0.92 : 1)
         }
         .padding(padding)
         .background(
             Capsule()
+                .fill(.shadow(.inner(radius: configuration.isPressed ? 0 : 5)))
                 .foregroundColor(.accentColor)
                 .overlay {
                     LinearGradient(
                         gradient: Gradient(
                             colors: [
-                                Color.white.opacity(0.2),
+                                Color.white.opacity(0.25),
                                 Color.clear
                             ]),
-                        startPoint: configuration.isPressed ? .bottomTrailing : .topLeading,
-                        endPoint: configuration.isPressed ? .topLeading : .bottomTrailing
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     )
-                    .blur(radius: 5)
-                    .clipShape(Capsule())
                 }
-                .shadow(radius: configuration.isPressed ? 0 : 10)
+                .overlay {
+                    if configuration.isPressed {
+                        Color.black.opacity(0.15)
+                    }
+                }
+                .clipShape(Capsule())
+                .shadow(radius: configuration.isPressed ? 0.5 : 10)
         )
-        .opacity(configuration.isPressed ? 0.9 : 1)
-        .scaleEffect(configuration.isPressed ? 0.95 : 1)
-        .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+        .scaleEffect(configuration.isPressed ? 0.925 : 1)
+        .animation(.easeOut(duration: configuration.isPressed ? 0 : 0.25), value: configuration.isPressed)
+    }
+}
+
+struct CapsuleButtonStyle_Previews: PreviewProvider {
+    static var previews: some View {
+        ZStack {
+            Color.gray.ignoresSafeArea()
+            Button {} label: {
+                Text("Test!")
+                    .font(.title)
+                    .bold()
+                    .padding()
+            }
+            .buttonStyle(CapsuleButtonStyle())
+        }
     }
 }

@@ -15,8 +15,20 @@ struct InsetTextFieldStyle: TextFieldStyle {
             .padding(.vertical, 5)
             .background(
                 Capsule()
-                    .fill(.shadow(.inner(radius: 2)))
+                    .fill(.shadow(.inner(radius: 2, x: 1, y: 1)))
                     .foregroundColor(Color("PrimaryBackground"))
             )
+    }
+}
+
+struct InsetTextFieldStyle_Previews: PreviewProvider {
+    static var previews: some View {
+        ZStack {
+            Color.gray.ignoresSafeArea()
+            TextField("Test", text: .constant(""))
+                .font(.title)
+                .textFieldStyle(InsetTextFieldStyle())
+                .padding(.horizontal, 50)
+        }
     }
 }
