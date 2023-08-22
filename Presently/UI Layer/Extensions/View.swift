@@ -30,13 +30,16 @@ extension View {
             .shadow(radius: 10)
     }
     
-    func navigationCard(id: String, viewModel: ScrollViewModel, reader: ScrollViewProxy, maxHeight: CGFloat) -> some View {
+    func navigationCard(id: String, viewModel: ScrollViewModel, reader: ScrollViewProxy, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollReader: ScrollViewProxy) -> some View {
         self.modifier(
             NavigationCardModifier(
                 id: id,
                 viewModel: viewModel,
                 reader: reader,
-                maxHeight: maxHeight
+                maxHeight: maxHeight,
+                topInset: topInset,
+                bottomInset: bottomInset,
+                scrollReader: scrollReader
             )
         )
     }

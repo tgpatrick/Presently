@@ -17,34 +17,37 @@ struct JellyScrollView: View {
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                VStack {
-                    ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "1")
-                        .padding()
-                    ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "2")
-                        .padding()
-                    ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "3")
-                        .padding()
-                    ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "4")
-                        .padding()
-                    ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "5")
-                        .padding()
-                    ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "6")
-                        .padding()
-                }
-                .padding(.top, topInset)
-                .padding(.bottom, bottomInset)
-                .background(
-                    GeometryReader { geo in
-                        Color.clear
-                            .onAppear {
-                                maxHeight = geo.size.height - topInset - bottomInset
-                            }
-                    }
-                )
+                Spacer().frame(height: topInset)
+                ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "1")
+                    .navigationCard(id: "1", viewModel: viewModel, reader: reader, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollReader: reader)
+                    .padding()
+                ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "2")
+                    .navigationCard(id: "2", viewModel: viewModel, reader: reader, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollReader: reader)
+                    .padding()
+                ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "3")
+                    .navigationCard(id: "3", viewModel: viewModel, reader: reader, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollReader: reader)
+                    .padding()
+                ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "4")
+                    .navigationCard(id: "4", viewModel: viewModel, reader: reader, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollReader: reader)
+                    .padding()
+                ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "5")
+                    .navigationCard(id: "5", viewModel: viewModel, reader: reader, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollReader: reader)
+                    .padding()
+                ContentBox(viewModel: viewModel, reader: reader, maxHeight: maxHeight, id: "6")
+                    .navigationCard(id: "6", viewModel: viewModel, reader: reader, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollReader: reader)
+                    .padding()
+                Spacer().frame(height: bottomInset)
             }
+            .background(
+                GeometryReader { geo in
+                    Color.clear
+                        .onAppear {
+                            maxHeight = geo.size.height - topInset - bottomInset - 20
+                        }
+                }
+            )
             .scrollDisabled(viewModel.focusedId != nil)
-            .padding(.top, viewModel.focusedExpanded ? topInset : 0)
-            .padding(.bottom, viewModel.focusedExpanded ? bottomInset : 0)
+            .padding(.bottom, (viewModel.focusedId != nil && viewModel.focusedExpanded) ? bottomInset : 0)
         }
     }
 }
@@ -55,7 +58,6 @@ struct ContentBox: View {
     var reader: ScrollViewProxy
     let maxHeight: CGFloat
     let id: String
-    private let transitionTime: Double = 0.3
     
     var body: some View {
         VStack {
@@ -67,19 +69,7 @@ struct ContentBox: View {
                 }
                 .matchedGeometryEffect(id: "title", in: namespace)
                 Button {
-                    withAnimation(.easeIn(duration: transitionTime)) {
-                        viewModel.focusedId = id
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + transitionTime) {
-                        withAnimation(.spring(blendDuration: transitionTime)) {
-                            viewModel.focusedExpanded.toggle()
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            withAnimation(.spring()) {
-                                reader.scrollTo(id)
-                            }
-                        }
-                    }
+                    viewModel.focus(id, reader: reader)
                 } label: {
                         Text("Open!")
                             .bold()
@@ -95,26 +85,8 @@ struct ContentBox: View {
                     Spacer()
                 }
                 .matchedGeometryEffect(id: "title", in: namespace)
-                Button {
-                    withAnimation(.spring(blendDuration: transitionTime)) {
-                        viewModel.focusedExpanded.toggle()
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + transitionTime) {
-                        withAnimation(.spring()) {
-                            viewModel.focusedId = nil
-                        }
-                    }
-                } label: {
-                    Text("Close!")
-                        .bold()
-                        .padding(3)
-                }
-                .buttonStyle(CapsuleButtonStyle())
-                .padding()
-                .matchedGeometryEffect(id: "button", in: namespace)
             }
         }
-        .navigationCard(id: id, viewModel: viewModel, reader: reader, maxHeight: maxHeight)
     }
 }
 
