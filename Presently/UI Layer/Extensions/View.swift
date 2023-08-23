@@ -21,26 +21,41 @@ extension View {
     
     func mainContentBox() -> some View {
         self
+            .padding()
             .background(
                 Rectangle()
                     .fill(.shadow(.inner(radius: 5)))
                     .foregroundColor(.gray.opacity(0.25))
             )
             .cornerRadius(15)
-            .shadow(radius: 10)
     }
     
-    func navigationCard(id: String, viewModel: ScrollViewModel, reader: ScrollViewProxy, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollReader: ScrollViewProxy) -> some View {
+    func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
         self.modifier(
             NavigationCardModifier(
                 id: id,
+                title: title,
                 viewModel: viewModel,
-                reader: reader,
                 maxHeight: maxHeight,
                 topInset: topInset,
                 bottomInset: bottomInset,
-                scrollReader: scrollReader
+                scrollReader: scrollViewReader
             )
         )
+    }
+    
+    func fillHorizontally() -> some View {
+        ZStack {
+            HStack {
+                Spacer()
+                Color.clear
+                Spacer()
+            }
+            self
+        }
+    }
+    
+    func asAnyView() -> AnyView {
+        AnyView(self)
     }
 }

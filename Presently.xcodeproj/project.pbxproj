@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9A7FEF332A86DB0700D6C152 /* JellyScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF322A86DB0700D6C152 /* JellyScrollView.swift */; };
+		9A77B7772A9596BE00A94A18 /* TestNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B7762A9596BE00A94A18 /* TestNavItem.swift */; };
+		9A77B7792A95976F00A94A18 /* ScrollNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B7782A95976F00A94A18 /* ScrollNavItem.swift */; };
+		9A77B77B2A95981300A94A18 /* ScrollNavViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B77A2A95981300A94A18 /* ScrollNavViewType.swift */; };
+		9A77B77F2A959C3100A94A18 /* ExchangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B77E2A959C3100A94A18 /* ExchangeView.swift */; };
+		9A7FEF332A86DB0700D6C152 /* NavigationScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF322A86DB0700D6C152 /* NavigationScrollView.swift */; };
 		9A7FEF352A8C419500D6C152 /* NavigationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF342A8C419500D6C152 /* NavigationCard.swift */; };
 		9A7FEF382A8C41CE00D6C152 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF372A8C41CE00D6C152 /* View.swift */; };
 		9A7FEF3A2A8C8EB100D6C152 /* ScrollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF392A8C8EB100D6C152 /* ScrollViewModel.swift */; };
@@ -69,7 +73,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9A7FEF322A86DB0700D6C152 /* JellyScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JellyScrollView.swift; sourceTree = "<group>"; };
+		9A77B7762A9596BE00A94A18 /* TestNavItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestNavItem.swift; sourceTree = "<group>"; };
+		9A77B7782A95976F00A94A18 /* ScrollNavItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollNavItem.swift; sourceTree = "<group>"; };
+		9A77B77A2A95981300A94A18 /* ScrollNavViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollNavViewType.swift; sourceTree = "<group>"; };
+		9A77B77E2A959C3100A94A18 /* ExchangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeView.swift; sourceTree = "<group>"; };
+		9A7FEF322A86DB0700D6C152 /* NavigationScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationScrollView.swift; sourceTree = "<group>"; };
 		9A7FEF342A8C419500D6C152 /* NavigationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCard.swift; sourceTree = "<group>"; };
 		9A7FEF372A8C41CE00D6C152 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		9A7FEF392A8C8EB100D6C152 /* ScrollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewModel.swift; sourceTree = "<group>"; };
@@ -140,6 +148,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9A77B77D2A959BFC00A94A18 /* NavItems */ = {
+			isa = PBXGroup;
+			children = (
+				9A77B77E2A959C3100A94A18 /* ExchangeView.swift */,
+			);
+			path = NavItems;
+			sourceTree = "<group>";
+		};
 		9A7FEF2F2A86CF4B00D6C152 /* Launch */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				9AAC8B242A7C9E6E00DF568E /* TestView.swift */,
+				9A77B7762A9596BE00A94A18 /* TestNavItem.swift */,
 			);
 			path = Testing;
 			sourceTree = "<group>";
@@ -160,7 +177,10 @@
 		9A7FEF312A86CF7E00D6C152 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				9A7FEF322A86DB0700D6C152 /* JellyScrollView.swift */,
+				9A7FEF322A86DB0700D6C152 /* NavigationScrollView.swift */,
+				9A77B77A2A95981300A94A18 /* ScrollNavViewType.swift */,
+				9A77B7782A95976F00A94A18 /* ScrollNavItem.swift */,
+				9A77B77D2A959BFC00A94A18 /* NavItems */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -504,10 +524,12 @@
 				9AAC8B1D2A7C6E1E00DF568E /* PersonRepository.swift in Sources */,
 				9AE5F9ED2A79D3FE001EFD9B /* Person.swift in Sources */,
 				9AAC8B352A80995400DF568E /* InsetTextFieldStyle.swift in Sources */,
+				9A77B7792A95976F00A94A18 /* ScrollNavItem.swift in Sources */,
 				9AAC8B372A81C99A00DF568E /* CapsuleButtonStyle.swift in Sources */,
 				9AE5F9F62A79D5ED001EFD9B /* LoginStorage.swift in Sources */,
 				9AE5FA072A7AF406001EFD9B /* Network.swift in Sources */,
 				9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */,
+				9A77B7772A9596BE00A94A18 /* TestNavItem.swift in Sources */,
 				9AAC8B1B2A7C6AB600DF568E /* ExchangeRepository.swift in Sources */,
 				9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */,
 				9AAC8B192A7B8EBC00DF568E /* Repository.swift in Sources */,
@@ -515,13 +537,15 @@
 				9AE5FA032A7A29D3001EFD9B /* ErrorWrapper.swift in Sources */,
 				9AAC8B332A7F5DF900DF568E /* LoginViewModel.swift in Sources */,
 				9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */,
+				9A77B77B2A95981300A94A18 /* ScrollNavViewType.swift in Sources */,
 				9A7FEF3A2A8C8EB100D6C152 /* ScrollViewModel.swift in Sources */,
 				9AE5F9F22A79D3FE001EFD9B /* Responses.swift in Sources */,
-				9A7FEF332A86DB0700D6C152 /* JellyScrollView.swift in Sources */,
+				9A7FEF332A86DB0700D6C152 /* NavigationScrollView.swift in Sources */,
 				9AAC8B252A7C9E6E00DF568E /* TestView.swift in Sources */,
 				9AE5F9F42A79D3FE001EFD9B /* Exchange.swift in Sources */,
 				9AE5F9EF2A79D3FE001EFD9B /* HistoricalGift.swift in Sources */,
 				9AAC8B2C2A7F1A5E00DF568E /* BounceTransition.swift in Sources */,
+				9A77B77F2A959C3100A94A18 /* ExchangeView.swift in Sources */,
 				9AE5F9F02A79D3FE001EFD9B /* Exception.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

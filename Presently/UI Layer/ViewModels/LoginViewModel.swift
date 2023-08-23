@@ -45,7 +45,7 @@ class LoginViewModel: ObservableObject {
             exchangeRepo.loadingState = .loading
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-            if Int.random(in: 1...2) == 1 {
+            if Int.random(in: 1...10) != 1 {
                 exchangeRepo.loadingState = .success
                 if let onLoginSuccess {
                     onLoginSuccess()

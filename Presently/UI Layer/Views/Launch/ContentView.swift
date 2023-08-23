@@ -24,7 +24,9 @@ struct ContentView: View {
     @AppStorage("CurrentPersonID") var personID: String?
     @State var barState: BarState = .closed
     @State var shouldOpen: Bool = false
+    @StateObject var scrollViewModel = ScrollViewModel()
     @StateObject var loginViewModel = LoginViewModel()
+    @Namespace var mainNamespace
     var isLoggedIn: Bool {
         exchangeID != nil || personID != nil
     }
@@ -35,24 +37,18 @@ struct ContentView: View {
             ZStack {
                 //TODO: change to isLoggedIn
                 if barState == .open {
-                    JellyScrollView(
-                        content: [:],
+                    NavigationScrollView(
+                        viewModel: scrollViewModel,
+                        items: [
+                            ExchangeView(viewModel: scrollViewModel, exchange: testExchange),
+                            TestNavItem(viewModel: scrollViewModel),
+                            TestNavItem(viewModel: scrollViewModel),
+                            TestNavItem(viewModel: scrollViewModel),
+                            TestNavItem(viewModel: scrollViewModel),
+                            TestNavItem(viewModel: scrollViewModel)
+                        ],
                         topInset: barHeight(geoProxy: geo, bar: .top),
                         bottomInset: barHeight(geoProxy: geo, bar: .bottom))
-//                        HStack {
-//                            Spacer()
-//                            Button("Close again") {
-//                                withAnimation(.barAnimation) {
-//                                    barState = .closed
-//                                    shouldOpen = false
-//                                }
-//                            }
-//                            .buttonStyle(CapsuleButtonStyle())
-//                            .padding(.top)
-//                            Spacer()
-//                        }
-//                        .padding(.top, geo.size.height / 10)
-//                        .padding(.bottom, geo.size.height / 15)
                     .background(Color("PrimaryBackground"))
                 }
                 
@@ -101,24 +97,14 @@ struct ContentView: View {
         HStack {
             Spacer()
             if barState == .closed && !isLoggedIn {
-                TopLoginView()
+                TopLoginView(mainNamespace: mainNamespace)
                     .padding(.bottom, ribbonHeight / 2)
             } else {
-                Button(action: {
-                    withAnimation(.barAnimation) {
-                        if barState == .topFocus {
-                            barState = .open
-                        } else {
-                            barState = .topFocus
-                        }
-                    }
-                }) {
-                    if barState == .topFocus {
-                        Text("Open")
-                    } else {
-                        Text("Focus")
-                    }
-                }
+                Image(systemName: "app.gift.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxHeight: 50)
+                    .matchedGeometryEffect(id: "logo", in: mainNamespace)
             }
             Spacer()
         }
@@ -133,22 +119,6 @@ struct ContentView: View {
             if barState == .closed && !isLoggedIn {
                 BottomLoginView(loginViewModel: loginViewModel)
                     .padding(.top, ribbonHeight / 2)
-            } else {
-                Button(action: {
-                    withAnimation(.barAnimation) {
-                        if barState == .bottomFocus {
-                            barState = .open
-                        } else {
-                            barState = .bottomFocus
-                        }
-                    }
-                }) {
-                    if barState == .bottomFocus {
-                        Text("Open")
-                    } else {
-                        Text("Focus")
-                    }
-                }
             }
             Spacer()
         }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TopLoginView: View {
+    var mainNamespace: Namespace.ID
     @State var layout = AnyLayout(VStackLayout())
     
     var body: some View {
@@ -19,6 +20,7 @@ struct TopLoginView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 250)
+                        .matchedGeometryEffect(id: "logo", in: mainNamespace)
                     Text("Presently")
                         .font(.title)
                         .bold()

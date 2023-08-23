@@ -9,8 +9,8 @@ import SwiftUI
 
 struct NavigationCardModifier: ViewModifier {
     let id: String
+    let title: String?
     @ObservedObject var viewModel: ScrollViewModel
-    var reader: ScrollViewProxy
     let maxHeight: CGFloat
     let topInset: CGFloat
     let bottomInset: CGFloat
@@ -31,77 +31,85 @@ struct NavigationCardModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         if viewModel.focusedId == nil || viewModel.focusedId == id {
-            ZStack {
-                content
-                if isOpen {
-                    VStack {
-                        HStack {
-                            Button {
-                                viewModel.close(id, reader: reader)
-                            } label: {
-                                HStack {
-                                    Image(systemName: "chevron.backward")
-                                        .offset(x: swipeOffset)
-                                    Text("Back")
-                                        .bold()
-                                        .offset(x: swipeOffset * 1.2)
+            VStack(alignment: .leading) {
+                if let title, viewModel.focusedId == nil {
+                    Text(title)
+                        .transition(.move(edge: .leading).combined(with: .opacity))
+                }
+                ZStack {
+                    content
+                    if isOpen {
+                        VStack {
+                            HStack {
+                                Button {
+                                    viewModel.close(id)
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "chevron.backward")
+                                            .offset(x: swipeOffset)
+                                        Text("Back")
+                                            .bold()
+                                            .offset(x: swipeOffset * 1.5)
+                                    }
                                 }
+                                .padding(.vertical, 7.5)
+                                Spacer()
                             }
-                            .opacity(backButtonOpacity)
                             Spacer()
                         }
-                        .padding()
-                        Spacer()
                     }
                 }
-            }
-            .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0)
-            .mainContentBox()
-            .id(id)
-            .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
-            .background(
-                GeometryReader { geo in
-                    Color.clear
-                        .onAppear {
-                            unexpandedHeight = geo.size.height
-                            dismissSwipeDistance = geo.size.width / 2
-                            maxSwipeOffset = geo.size.width / 10
-                            minimumHeight = maxHeight
-                        }
-                }
-            )
-            .transition(.move(edge: .leading).combined(with: .opacity))
-            .disabled(isTransitioning || swipeOffset > 0)
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        if minimumHeight == 0 {
-                            minimumHeight = maxHeight
-                        }
-                        if value.startLocation.x < 15 {
-                            let percentDismissed = value.translation.width / dismissSwipeDistance
-                            backButtonOpacity = 1 - percentDismissed
-                            minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
-                            swipeOffset = maxSwipeOffset * percentDismissed
-                        }
-                    }
-                    .onEnded { value in
-                        if value.predictedEndTranslation.width > dismissSwipeDistance {
-                            let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
-                            withAnimation(.interactiveSpring()) {
-                                minimumHeight = maxHeight * (1 - percentDismissed)
-                                swipeOffset = maxSwipeOffset * percentDismissed
+                .fillHorizontally()
+                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0)
+                .mainContentBox()
+                .id(id)
+                .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
+                .background(
+                    GeometryReader { geo in
+                        Color.clear
+                            .onAppear {
+                                unexpandedHeight = geo.size.height
+                                dismissSwipeDistance = geo.size.width / 2
+                                maxSwipeOffset = geo.size.width / 10
+                                minimumHeight = maxHeight
                             }
-                            viewModel.close(id, reader: reader)
-                        }
-                        withAnimation(.interactiveSpring()) {
-                            backButtonOpacity = 1
-                            minimumHeight = maxHeight
-                            swipeOffset = 0
-                            scrollReader.scrollTo(id)
-                        }
                     }
-            )
+                )
+                .transition(.move(edge: .leading).combined(with: .opacity))
+                .disabled(isTransitioning || swipeOffset > 0)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if isOpen {
+                                if minimumHeight == 0 {
+                                    minimumHeight = maxHeight
+                                }
+                                if value.startLocation.x < 15 {
+                                    let percentDismissed = value.translation.width / dismissSwipeDistance
+                                    backButtonOpacity = 1 - percentDismissed
+                                    minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
+                                    swipeOffset = maxSwipeOffset * percentDismissed
+                                }
+                            }
+                        }
+                        .onEnded { value in
+                            if value.predictedEndTranslation.width > dismissSwipeDistance {
+                                let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
+                                withAnimation(.interactiveSpring()) {
+                                    minimumHeight = maxHeight * (1 - percentDismissed)
+                                    swipeOffset = maxSwipeOffset * percentDismissed
+                                }
+                                viewModel.close(id)
+                            }
+                            withAnimation(.interactiveSpring()) {
+                                backButtonOpacity = 1
+                                minimumHeight = maxHeight
+                                swipeOffset = 0
+                                scrollReader.scrollTo(id)
+                            }
+                        }
+                )
+            }
         } else {
             Spacer().frame(height: unexpandedHeight)
         }
