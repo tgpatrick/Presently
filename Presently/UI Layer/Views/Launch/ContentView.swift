@@ -109,7 +109,7 @@ struct ContentView: View {
             Spacer()
         }
         .frame(height: barHeight(geoProxy: geoProxy, bar: .top))
-        .background(ShiftingBackground().opacity(barState == .open ? 0.9 : 1))
+        .shiftingGlassBackground()
         .shadow(radius: 2)
     }
     
@@ -123,7 +123,7 @@ struct ContentView: View {
             Spacer()
         }
         .frame(height: barHeight(geoProxy: geoProxy, bar: .bottom))
-        .background(ShiftingBackground().opacity(barState == .open ? 0.9 : 1))
+        .shiftingGlassBackground()
         .shadow(radius: 2)
     }
     

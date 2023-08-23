@@ -32,9 +32,12 @@ struct NavigationCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         if viewModel.focusedId == nil || viewModel.focusedId == id {
             VStack(alignment: .leading) {
-                if let title, viewModel.focusedId == nil {
-                    Text(title)
-                        .transition(.move(edge: .leading).combined(with: .opacity))
+                if let title {
+                    if viewModel.focusedId == nil {
+                        Text(title)
+                    } else {
+                        Text(" ")
+                    }
                 }
                 ZStack {
                     content
@@ -44,15 +47,12 @@ struct NavigationCardModifier: ViewModifier {
                                 Button {
                                     viewModel.close(id)
                                 } label: {
-                                    HStack {
-                                        Image(systemName: "chevron.backward")
-                                            .offset(x: swipeOffset)
-                                        Text("Back")
-                                            .bold()
-                                            .offset(x: swipeOffset * 1.5)
-                                    }
+                                    Image(systemName: "chevron.backward")
+                                        .padding(.horizontal, 2)
                                 }
-                                .padding(.vertical, 7.5)
+                                .buttonStyle(CapsuleButtonStyle())
+                                .offset(x: swipeOffset)
+                                .opacity(backButtonOpacity)
                                 Spacer()
                             }
                             Spacer()
@@ -75,16 +75,15 @@ struct NavigationCardModifier: ViewModifier {
                             }
                     }
                 )
-                .transition(.move(edge: .leading).combined(with: .opacity))
                 .disabled(isTransitioning || swipeOffset > 0)
                 .gesture(
                     DragGesture()
                         .onChanged { value in
                             if isOpen {
-                                if minimumHeight == 0 {
-                                    minimumHeight = maxHeight
-                                }
                                 if value.startLocation.x < 15 {
+                                    if minimumHeight == 0 {
+                                        minimumHeight = maxHeight
+                                    }
                                     let percentDismissed = value.translation.width / dismissSwipeDistance
                                     backButtonOpacity = 1 - percentDismissed
                                     minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
@@ -93,23 +92,26 @@ struct NavigationCardModifier: ViewModifier {
                             }
                         }
                         .onEnded { value in
-                            if value.predictedEndTranslation.width > dismissSwipeDistance {
-                                let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
-                                withAnimation(.interactiveSpring()) {
-                                    minimumHeight = maxHeight * (1 - percentDismissed)
-                                    swipeOffset = maxSwipeOffset * percentDismissed
+                            if value.startLocation.x < 15 {
+                                if value.predictedEndTranslation.width > dismissSwipeDistance {
+                                    let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
+                                    withAnimation(.interactiveSpring()) {
+                                        minimumHeight = maxHeight * (1 - percentDismissed)
+                                        swipeOffset = maxSwipeOffset * percentDismissed
+                                    }
+                                    viewModel.close(id)
                                 }
-                                viewModel.close(id)
-                            }
-                            withAnimation(.interactiveSpring()) {
-                                backButtonOpacity = 1
-                                minimumHeight = maxHeight
-                                swipeOffset = 0
-                                scrollReader.scrollTo(id)
+                                withAnimation(.interactiveSpring()) {
+                                    backButtonOpacity = 1
+                                    minimumHeight = maxHeight
+                                    swipeOffset = 0
+                                    scrollReader.scrollTo(id)
+                                }
                             }
                         }
                 )
             }
+            .transition(.move(edge: .leading).combined(with: .opacity))
         } else {
             Spacer().frame(height: unexpandedHeight)
         }

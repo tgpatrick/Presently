@@ -44,6 +44,12 @@ extension View {
         )
     }
     
+    func shiftingGlassBackground() -> some View {
+        self
+            .background(ShiftingBackground())
+            .background(.ultraThinMaterial)
+    }
+    
     func fillHorizontally() -> some View {
         ZStack {
             HStack {

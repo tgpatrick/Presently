@@ -21,7 +21,7 @@ class ScrollViewModel: ObservableObject {
             withAnimation(.spring(blendDuration: transitionTime)) {
                 focusedExpanded.toggle()
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 withAnimation(.spring()) {
                     self.scrollViewReader?.scrollTo(id)
                 }
@@ -37,7 +37,7 @@ class ScrollViewModel: ObservableObject {
             withAnimation(.spring()) {
                 focusedId = nil
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 withAnimation(.spring()) {
                     self.scrollViewReader?.scrollTo(id)
                 }

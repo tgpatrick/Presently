@@ -15,7 +15,6 @@ struct ShiftingBackground: View {
         GeometryReader { geo in
             ZStack {
                 Color("PrimaryColor")
-                    .blur(radius: 10)
                 RadialGradient(colors: [
                     Color("PrimaryColor"),
                     Color("Secondary 1"),
@@ -24,7 +23,7 @@ struct ShiftingBackground: View {
                 .opacity(0.4)
                 .blur(radius: 5)
             }
-            .clipShape(Rectangle())
+            .opacity(0.5)
             .onAppear {
                 #if !targetEnvironment(simulator)
                 endRadius = geo.size.width * 2
