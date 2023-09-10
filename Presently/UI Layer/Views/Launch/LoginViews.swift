@@ -70,9 +70,8 @@ struct RibbonLoginView: View {
                             }
                             loginViewModel.onEidChange()
                         }
-                    Rectangle()
+                    RoundedRectangle(cornerRadius: 2)
                         .frame(width: 12, height: 3)
-                        .cornerRadius(2)
                     TextField("", text: $loginViewModel.personIdField)
                         .textFieldStyle(InsetTextFieldStyle())
                         .textContentType(.oneTimeCode)
@@ -113,21 +112,26 @@ struct BottomLoginView: View {
                     .font(.caption)
                     .bold()
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.accentColor)
                     .transition(.move(edge: .top).combined(with: .opacity))
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(15)
+                    .padding(.bottom, 5)
             }
             Button(action: loginViewModel.login) {
-                if !loginViewModel.isLoading {
-                    Text("Log in")
-                        .bold()
-                        .frame(width: 100)
-                } else {
-                    ProgressView()
-                        .frame(width: 100)
-                        .transition(.opacity)
+                Group {
+                    if !loginViewModel.isLoading {
+                        Text("Log in")
+                            .bold()
+                            .frame(width: 100)
+                    } else {
+                        ProgressView()
+                            .frame(width: 100)
+                            .transition(.opacity)
+                    }
                 }
             }
-            .buttonStyle(CapsuleButtonStyle())
+            .buttonStyle(DepthButtonStyle())
             .disabled(loginViewModel.isLoading)
             Spacer()
         }

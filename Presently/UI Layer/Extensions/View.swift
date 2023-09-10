@@ -22,12 +22,9 @@ extension View {
     func mainContentBox() -> some View {
         self
             .padding()
-            .background(
-                Rectangle()
-                    .fill(.shadow(.inner(radius: 5)))
-                    .foregroundColor(.gray.opacity(0.25))
-            )
+            .background(.thinMaterial)
             .cornerRadius(15)
+            .shadow(radius: 5)
     }
     
     func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {

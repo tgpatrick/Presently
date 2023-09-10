@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A77A0F62AAD688400C3E407 /* AssignedPersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77A0F52AAD688400C3E407 /* AssignedPersonView.swift */; };
 		9A77B7772A9596BE00A94A18 /* TestNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B7762A9596BE00A94A18 /* TestNavItem.swift */; };
 		9A77B7792A95976F00A94A18 /* ScrollNavItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B7782A95976F00A94A18 /* ScrollNavItem.swift */; };
 		9A77B77B2A95981300A94A18 /* ScrollNavViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B77A2A95981300A94A18 /* ScrollNavViewType.swift */; };
 		9A77B77F2A959C3100A94A18 /* ExchangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B77E2A959C3100A94A18 /* ExchangeView.swift */; };
+		9A77B7812A98ADEB00A94A18 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A77B7802A98ADEB00A94A18 /* String.swift */; };
 		9A7FEF332A86DB0700D6C152 /* NavigationScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF322A86DB0700D6C152 /* NavigationScrollView.swift */; };
 		9A7FEF352A8C419500D6C152 /* NavigationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF342A8C419500D6C152 /* NavigationCard.swift */; };
 		9A7FEF382A8C41CE00D6C152 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7FEF372A8C41CE00D6C152 /* View.swift */; };
@@ -27,7 +29,7 @@
 		9AAC8B312A7F5DE400DF568E /* LoginViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B302A7F5DE400DF568E /* LoginViews.swift */; };
 		9AAC8B332A7F5DF900DF568E /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B322A7F5DF900DF568E /* LoginViewModel.swift */; };
 		9AAC8B352A80995400DF568E /* InsetTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B342A80995400DF568E /* InsetTextFieldStyle.swift */; };
-		9AAC8B372A81C99A00DF568E /* CapsuleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B362A81C99A00DF568E /* CapsuleButtonStyle.swift */; };
+		9AAC8B372A81C99A00DF568E /* DepthButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAC8B362A81C99A00DF568E /* DepthButtonStyle.swift */; };
 		9AE5F9B12A79CBA9001EFD9B /* PresentlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */; };
 		9AE5F9B32A79CBA9001EFD9B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */; };
 		9AE5F9B52A79CBAC001EFD9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AE5F9B42A79CBAC001EFD9B /* Assets.xcassets */; };
@@ -73,10 +75,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9A77A0F52AAD688400C3E407 /* AssignedPersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignedPersonView.swift; sourceTree = "<group>"; };
 		9A77B7762A9596BE00A94A18 /* TestNavItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestNavItem.swift; sourceTree = "<group>"; };
 		9A77B7782A95976F00A94A18 /* ScrollNavItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollNavItem.swift; sourceTree = "<group>"; };
 		9A77B77A2A95981300A94A18 /* ScrollNavViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollNavViewType.swift; sourceTree = "<group>"; };
 		9A77B77E2A959C3100A94A18 /* ExchangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeView.swift; sourceTree = "<group>"; };
+		9A77B7802A98ADEB00A94A18 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		9A7FEF322A86DB0700D6C152 /* NavigationScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationScrollView.swift; sourceTree = "<group>"; };
 		9A7FEF342A8C419500D6C152 /* NavigationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCard.swift; sourceTree = "<group>"; };
 		9A7FEF372A8C41CE00D6C152 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
@@ -93,7 +97,7 @@
 		9AAC8B302A7F5DE400DF568E /* LoginViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViews.swift; sourceTree = "<group>"; };
 		9AAC8B322A7F5DF900DF568E /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		9AAC8B342A80995400DF568E /* InsetTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextFieldStyle.swift; sourceTree = "<group>"; };
-		9AAC8B362A81C99A00DF568E /* CapsuleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleButtonStyle.swift; sourceTree = "<group>"; };
+		9AAC8B362A81C99A00DF568E /* DepthButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthButtonStyle.swift; sourceTree = "<group>"; };
 		9AE5F9AD2A79CBA9001EFD9B /* Presently.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Presently.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AE5F9B02A79CBA9001EFD9B /* PresentlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentlyApp.swift; sourceTree = "<group>"; };
 		9AE5F9B22A79CBA9001EFD9B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -152,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				9A77B77E2A959C3100A94A18 /* ExchangeView.swift */,
+				9A77A0F52AAD688400C3E407 /* AssignedPersonView.swift */,
 			);
 			path = NavItems;
 			sourceTree = "<group>";
@@ -190,6 +195,7 @@
 			children = (
 				9A7FEF372A8C41CE00D6C152 /* View.swift */,
 				9AAC8B2E2A7F34AE00DF568E /* Animation.swift */,
+				9A77B7802A98ADEB00A94A18 /* String.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -256,7 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				9AAC8B342A80995400DF568E /* InsetTextFieldStyle.swift */,
-				9AAC8B362A81C99A00DF568E /* CapsuleButtonStyle.swift */,
+				9AAC8B362A81C99A00DF568E /* DepthButtonStyle.swift */,
 			);
 			path = Styles;
 			sourceTree = "<group>";
@@ -525,11 +531,12 @@
 				9AE5F9ED2A79D3FE001EFD9B /* Person.swift in Sources */,
 				9AAC8B352A80995400DF568E /* InsetTextFieldStyle.swift in Sources */,
 				9A77B7792A95976F00A94A18 /* ScrollNavItem.swift in Sources */,
-				9AAC8B372A81C99A00DF568E /* CapsuleButtonStyle.swift in Sources */,
+				9AAC8B372A81C99A00DF568E /* DepthButtonStyle.swift in Sources */,
 				9AE5F9F62A79D5ED001EFD9B /* LoginStorage.swift in Sources */,
 				9AE5FA072A7AF406001EFD9B /* Network.swift in Sources */,
 				9AE5F9FC2A79F26B001EFD9B /* ExchangeStorage.swift in Sources */,
 				9A77B7772A9596BE00A94A18 /* TestNavItem.swift in Sources */,
+				9A77B7812A98ADEB00A94A18 /* String.swift in Sources */,
 				9AAC8B1B2A7C6AB600DF568E /* ExchangeRepository.swift in Sources */,
 				9AE5F9F12A79D3FE001EFD9B /* WishListItem.swift in Sources */,
 				9AAC8B192A7B8EBC00DF568E /* Repository.swift in Sources */,
@@ -538,6 +545,7 @@
 				9AAC8B332A7F5DF900DF568E /* LoginViewModel.swift in Sources */,
 				9AE5F9FE2A79F8DE001EFD9B /* PeopleStorage.swift in Sources */,
 				9A77B77B2A95981300A94A18 /* ScrollNavViewType.swift in Sources */,
+				9A77A0F62AAD688400C3E407 /* AssignedPersonView.swift in Sources */,
 				9A7FEF3A2A8C8EB100D6C152 /* ScrollViewModel.swift in Sources */,
 				9AE5F9F22A79D3FE001EFD9B /* Responses.swift in Sources */,
 				9A7FEF332A86DB0700D6C152 /* NavigationScrollView.swift in Sources */,
@@ -711,6 +719,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Presently;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -724,6 +733,9 @@
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgp.Presently;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -742,6 +754,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Presently;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -755,6 +768,9 @@
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgp.Presently;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

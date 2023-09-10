@@ -92,7 +92,7 @@ struct TestView: View {
                                     }
                                 }
                             }).buttonStyle(.borderedProminent)
-                        }.navigationBarTitle("Storage")
+                        }
                     })
                     .buttonStyle(.borderedProminent)
                     .font(.title)
@@ -185,7 +185,7 @@ struct TestView: View {
                                     Text(person.name)
                                 }
                             }
-                        }.navigationBarTitle("Network")
+                        }
                     })
                     .buttonStyle(.borderedProminent)
                     .font(.title)

@@ -17,7 +17,7 @@ struct RibbonShape: View {
                 path.addLines([
                     CGPoint(x: width, y: height),
                     CGPoint(x: 0, y: height),
-                    CGPoint(x: height, y: height / 2),
+                    CGPoint(x: height / 1.75, y: height / 2),
                     CGPoint(x: 0, y: 0),
                     CGPoint(x: width, y: 0)
                 ])

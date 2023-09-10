@@ -1,5 +1,5 @@
 //
-//  CapsuleButtonStyle.swift
+//  DepthButtonStyle.swift
 //  Presently
 //
 //  Created by Thomas Patrick on 8/7/23.
@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-struct CapsuleButtonStyle: ButtonStyle {
-    let padding: CGFloat
-    let font: Font
+struct DepthButtonStyle: ButtonStyle {
+    let shape: AnyShape
     let backgroundColor: Color
     
-    init(padding: CGFloat = 10, font: Font = .body, backgroundColor: Color = Color("AccentColor")) {
-        self.padding = padding
-        self.font = font
+    init(shape: any Shape = Capsule(), backgroundColor: Color = Color("AccentColor")) {
+        self.shape = AnyShape(shape)
         self.backgroundColor = backgroundColor
     }
     
@@ -23,9 +21,9 @@ struct CapsuleButtonStyle: ButtonStyle {
             configuration.label
                 .scaleEffect(configuration.isPressed ? 0.92 : 1)
         }
-        .padding(padding)
+        .padding(10)
         .background(
-            Capsule()
+            shape
                 .fill(.shadow(.inner(radius: configuration.isPressed ? 0 : 5)))
                 .foregroundColor(.accentColor)
                 .overlay {
@@ -44,7 +42,7 @@ struct CapsuleButtonStyle: ButtonStyle {
                         Color.black.opacity(0.15)
                     }
                 }
-                .clipShape(Capsule())
+                .clipShape(shape)
                 .shadow(radius: configuration.isPressed ? 0.5 : 10)
         )
         .scaleEffect(configuration.isPressed ? 0.925 : 1)
@@ -60,9 +58,8 @@ struct CapsuleButtonStyle_Previews: PreviewProvider {
                 Text("Test!")
                     .font(.title)
                     .bold()
-                    .padding()
             }
-            .buttonStyle(CapsuleButtonStyle())
+            .buttonStyle(DepthButtonStyle())
         }
     }
 }

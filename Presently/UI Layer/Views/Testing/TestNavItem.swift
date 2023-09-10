@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TestNavItem: ScrollNavViewType {
     var id: String = UUID().uuidString
-    var title: String? = "test"
+//    var title: String? = "test"
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
     
@@ -28,7 +28,7 @@ struct TestNavItem: ScrollNavViewType {
                     .bold()
                     .padding(3)
             }
-            .buttonStyle(CapsuleButtonStyle())
+            .buttonStyle(DepthButtonStyle())
             .padding()
         }
             .padding()

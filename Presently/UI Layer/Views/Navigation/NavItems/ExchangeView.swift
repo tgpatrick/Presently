@@ -9,41 +9,68 @@ import SwiftUI
 
 struct ExchangeView: ScrollNavViewType {
     var id: String = UUID().uuidString
-    var title: String? = "Your exchange"
+//    var title: String? = "Your exchange"
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
     let exchange: Exchange
     
+    @State var repeatingToggle = false
+    @State var secretToggle = false
+    
+    
     func closedView() -> AnyView {
-        ZStack {
-            VStack(alignment: .leading) {
-                Text(exchange.name)
-                    .font(.title)
-                    .bold()
-                    .matchedGeometryEffect(id: "title", in: namespace)
-            }
-            HStack {
-                Spacer()
-                Image(systemName: "chevron.forward")
-                    .padding()
-            }
+        VStack {
+            Text(exchange.name)
+                .font(.title)
+                .bold()
+                .matchedGeometryEffect(id: "title", in: namespace)
+//            Button {
+//                viewModel.focus(self.id)
+//            } label: {
+//                HStack {
+//                    Text("Edit")
+//                    Image(systemName: "chevron.forward")
+//                }
+//                .bold()
+//                .foregroundColor(.blue)
+//            }
         }
-        .onTapGesture {
-            viewModel.focus(id)
-        }
+//        .contextMenu {
+//            Button {
+//                viewModel.focus(self.id)
+//            } label: {
+//                Label("Open", systemImage: "chevron.forward")
+//            }
+//        } preview: {
+//            VStack(alignment: .leading) {
+//                Text(exchange.name)
+//                    .font(.title)
+//                    .bold()
+//                    .padding(.vertical)
+//                Text("I am also here and I am text")
+//            }
+//            .padding()
+//        }
         .asAnyView()
     }
 
     func openView() -> AnyView {
         VStack {
             Text(exchange.name)
-                .font(.title)
-                .bold()
                 .matchedGeometryEffect(id: "title", in: namespace)
                 .modifier(NavTitleModifier())
             Spacer()
-            Text("Hi, love")
+            VStack {
+                Toggle("Repeating", isOn: $repeatingToggle)
+                Toggle("Secret", isOn: $secretToggle)
+            }
+            .padding(.top)
+            .padding()
             Spacer()
+        }
+        .onAppear {
+            self.repeatingToggle = exchange.repeating
+            self.secretToggle = exchange.secret
         }
         .asAnyView()
     }
@@ -56,6 +83,8 @@ struct NavTitleModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
+            .font(.title3)
+            .bold()
             .offset(x: swipeOffset)
             .opacity(backswipeOpacity)
             .background(
@@ -65,7 +94,7 @@ struct NavTitleModifier: ViewModifier {
                             originalMinX = geo.frame(in: .global).minX
                         }
                         .onChange(of: geo.frame(in: .global).minX) { newValue in
-                            swipeOffset = (newValue - originalMinX) * 2
+                            swipeOffset = (newValue - originalMinX) * 1.5
                             backswipeOpacity = max(1 - (swipeOffset * 2) / geo.size.width, 0.1)
                         }
                 }

@@ -8,11 +8,18 @@
 import SwiftUI
 
 class ScrollViewModel: ObservableObject {
+    @AppStorage("CurrentExchangeID") var exchangeID: String?
+    @AppStorage("CurrentPersonID") var personID: String?
+    
     @Published var focusedId: String? = nil
     @Published var focusedExpanded: Bool = false
     var scrollViewReader: ScrollViewProxy? = nil
     private let transitionTime = 0.3
     
+    func currentUser() -> Person {
+        return testPerson
+    }
+
     func focus(_ id: String) {
         withAnimation(.easeIn(duration: transitionTime)) {
             focusedId = id

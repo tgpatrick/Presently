@@ -32,16 +32,18 @@ struct NavigationScrollView: View {
                 }
                 Spacer().frame(height: bottomInset)
             }
+            .background {
+                ShiftingBackground()
+                    .opacity(0.2)
+            }
             .background(
                 GeometryReader { geo in
                     Color.clear.onAppear {
-                        maxHeight = geo.size.height - topInset - bottomInset - 75
+                        maxHeight = geo.size.height - topInset - topInset - 75
                     }
                 }
             )
             .scrollDisabled(viewModel.focusedId != nil)
-            .padding(.top, (viewModel.focusedId != nil && viewModel.focusedExpanded) ? topInset : 0)
-            .padding(.bottom, (viewModel.focusedId != nil && viewModel.focusedExpanded) ? bottomInset : 0)
             .onAppear {
                 viewModel.scrollViewReader = reader
             }
@@ -49,7 +51,7 @@ struct NavigationScrollView: View {
     }
 }
 
-struct JellyScrollView_Previews: PreviewProvider {
+struct NavigationScrollView_Previews: PreviewProvider {
     static var viewModel = ScrollViewModel()
     
     static var previews: some View {

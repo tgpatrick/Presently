@@ -50,7 +50,7 @@ struct NavigationCardModifier: ViewModifier {
                                     Image(systemName: "chevron.backward")
                                         .padding(.horizontal, 2)
                                 }
-                                .buttonStyle(CapsuleButtonStyle())
+                                .buttonStyle(DepthButtonStyle(shape: Circle()))
                                 .offset(x: swipeOffset)
                                 .opacity(backButtonOpacity)
                                 Spacer()
@@ -62,6 +62,8 @@ struct NavigationCardModifier: ViewModifier {
                 .fillHorizontally()
                 .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0)
                 .mainContentBox()
+                .padding(.top, viewModel.focusedId == id ? topInset : 0)
+                .padding(.bottom, viewModel.focusedId == id ? bottomInset : 0)
                 .id(id)
                 .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
                 .background(
@@ -105,7 +107,6 @@ struct NavigationCardModifier: ViewModifier {
                                     backButtonOpacity = 1
                                     minimumHeight = maxHeight
                                     swipeOffset = 0
-                                    scrollReader.scrollTo(id)
                                 }
                             }
                         }

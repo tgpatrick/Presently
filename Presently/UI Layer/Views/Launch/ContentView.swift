@@ -36,12 +36,12 @@ struct ContentView: View {
         GeometryReader { geo in
             ZStack {
                 //TODO: change to isLoggedIn
-                if barState == .open {
+                if barState != .closed {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: [
                             ExchangeView(viewModel: scrollViewModel, exchange: testExchange),
-                            TestNavItem(viewModel: scrollViewModel),
+                            AssignedPersonView(viewModel: scrollViewModel),
                             TestNavItem(viewModel: scrollViewModel),
                             TestNavItem(viewModel: scrollViewModel),
                             TestNavItem(viewModel: scrollViewModel),
@@ -49,7 +49,6 @@ struct ContentView: View {
                         ],
                         topInset: barHeight(geoProxy: geo, bar: .top),
                         bottomInset: barHeight(geoProxy: geo, bar: .bottom))
-                    .background(Color("PrimaryBackground"))
                 }
                 
                 ZStack {
@@ -99,12 +98,13 @@ struct ContentView: View {
             if barState == .closed && !isLoggedIn {
                 TopLoginView(mainNamespace: mainNamespace)
                     .padding(.bottom, ribbonHeight / 2)
-            } else {
+            } else if barState == .open {
                 Image(systemName: "app.gift.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(maxHeight: 50)
                     .matchedGeometryEffect(id: "logo", in: mainNamespace)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
             Spacer()
         }
@@ -116,9 +116,69 @@ struct ContentView: View {
     func bottomBar(geoProxy: GeometryProxy) -> some View {
         HStack {
             Spacer()
-            if barState == .closed && !isLoggedIn {
-                BottomLoginView(loginViewModel: loginViewModel)
-                    .padding(.top, ribbonHeight / 2)
+            switch barState {
+            case .open:
+                Button {
+                    withAnimation(.spring()) {
+                        barState = .bottomFocus
+                    }
+                } label: {
+                    VStack {
+                        Image(systemName: "rectangle.and.pencil.and.ellipsis")
+                        Text("Wishlist")
+                            .font(.caption)
+                            .bold()
+                            .padding(.top, 5)
+                    }
+                    .padding(10)
+                }
+                .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
+                .matchedGeometryEffect(id: "wishlistButton", in: mainNamespace)
+            case .closed:
+                if !isLoggedIn {
+                    BottomLoginView(loginViewModel: loginViewModel)
+                        .padding(.top, ribbonHeight / 2)
+                }
+            case .topFocus:
+                EmptyView()
+            case .bottomFocus:
+                VStack {
+                    ZStack {
+                        HStack {
+                            Spacer()
+                            Text("Wishlist")
+                                .font(.title2)
+                            Spacer()
+                        }
+                        
+                        HStack {
+                            Spacer()
+                            Button {
+                                withAnimation(.spring()) {
+                                    barState = .open
+                                }
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(DepthButtonStyle(shape: Circle()))
+                            .matchedGeometryEffect(id: "wishlistButton", in: mainNamespace)
+                            .padding()
+                        }
+                    }
+                    VStack(spacing: 15) {
+                        Text("This is the wishlist, I guess")
+                            .fillHorizontally()
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(15)
+                        Text("This a second piece of it, I guess")
+                            .fillHorizontally()
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(15)
+                    }
+                    .padding()
+                }
             }
             Spacer()
         }
@@ -148,7 +208,6 @@ struct ContentView: View {
             ZStack {
                 Rectangle()
                     .foregroundColor(.accentColor)
-                    .mask(RibbonShape())
                     .overlay {
                         LinearGradient(
                             gradient: Gradient(
@@ -162,11 +221,12 @@ struct ContentView: View {
                         )
                         .blur(radius: 5)
                     }
-                    .offset(CGSize(width: -1 * ribbonHeight, height: 0))
+                    .mask(RibbonShape())
+                    .offset(CGSize(width: -1 * ribbonHeight / 1.75, height: 0))
                     .shadow(radius: 5)
                 Rectangle()
                     .foregroundColor(.accentColor)
-                    .offset(CGSize(width: geoProxy.size.width - ribbonHeight, height: 0))
+                    .offset(CGSize(width: geoProxy.size.width - ribbonHeight / 1.75, height: 0))
                     .shadow(radius: 5, x: 10)
             }
         }
