@@ -14,7 +14,6 @@ struct NavigationCardModifier: ViewModifier {
     let maxHeight: CGFloat
     let topInset: CGFloat
     let bottomInset: CGFloat
-    let scrollReader: ScrollViewProxy
     private let transitionTime: Double = 0.3
     @State private var maxSwipeOffset: CGFloat = 50
     @State private var swipeOffset: CGFloat = 0
@@ -107,6 +106,7 @@ struct NavigationCardModifier: ViewModifier {
                                     backButtonOpacity = 1
                                     minimumHeight = maxHeight
                                     swipeOffset = 0
+                                    viewModel.scrollTo(id, after: 0.15)
                                 }
                             }
                         }

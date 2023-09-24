@@ -10,6 +10,11 @@ import Foundation
 var testExchange = Exchange(
     id: "0001",
     name: "Test Exchange",
+    intro: "Welcome to the test exchange! You must be special to have gotten a code to this one.",
+    rules: "There are NO RULES. Spend a billion dollars per gift, see if I care.",
+    startDate: Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date(),
+    assignDate: Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date()),
+    theBigDay: Calendar.current.date(byAdding: .weekOfYear, value: 4, to: Date()),
     year: 2021,
     secret: false,
     repeating: true,

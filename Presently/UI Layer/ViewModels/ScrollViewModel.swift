@@ -19,6 +19,10 @@ class ScrollViewModel: ObservableObject {
     func currentUser() -> Person {
         return testPerson
     }
+    
+    func currentExchange() -> Exchange {
+        return testExchange
+    }
 
     func focus(_ id: String) {
         withAnimation(.easeIn(duration: transitionTime)) {
@@ -28,11 +32,7 @@ class ScrollViewModel: ObservableObject {
             withAnimation(.spring(blendDuration: transitionTime)) {
                 focusedExpanded.toggle()
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                withAnimation(.spring()) {
-                    self.scrollViewReader?.scrollTo(id)
-                }
-            }
+            scrollTo(id, after: 0.2)
         }
     }
     
@@ -44,10 +44,14 @@ class ScrollViewModel: ObservableObject {
             withAnimation(.spring()) {
                 focusedId = nil
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                withAnimation(.spring()) {
-                    self.scrollViewReader?.scrollTo(id)
-                }
+            scrollTo(id, after: 0.15)
+        }
+    }
+    
+    func scrollTo(_ id: String, after: Double = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + after) {
+            withAnimation(.spring()) {
+                self.scrollViewReader?.scrollTo(id)
             }
         }
     }

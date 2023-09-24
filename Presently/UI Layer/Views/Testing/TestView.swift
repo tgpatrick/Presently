@@ -55,7 +55,7 @@ struct TestView: View {
                                             personID: pid)
                                     )
                                 }
-                            }).buttonStyle(.borderedProminent)
+                            }).buttonStyle(DepthButtonStyle())
                             
                             ForEach(loginStorage.items) { login in
                                 HStack {
@@ -91,10 +91,11 @@ struct TestView: View {
                                         )
                                     }
                                 }
-                            }).buttonStyle(.borderedProminent)
+                            }).buttonStyle(DepthButtonStyle())
                         }
+                        .navigationTitle("Storage")
                     })
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(DepthButtonStyle())
                     .font(.title)
                     Spacer()
                     NavigationLink("Network", destination: {
@@ -121,7 +122,7 @@ struct TestView: View {
                                     }
                                 }
                             })
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(DepthButtonStyle())
                             
                             Button("Get a person", action: {
                                 exchange = nil
@@ -138,7 +139,7 @@ struct TestView: View {
                                     }
                                 }
                             })
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(DepthButtonStyle())
                             
                             Button("Get all people", action: {
                                 exchange = nil
@@ -155,7 +156,7 @@ struct TestView: View {
                                     }
                                 }
                             })
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(DepthButtonStyle())
                             
                             Text("Results:")
                                 .font(.title2)
@@ -186,12 +187,13 @@ struct TestView: View {
                                 }
                             }
                         }
+                        .navigationTitle("Network")
                     })
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(DepthButtonStyle())
                     .font(.title)
                     Spacer()
                 }
-                .navigationTitle("Presently Testing")
+                .toolbar(.hidden)
             }
             
             if let errorWrapper {
@@ -204,7 +206,7 @@ struct TestView: View {
                     Button("Okay", action: {
                         self.errorWrapper = nil
                     })
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(DepthButtonStyle())
                 }
                 .padding()
                 .background(Color.gray.opacity(0.9))

@@ -27,6 +27,10 @@ extension View {
             .shadow(radius: 5)
     }
     
+    func navTitleMatchAnimation(namespace: Namespace.ID) -> some View {
+        self.matchedGeometryEffect(id: "title", in: namespace)
+    }
+    
     func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
         self.modifier(
             NavigationCardModifier(
@@ -35,8 +39,7 @@ extension View {
                 viewModel: viewModel,
                 maxHeight: maxHeight,
                 topInset: topInset,
-                bottomInset: bottomInset,
-                scrollReader: scrollViewReader
+                bottomInset: bottomInset
             )
         )
     }

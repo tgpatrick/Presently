@@ -40,11 +40,9 @@ struct ContentView: View {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: [
-                            ExchangeView(viewModel: scrollViewModel, exchange: testExchange),
+                            ExchangeView(viewModel: scrollViewModel, userName: scrollViewModel.currentUser().name, exchange: scrollViewModel.currentExchange()),
+                            NextDateView(viewModel: scrollViewModel, exchange: scrollViewModel.currentExchange()),
                             AssignedPersonView(viewModel: scrollViewModel),
-                            TestNavItem(viewModel: scrollViewModel),
-                            TestNavItem(viewModel: scrollViewModel),
-                            TestNavItem(viewModel: scrollViewModel),
                             TestNavItem(viewModel: scrollViewModel)
                         ],
                         topInset: barHeight(geoProxy: geo, bar: .top),

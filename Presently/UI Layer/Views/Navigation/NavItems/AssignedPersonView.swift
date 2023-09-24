@@ -14,7 +14,7 @@ struct AssignedPersonView: ScrollNavViewType {
     
     func closedView() -> AnyView {
         VStack(alignment: .leading) {
-            Text("Your assigned person:")
+            Text("You have:")
             Button {
                 viewModel.focus(id)
             } label: {
@@ -22,7 +22,7 @@ struct AssignedPersonView: ScrollNavViewType {
                     Text("Tester McTesterson")
                         .font(.title2)
                         .bold()
-                        .matchedGeometryEffect(id: "name", in: namespace)
+                        .navTitleMatchAnimation(namespace: namespace)
                     Image(systemName: "chevron.forward")
                 }
                 .foregroundColor(.primary)
@@ -38,8 +38,7 @@ struct AssignedPersonView: ScrollNavViewType {
             Text("Tester McTesterson")
                 .font(.title2)
                 .bold()
-                .matchedGeometryEffect(id: "name", in: namespace)
-                .modifier(NavTitleModifier())
+                .modifier(NavTitleModifier(namespace: namespace))
             Spacer()
         }
         .asAnyView()
