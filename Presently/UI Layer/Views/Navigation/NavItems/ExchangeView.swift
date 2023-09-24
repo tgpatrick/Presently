@@ -12,12 +12,18 @@ struct ExchangeView: ScrollNavViewType {
 //    var title: String? = "Your exchange"
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
-    let userName: String
-    let exchange: Exchange
+    private let userName: String
+    private let exchange: Exchange
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         return formatter
+    }
+    
+    init(viewModel: ScrollViewModel) {
+        self.viewModel = viewModel
+        self.userName = viewModel.currentUser().name
+        self.exchange = viewModel.currentExchange()
     }
     
     func closedView() -> AnyView {
@@ -41,6 +47,7 @@ struct ExchangeView: ScrollNavViewType {
                         Image(systemName: "chevron.forward")
                     }
                     .bold()
+                    .transition(.opacity)
                 }
             }
             .padding()
@@ -149,7 +156,7 @@ struct ExchangeView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationScrollView(viewModel: viewModel, items: [
-            ExchangeView(viewModel: viewModel, userName: testPerson.name, exchange: testExchange)
+            ExchangeView(viewModel: viewModel)
         ])
     }
 }

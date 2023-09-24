@@ -17,11 +17,15 @@ class ScrollViewModel: ObservableObject {
     private let transitionTime = 0.3
     
     func currentUser() -> Person {
-        return testPerson
+        testPerson
     }
     
     func currentExchange() -> Exchange {
-        return testExchange
+        testExchange
+    }
+    
+    func currentPeople() -> [Person] {
+        testPeople
     }
 
     func focus(_ id: String) {

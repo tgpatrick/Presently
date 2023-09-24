@@ -11,6 +11,12 @@ struct AssignedPersonView: ScrollNavViewType {
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
+    private let assignedPerson: Person
+    
+    init(viewModel: ScrollViewModel) {
+        self.viewModel = viewModel
+        self.assignedPerson = testPeople.first(where: { $0.id == viewModel.currentUser().recipient}) ?? testPerson2
+    }
     
     func closedView() -> AnyView {
         VStack(alignment: .leading) {
@@ -19,7 +25,7 @@ struct AssignedPersonView: ScrollNavViewType {
                 viewModel.focus(id)
             } label: {
                 HStack {
-                    Text("Tester McTesterson")
+                    Text(assignedPerson.name)
                         .font(.title2)
                         .bold()
                         .navTitleMatchAnimation(namespace: namespace)
@@ -35,7 +41,7 @@ struct AssignedPersonView: ScrollNavViewType {
     
     func openView() -> AnyView {
         VStack {
-            Text("Tester McTesterson")
+            Text(assignedPerson.name)
                 .font(.title2)
                 .bold()
                 .modifier(NavTitleModifier(namespace: namespace))

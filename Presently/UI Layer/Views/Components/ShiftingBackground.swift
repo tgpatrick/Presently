@@ -17,7 +17,7 @@ struct ShiftingBackground: View {
                 Color("PrimaryColor")
                 RadialGradient(colors: [
                     Color("PrimaryColor"),
-                    Color("Secondary 1"),
+                    Color("SecondaryColor"),
                     Color("PrimaryColor")
                 ], center: center1, startRadius: .zero, endRadius: endRadius)
                 .opacity(0.4)

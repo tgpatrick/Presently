@@ -25,7 +25,7 @@ struct DepthButtonStyle: ButtonStyle {
         .background(
             shape
                 .fill(.shadow(.inner(radius: configuration.isPressed ? 0 : 5)))
-                .foregroundColor(.accentColor)
+                .foregroundColor(Color(.accentBackground))
                 .overlay {
                     LinearGradient(
                         gradient: Gradient(

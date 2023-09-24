@@ -28,7 +28,9 @@ extension View {
     }
     
     func navTitleMatchAnimation(namespace: Namespace.ID) -> some View {
-        self.matchedGeometryEffect(id: "title", in: namespace)
+        self
+            .fixedSize(horizontal: true, vertical: false)
+            .matchedGeometryEffect(id: "title", in: namespace)
     }
     
     func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {

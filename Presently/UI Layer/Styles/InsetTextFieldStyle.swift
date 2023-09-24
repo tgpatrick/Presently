@@ -16,7 +16,7 @@ struct InsetTextFieldStyle: TextFieldStyle {
             .background(
                 Capsule()
                     .fill(.shadow(.inner(radius: 2, x: 1, y: 1)))
-                    .foregroundColor(Color("PrimaryBackground"))
+                    .foregroundStyle(.ultraThinMaterial)
             )
     }
 }

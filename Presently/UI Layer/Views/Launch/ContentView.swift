@@ -40,8 +40,8 @@ struct ContentView: View {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: [
-                            ExchangeView(viewModel: scrollViewModel, userName: scrollViewModel.currentUser().name, exchange: scrollViewModel.currentExchange()),
-                            NextDateView(viewModel: scrollViewModel, exchange: scrollViewModel.currentExchange()),
+                            ExchangeView(viewModel: scrollViewModel),
+                            NextDateView(viewModel: scrollViewModel),
                             AssignedPersonView(viewModel: scrollViewModel),
                             TestNavItem(viewModel: scrollViewModel)
                         ],
@@ -205,7 +205,7 @@ struct ContentView: View {
         .background {
             ZStack {
                 Rectangle()
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(Color(.accentBackground))
                     .overlay {
                         LinearGradient(
                             gradient: Gradient(
@@ -223,7 +223,7 @@ struct ContentView: View {
                     .offset(CGSize(width: -1 * ribbonHeight / 1.75, height: 0))
                     .shadow(radius: 5)
                 Rectangle()
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(Color(.accentBackground))
                     .offset(CGSize(width: geoProxy.size.width - ribbonHeight / 1.75, height: 0))
                     .shadow(radius: 5, x: 10)
             }

@@ -11,12 +11,17 @@ struct NextDateView: ScrollNavViewType  {
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
-    let exchange: Exchange
+    private let exchange: Exchange
     var dateFormatter: DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.day, .weekOfMonth, .month]
         formatter.unitsStyle = .full
         return formatter
+    }
+    
+    init(viewModel: ScrollViewModel) {
+        self.viewModel = viewModel
+        self.exchange = viewModel.currentExchange()
     }
     
     func closedView() -> AnyView {
