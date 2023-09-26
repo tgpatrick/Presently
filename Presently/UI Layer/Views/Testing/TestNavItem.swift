@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TestNavItem: ScrollNavViewType {
+struct TestNavItem: NavItemView {
     var id: String = UUID().uuidString
     //var title: String? = "test"
     @Namespace var namespace: Namespace.ID

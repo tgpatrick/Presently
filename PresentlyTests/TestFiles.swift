@@ -10,7 +10,7 @@ import Foundation
 var testExchange = Exchange(
     id: "0001",
     name: "Test Exchange",
-    intro: "Welcome to the test exchange! You must be special to have gotten a code to this one.",
+    intro: "Welcome to the test exchange! You must be special to have gotten a code.",
     rules: "There are NO RULES. Spend a billion dollars per gift, see if I care.",
     startDate: Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date(),
     assignDate: Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date()),
@@ -29,6 +29,7 @@ var testPerson = Person(
     exchangeId: "0001",
     personId: "0001",
     name: "Tester McTesterson",
+    greeting: "Hello! I'm Tester (of McTesterson fame). Nice to be in a gift exchange with you!",
     setUp: false,
     giftHistory: [
         HistoricalGift(year: 2020, recipientId: "0002", description: "Bag of four grapes"),
@@ -42,16 +43,22 @@ var testPerson = Person(
     ],
     wishList: [
         WishListItem(description: "All I want for Christmas is you", link: ""),
-        WishListItem(description: "Well, also an Italian visa", link: "https://www.google.com")
+        WishListItem(description: "Well, I would also love an Italian visa", link: "https://www.google.com")
     ],
+    wishesPublic: true,
     recipient: "0002",
     organizer: true)
+
 var testPerson2 = Person(
     exchangeId: "0001",
     personId: "0002",
     name: "Tes2 McTes2son",
     setUp: false,
-    giftHistory: [],
+    giftHistory: [
+        HistoricalGift(year: 2020, recipientId: "0002", description: "Bag of four grapes"),
+        HistoricalGift(year: 2019, recipientId: "0003", description: "Bag of three grapes"),
+        HistoricalGift(year: 2018, recipientId: "0004", description: "Bag of two grapes")
+    ],
     exceptions: [
         "0003",
         "0004",
@@ -63,8 +70,10 @@ var testPerson2 = Person(
         WishListItem(description: "I want Apple.", link: "https://www.apple.com"),
         WishListItem(description: "I want the world.", link: "")
     ],
+    wishesPublic: true,
     recipient: "",
     organizer: false)
+
 var testPerson3 = Person(
     exchangeId: "0001",
     personId: "0003",
@@ -73,8 +82,10 @@ var testPerson3 = Person(
     giftHistory: [],
     exceptions: [],
     wishList: [],
+    wishesPublic: true,
     recipient: "",
     organizer: false)
+
 var testPerson4 = Person(
     exchangeId: "0001",
     personId: "0004",
@@ -83,8 +94,10 @@ var testPerson4 = Person(
     giftHistory: [],
     exceptions: [],
     wishList: [],
+    wishesPublic: false,
     recipient: "",
     organizer: false)
+
 var testPerson5 = Person(
     exchangeId: "0001",
     personId: "0005",
@@ -93,5 +106,6 @@ var testPerson5 = Person(
     giftHistory: [],
     exceptions: [],
     wishList: [],
+    wishesPublic: false,
     recipient: "",
     organizer: false)

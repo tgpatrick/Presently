@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NavigationScrollView: View {
     @ObservedObject var viewModel: ScrollViewModel
-    @State var items: [any ScrollNavViewType]
+    @State var items: [any NavItemView]
     private var translatedItems: [ScrollNavItem] {
         var translated: [ScrollNavItem] = []
         for view in items {
@@ -24,13 +24,17 @@ struct NavigationScrollView: View {
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                Spacer().frame(height: topInset)
-                ForEach(translatedItems) { view in
-                    AnyView(view.view)
-                        .navigationCard(id: view.id, title: view.title, viewModel: viewModel, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollViewReader: reader)
-                        .padding()
+                VStack {
+                    ForEach(translatedItems) { item in
+                        AnyView(item.view)
+                            .navigationCard(id: item.id, title: item.title, viewModel: viewModel, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollViewReader: reader)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                    }
                 }
-                Spacer().frame(height: bottomInset)
+                .padding(.top, topInset)
+                .padding(.bottom, bottomInset)
+                .padding(.vertical, 15)
             }
             .background {
                 ShiftingBackground()
@@ -58,12 +62,11 @@ struct NavigationScrollView_Previews: PreviewProvider {
         NavigationScrollView(
             viewModel: viewModel,
             items: [
-                TestNavItem(viewModel: viewModel),
-                TestNavItem(viewModel: viewModel),
-                TestNavItem(viewModel: viewModel),
-                TestNavItem(viewModel: viewModel),
-                TestNavItem(viewModel: viewModel),
-                TestNavItem(viewModel: viewModel),
+                ExchangeNavItem(viewModel: viewModel),
+                NextDateNavItem(viewModel: viewModel),
+                AssignedPersonNavItem(viewModel: viewModel),
+                WishListNavItem(viewModel: viewModel),
+                AllPeopleNavItem(viewModel: viewModel),
                 TestNavItem(viewModel: viewModel)
             ],
             topInset: 10,

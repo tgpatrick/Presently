@@ -40,9 +40,11 @@ struct ContentView: View {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: [
-                            ExchangeView(viewModel: scrollViewModel),
-                            NextDateView(viewModel: scrollViewModel),
-                            AssignedPersonView(viewModel: scrollViewModel),
+                            ExchangeNavItem(viewModel: scrollViewModel),
+                            NextDateNavItem(viewModel: scrollViewModel),
+                            AssignedPersonNavItem(viewModel: scrollViewModel),
+                            WishListNavItem(viewModel: scrollViewModel),
+                            AllPeopleNavItem(viewModel: scrollViewModel),
                             TestNavItem(viewModel: scrollViewModel)
                         ],
                         topInset: barHeight(geoProxy: geo, bar: .top),
@@ -205,7 +207,7 @@ struct ContentView: View {
         .background {
             ZStack {
                 Rectangle()
-                    .foregroundColor(Color(.accentBackground))
+                    .foregroundStyle(Color(.accentBackground))
                     .overlay {
                         LinearGradient(
                             gradient: Gradient(
@@ -223,7 +225,7 @@ struct ContentView: View {
                     .offset(CGSize(width: -1 * ribbonHeight / 1.75, height: 0))
                     .shadow(radius: 5)
                 Rectangle()
-                    .foregroundColor(Color(.accentBackground))
+                    .foregroundStyle(Color(.accentBackground))
                     .offset(CGSize(width: geoProxy.size.width - ribbonHeight / 1.75, height: 0))
                     .shadow(radius: 5, x: 10)
             }
@@ -252,9 +254,7 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(LoginStorage())
-    }
+#Preview {
+    ContentView()
+        .environmentObject(LoginStorage())
 }

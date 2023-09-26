@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol ScrollNavViewType: View, Identifiable {
+protocol NavItemView: View, Identifiable {
     var id: String { get }
     var title: String? { get }
     var namespace: Namespace.ID { get }
@@ -16,7 +16,7 @@ protocol ScrollNavViewType: View, Identifiable {
     func openView() -> AnyView
 }
 
-extension ScrollNavViewType {
+extension NavItemView {
     var title: String? { nil }
     var isOpen: Bool {
         viewModel.focusedId == id && viewModel.focusedExpanded

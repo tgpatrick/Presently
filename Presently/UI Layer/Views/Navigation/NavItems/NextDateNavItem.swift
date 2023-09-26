@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NextDateView: ScrollNavViewType  {
+struct NextDateNavItem: NavItemView  {
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
@@ -29,21 +29,25 @@ struct NextDateView: ScrollNavViewType  {
             if let assignDate = exchange.assignDate, let string = dateFormatter.string(from: Date(), to: assignDate) {
                 if !exchange.started {
                     let isTomorrow = dateFormatter.calendar?.isDateInTomorrow(assignDate) ?? false
-                    Text("Sit tight! Your assignments should be made" + (isTomorrow ? "" : " in:"))
-                        .padding(.vertical)
-                    Text(isTomorrow ? "Tomorrow" : string)
+                    Text("Assignments should be made" + (isTomorrow ? "" : " in:"))
                         .font(.title2)
                         .bold()
+                        .padding(.vertical)
+                    Text(isTomorrow ? "Tomorrow" : string)
+                        .font(.title)
+                        .bold()
+                    Text("Sit tight!")
                         .padding(.vertical)
                 }
             }
             if (!exchange.started && exchange.assignDate == nil) || exchange.started {
-                if let theBigDay = exchange.theBigDay, let string = dateFormatter.string(from: Date(), to: theBigDay) {
+                if let theBigDay = exchange.theBigDay, let formattedDate = dateFormatter.string(from: Date(), to: theBigDay) {
                     let isTomorrow = dateFormatter.calendar?.isDateInTomorrow(theBigDay) ?? false
                     Text("It'll be the big day" + (isTomorrow ? "" : " in:"))
-                        .padding(.top)
-                    Text(isTomorrow ? "Tomorrow" : string)
                         .font(.title2)
+                        .bold()
+                    Text(isTomorrow ? "Tomorrow" : formattedDate)
+                        .font(.title)
                         .bold()
                         .padding(.vertical)
                 }
@@ -52,12 +56,16 @@ struct NextDateView: ScrollNavViewType  {
                     Text("This gift exchange is currently")
                     if !exchange.started && exchange.assignDate == nil {
                         Text("Open")
-                            .font(.title2)
+                            .font(.title)
                             .bold()
+                            .padding(.vertical)
                         Text("Assignments have not been made")
                     } else if exchange.started && exchange.theBigDay == nil {
-                        Text("")
-                        Text("")
+                        Text("Started")
+                            .font(.title)
+                            .bold()
+                        Text("Sit tight!")
+                            .padding(.vertical)
                     }
                 }
                 .padding(.vertical)
@@ -66,4 +74,12 @@ struct NextDateView: ScrollNavViewType  {
         .fillHorizontally()
         .asAnyView()
     }
+}
+
+#Preview {
+    var viewModel = ScrollViewModel()
+    
+    return NavigationScrollView(viewModel: viewModel, items: [
+        NextDateNavItem(viewModel: viewModel)
+    ])
 }

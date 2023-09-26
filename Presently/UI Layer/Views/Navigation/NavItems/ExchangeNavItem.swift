@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct ExchangeView: ScrollNavViewType {
+struct ExchangeNavItem: NavItemView {
     var id: String = UUID().uuidString
-//    var title: String? = "Your exchange"
+    // var title: String? = "Your exchange"
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
     private let userName: String
@@ -29,29 +29,31 @@ struct ExchangeView: ScrollNavViewType {
     func closedView() -> AnyView {
         VStack {
             Group {
-                Text("Hello ") + Text(userName).bold() + Text(", here is your info from:")
+                Text("Hello ") + Text(userName).bold() + Text("!\nHere is your info from:")
             }
-            .font(.caption)
-            VStack {
-                Text(exchange.name)
-                    .font(.title)
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .navTitleMatchAnimation(namespace: namespace)
-                
-                Button {
-                    viewModel.focus(self.id)
-                } label: {
+            .multilineTextAlignment(.center)
+            
+            Button {
+                viewModel.focus(self.id)
+            } label: {
+                VStack {
+                    Text(exchange.name)
+                        .font(.title)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .navTitleMatchAnimation(namespace: namespace)
                     HStack {
                         Text("Details")
                         Image(systemName: "chevron.forward")
                     }
                     .bold()
-                    .transition(.opacity)
+                    .foregroundStyle(Color(.accent))
                 }
+                .buttonStyle(NavListButtonStyle())
             }
             .padding()
             .contentShape(RoundedRectangle(cornerRadius: 15))
+            .foregroundStyle(.primary)
             .contextMenu {
                 Button {
                     viewModel.focus(self.id)
@@ -89,74 +91,68 @@ struct ExchangeView: ScrollNavViewType {
         }
         .asAnyView()
     }
-
+    
     func openView() -> AnyView {
         VStack {
-            Text(exchange.name)
-                .modifier(NavTitleModifier(namespace: namespace))
-            
-            VStack(alignment: .leading, spacing: 10) {
-                Text(exchange.intro)
-                    .padding(.bottom, 15)
-                Text("Rules:")
-                    .font(.title3)
-                    .bold()
-                    .padding(.leading)
-                Text(exchange.rules)
-                Text(isSecretMessage(isSecret: exchange.secret))
-                Text(isRepeatingMessage(isRepeating: exchange.repeating))
-                Text("Status:")
-                    .font(.title3)
-                    .bold()
-                    .padding(.leading)
-                HStack {
-                    Spacer()
-                    if !exchange.started {
-                        VStack {
-                            Text("Open")
-                                .font(.title3)
-                                .bold()
-                            Text("Assignments have not been made and people can still be added.")
-                                .multilineTextAlignment(.center)
-                        }
-                    } else {
-                        VStack {
-                            Text("Started")
-                                .font(.title3)
-                                .bold()
-                            Text("Assignments have been made. Next step is gift giving!")
-                                .multilineTextAlignment(.center)
-                        }
+            TitledScrollView(title: exchange.name, namespace: namespace) {
+                SectionView(title: "Intro") {
+                    Text(exchange.intro)
+                }
+                
+                SectionView(title: "Rules") {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(exchange.rules)
+                        Text(isSecretMessage)
+                        Text(isRepeatingMessage)
                     }
-                    Spacer()
+                }
+                
+                SectionView(title: "Status: \(exchange.started ? "Started" : "Open")") {
+                    HStack {
+                        Spacer()
+                        if !exchange.started {
+                            VStack {
+                                Text("Open")
+                                    .font(.title3)
+                                    .bold()
+                                Text("Assignments have not been made and people can still be added.")
+                                    .multilineTextAlignment(.center)
+                            }
+                        } else {
+                            VStack {
+                                Text("Started")
+                                    .font(.title3)
+                                    .bold()
+                                Text("Assignments have been made. Next step is gift giving!")
+                                    .multilineTextAlignment(.center)
+                            }
+                        }
+                        Spacer()
+                    }
                 }
             }
-            .padding(.top)
-            Spacer()
         }
         .asAnyView()
     }
     
-    func isSecretMessage(isSecret: Bool) -> String {
-        let firstDifference = isSecret ? " secret" : "n open"
-        let secondDifference = isSecret ? "can't " : "can "
+    var isSecretMessage: String {
+        let firstDifference = self.exchange.secret ? " secret" : "n open"
+        let secondDifference = self.exchange.secret ? "can't " : "can "
         
         return "This is a" + firstDifference + " exchange. You " + secondDifference + "see who everyone is assigned to."
     }
     
-    func isRepeatingMessage(isRepeating: Bool) -> String {
-        let firstDifference = isRepeating ? "will" : "will NOT"
+    var isRepeatingMessage: String {
+        let firstDifference = self.exchange.repeating ? "will" : "will NOT"
         
         return "This exchange " + firstDifference + " repeat."
     }
 }
 
-struct ExchangeView_Previews: PreviewProvider {
-    static var viewModel = ScrollViewModel()
+#Preview {
+    var viewModel = ScrollViewModel()
     
-    static var previews: some View {
-        NavigationScrollView(viewModel: viewModel, items: [
-            ExchangeView(viewModel: viewModel)
-        ])
-    }
+    return NavigationScrollView(viewModel: viewModel, items: [
+        ExchangeNavItem(viewModel: viewModel)
+    ])
 }

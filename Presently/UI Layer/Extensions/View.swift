@@ -27,10 +27,10 @@ extension View {
             .shadow(radius: 5)
     }
     
-    func navTitleMatchAnimation(namespace: Namespace.ID) -> some View {
+    func navTitleMatchAnimation(namespace: Namespace.ID, customTitle: String? = nil) -> some View {
         self
             .fixedSize(horizontal: true, vertical: false)
-            .matchedGeometryEffect(id: "title", in: namespace)
+            .matchedGeometryEffect(id: customTitle ?? "title", in: namespace)
     }
     
     func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
@@ -44,6 +44,18 @@ extension View {
                 bottomInset: bottomInset
             )
         )
+    }
+    
+    func navCardSectionTitle() -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            self
+                .font(.title2)
+                .bold()
+                .padding(.leading)
+            Divider()
+                .background(Color.black)
+        }
+        .padding(.bottom, 5)
     }
     
     func shiftingGlassBackground() -> some View {

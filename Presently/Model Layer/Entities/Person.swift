@@ -11,10 +11,12 @@ struct Person: Codable, Hashable, Equatable {
     var exchangeId: String
     var personId: String
     var name: String
+    var greeting: String?
     var setUp: Bool
     var giftHistory: [HistoricalGift]
     var exceptions: [String]
     var wishList: [WishListItem]
+    var wishesPublic: Bool
     var recipient: String
     var organizer: Bool
 }

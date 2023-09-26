@@ -80,20 +80,18 @@ struct NavigationCardModifier: ViewModifier {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            if isOpen {
-                                if value.startLocation.x < 15 {
-                                    if minimumHeight == 0 {
-                                        minimumHeight = maxHeight
-                                    }
-                                    let percentDismissed = value.translation.width / dismissSwipeDistance
-                                    backButtonOpacity = 1 - percentDismissed
-                                    minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
-                                    swipeOffset = maxSwipeOffset * percentDismissed
+                            if isOpen && value.startLocation.x < 15 {
+                                if minimumHeight == 0 {
+                                    minimumHeight = maxHeight
                                 }
+                                let percentDismissed = value.translation.width / dismissSwipeDistance
+                                backButtonOpacity = 1 - percentDismissed
+                                minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
+                                swipeOffset = maxSwipeOffset * percentDismissed
                             }
                         }
                         .onEnded { value in
-                            if value.startLocation.x < 15 {
+                            if isOpen && value.startLocation.x < 15 {
                                 if value.predictedEndTranslation.width > dismissSwipeDistance {
                                     let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
                                     withAnimation(.interactiveSpring()) {

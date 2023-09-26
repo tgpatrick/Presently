@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NavTitleModifier: ViewModifier {
     var namespace: Namespace.ID
+    var customTitle: String? = nil
     @State private var originalMinX: CGFloat = 0
     @State private var swipeOffset: CGFloat = 0
     @State private var backswipeOpacity: Double = 1

@@ -20,6 +20,14 @@ class ScrollViewModel: ObservableObject {
         testPerson
     }
     
+    func assignedPerson() -> Person {
+        testPeople.first(where: {$0.personId == currentUser().recipient}) ?? testPerson
+    }
+    
+    func getPerson(id: String) -> Person {
+        testPeople.first(where: {$0.personId == id}) ?? testPerson
+    }
+    
     func currentExchange() -> Exchange {
         testExchange
     }

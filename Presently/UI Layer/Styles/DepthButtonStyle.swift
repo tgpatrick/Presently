@@ -10,10 +10,12 @@ import SwiftUI
 struct DepthButtonStyle: ButtonStyle {
     let shape: AnyShape
     let backgroundColor: Color
+    let shadowRadius: CGFloat
     
-    init(shape: any Shape = Capsule(), backgroundColor: Color = Color("AccentColor")) {
+    init(shape: any Shape = Capsule(), backgroundColor: Color = Color("AccentColor"), shadowRadius: CGFloat = 10) {
         self.shape = AnyShape(shape)
         self.backgroundColor = backgroundColor
+        self.shadowRadius = shadowRadius
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -43,17 +45,17 @@ struct DepthButtonStyle: ButtonStyle {
                     }
                 }
                 .clipShape(shape)
-                .shadow(radius: configuration.isPressed ? 0.5 : 10)
+                .shadow(radius: configuration.isPressed ? 0.5 : shadowRadius)
         )
         .scaleEffect(configuration.isPressed ? 0.925 : 1)
         .animation(.easeOut(duration: configuration.isPressed ? 0 : 0.25), value: configuration.isPressed)
     }
 }
 
-struct CapsuleButtonStyle_Previews: PreviewProvider {
+struct DepthButtonStyle_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
-            Color.gray.ignoresSafeArea()
+            Color(.primaryBackground).opacity(0.2).ignoresSafeArea()
             Button {} label: {
                 Text("Test!")
                     .font(.title)

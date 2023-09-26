@@ -7,46 +7,49 @@
 
 import SwiftUI
 
-struct AssignedPersonView: ScrollNavViewType {
+struct AssignedPersonNavItem: NavItemView {
     var id: String = UUID().uuidString
+    let title = "Your assigned person"
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
     private let assignedPerson: Person
     
     init(viewModel: ScrollViewModel) {
         self.viewModel = viewModel
-        self.assignedPerson = testPeople.first(where: { $0.id == viewModel.currentUser().recipient}) ?? testPerson2
+        self.assignedPerson = viewModel.assignedPerson()
     }
     
     func closedView() -> AnyView {
-        VStack(alignment: .leading) {
-            Text("You have:")
+        VStack {
+            Text("Your Assignment")
+                .font(.title2)
+                .bold()
             Button {
                 viewModel.focus(id)
             } label: {
-                HStack {
+                VStack {
                     Text(assignedPerson.name)
-                        .font(.title2)
+                        .font(.title)
                         .bold()
                         .navTitleMatchAnimation(namespace: namespace)
-                    Image(systemName: "chevron.forward")
+                    
+                    HStack {
+                        Text("Profile")
+                        Image(systemName: "chevron.forward")
+                            .bold()
+                    }
+                    .foregroundStyle(Color(.accent))
                 }
-                .foregroundColor(.primary)
             }
-            .fillHorizontally()
-            .padding(.vertical)
+            .buttonStyle(NavListButtonStyle())
+            .padding()
         }
+        .fillHorizontally()
         .asAnyView()
     }
     
     func openView() -> AnyView {
-        VStack {
-            Text(assignedPerson.name)
-                .font(.title2)
-                .bold()
-                .modifier(NavTitleModifier(namespace: namespace))
-            Spacer()
-        }
+        PersonView(viewModel: viewModel, person: assignedPerson, namespace: namespace)
         .asAnyView()
     }
 }
@@ -56,7 +59,7 @@ struct AssignedPersonView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationScrollView(viewModel: viewModel, items: [
-            AssignedPersonView(viewModel: viewModel)
+            AssignedPersonNavItem(viewModel: viewModel)
         ])
     }
 }

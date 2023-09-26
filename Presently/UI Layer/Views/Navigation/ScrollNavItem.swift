@@ -10,9 +10,9 @@ import Foundation
 struct ScrollNavItem: Identifiable {
     let id: String
     let title: String?
-    let view: any ScrollNavViewType
+    let view: any NavItemView
     
-    init(_ view: any ScrollNavViewType, title: String?) {
+    init(_ view: any NavItemView, title: String?) {
         self.id = view.id
         self.title = title
         self.view = view

@@ -14,11 +14,11 @@ struct ShiftingBackground: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                Color("PrimaryColor")
+                Color(.primaryBackground)
                 RadialGradient(colors: [
-                    Color("PrimaryColor"),
-                    Color("SecondaryColor"),
-                    Color("PrimaryColor")
+                    Color(.primaryBackground),
+                    Color(.secondaryBackground),
+                    Color(.primaryBackground)
                 ], center: center1, startRadius: .zero, endRadius: endRadius)
                 .opacity(0.4)
                 .blur(radius: 5)
