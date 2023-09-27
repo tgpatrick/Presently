@@ -59,7 +59,7 @@ struct NavigationCardModifier: ViewModifier {
                     }
                 }
                 .fillHorizontally()
-                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0)
+                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0, maxHeight: maxHeight)
                 .mainContentBox()
                 .padding(.top, viewModel.focusedId == id ? topInset : 0)
                 .padding(.bottom, viewModel.focusedId == id ? bottomInset : 0)

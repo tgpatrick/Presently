@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct PersonView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var viewModel: ScrollViewModel
-    let person: Person
+    @State var person: Person
     var namespace: Namespace.ID
     
     var body: some View {
@@ -21,7 +22,7 @@ struct PersonView: View {
                     Text("Organizer")
                     Spacer()
                 }
-                .foregroundStyle(Color(.primaryBackground))
+                .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
                 .padding(.bottom, -25)
             }
             
@@ -40,6 +41,33 @@ struct PersonView: View {
                         Text("(not public)")
                         Spacer()
                     }
+                }
+            }
+            
+            if viewModel.currentExchange().started && !viewModel.currentExchange().secret {
+                SectionView(title: "Giving to") {
+                    VStack {
+                        Text(viewModel.getPerson(id: person.recipient).name)
+                            .font(.title2)
+                            .bold()
+                    }
+                    .padding()
+                    .mainContentBox()
+                    .onTapGesture {
+                        withAnimation {
+                            person = viewModel.getPerson(id: person.recipient)
+                        }
+                    }
+                    .contextMenu {
+                        Button("Open") {
+                            withAnimation {
+                                person = viewModel.getPerson(id: person.recipient)
+                            }
+                        }
+                    } preview: {
+                        PersonPreview(id: person.recipient, viewModel: viewModel)
+                    }
+                    .fillHorizontally()
                 }
             }
             
@@ -80,11 +108,52 @@ struct PersonView: View {
                 }
                 .frame(minWidth: 200)
                 .mainContentBox()
+                .onTapGesture {
+                    withAnimation {
+                        person = viewModel.getPerson(id: gift.recipientId)
+                    }
+                }
+                .contextMenu {
+                    Button("Open") {
+                        withAnimation {
+                            person = viewModel.getPerson(id: gift.recipientId)
+                        }
+                    }
+                } preview: {
+                    PersonPreview(id: gift.recipientId, viewModel: viewModel)
+                }
                 .padding(.vertical, 15)
                 .padding(.horizontal, 7.5)
             }
         }
         .padding(.horizontal, 10)
+    }
+}
+
+struct PersonPreview: View {
+    let viewModel: ScrollViewModel
+    let person: Person
+    let exchange: Exchange
+    @State var height: CGFloat = 0
+    
+    init(id: String, viewModel: ScrollViewModel) {
+        self.viewModel = viewModel
+        self.person = viewModel.getPerson(id: id)
+        self.exchange = viewModel.currentExchange()
+    }
+    
+    var body: some View {
+        VStack {
+            Text(person.name)
+                .font(.title2)
+                .bold()
+            VStack(alignment: .leading) {
+                if exchange.started && !exchange.secret {
+                    Text("Giving to \(viewModel.getPerson(id: person.id).name)")
+                }
+            }
+        }
+        .padding(25)
     }
 }
 

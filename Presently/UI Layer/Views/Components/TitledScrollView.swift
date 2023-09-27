@@ -43,8 +43,8 @@ struct TitledScrollView<Content>: View where Content: View {
             .background(
                 Rectangle()
                     .fill(.thinMaterial.opacity(isScrolled ? 1 : 0))
-                    .padding(.horizontal, -15)
-                    .padding(.top, -15)
+                    .padding(.horizontal, -16)
+                    .padding(.top, -16)
                     .transition(.identity)
             )
             .zIndex(2)
@@ -65,6 +65,7 @@ struct TitledScrollView<Content>: View where Content: View {
                 }
                 .padding(.top, titleHeight)
             }
+            .scrollIndicators(.hidden)
             .zIndex(1)
         }
         .onPreferenceChange(ViewOffsetKey.self) { value in

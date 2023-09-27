@@ -55,9 +55,9 @@ var testPerson2 = Person(
     name: "Tes2 McTes2son",
     setUp: false,
     giftHistory: [
-        HistoricalGift(year: 2020, recipientId: "0002", description: "Bag of four grapes"),
-        HistoricalGift(year: 2019, recipientId: "0003", description: "Bag of three grapes"),
-        HistoricalGift(year: 2018, recipientId: "0004", description: "Bag of two grapes")
+        HistoricalGift(year: 2020, recipientId: "0003", description: "Bag of four grapes"),
+        HistoricalGift(year: 2019, recipientId: "0004", description: "Bag of three grapes"),
+        HistoricalGift(year: 2018, recipientId: "0005", description: "Bag of two grapes")
     ],
     exceptions: [
         "0003",
@@ -71,7 +71,7 @@ var testPerson2 = Person(
         WishListItem(description: "I want the world.", link: "")
     ],
     wishesPublic: true,
-    recipient: "",
+    recipient: "0003",
     organizer: false)
 
 var testPerson3 = Person(
@@ -83,7 +83,7 @@ var testPerson3 = Person(
     exceptions: [],
     wishList: [],
     wishesPublic: true,
-    recipient: "",
+    recipient: "0004",
     organizer: false)
 
 var testPerson4 = Person(
@@ -95,7 +95,7 @@ var testPerson4 = Person(
     exceptions: [],
     wishList: [],
     wishesPublic: false,
-    recipient: "",
+    recipient: "0005",
     organizer: false)
 
 var testPerson5 = Person(
@@ -107,5 +107,5 @@ var testPerson5 = Person(
     exceptions: [],
     wishList: [],
     wishesPublic: false,
-    recipient: "",
+    recipient: "0001",
     organizer: false)

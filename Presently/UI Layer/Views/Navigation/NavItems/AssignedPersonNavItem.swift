@@ -42,6 +42,13 @@ struct AssignedPersonNavItem: NavItemView {
                 }
             }
             .buttonStyle(NavListButtonStyle())
+            .contextMenu {
+                Button("Open") {
+                    viewModel.focus(id)
+                }
+            } preview: {
+                PersonPreview(id: assignedPerson.personId, viewModel: viewModel)
+            }
             .padding()
         }
         .fillHorizontally()

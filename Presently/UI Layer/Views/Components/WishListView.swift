@@ -32,7 +32,7 @@ struct WishListView: View {
                                     .frame(maxHeight: 15)
                                     .padding(.horizontal, 2)
                                 }
-                                .padding(.trailing, 7)
+                                .padding(.trailing, 8)
                             }
                         }
                         Divider()

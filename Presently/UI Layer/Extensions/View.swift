@@ -22,8 +22,11 @@ extension View {
     func mainContentBox() -> some View {
         self
             .padding()
-            .background(.thinMaterial)
-            .cornerRadius(15)
+            .background(
+                RoundedRectangle(cornerRadius: 15)
+                    .fill(.thinMaterial)
+            )
+            .mask(RoundedRectangle(cornerRadius: 15))
             .shadow(radius: 5)
     }
     
@@ -53,7 +56,7 @@ extension View {
                 .bold()
                 .padding(.leading)
             Divider()
-                .background(Color.black)
+                .background(Color.primary)
         }
         .padding(.bottom, 5)
     }

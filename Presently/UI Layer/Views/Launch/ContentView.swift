@@ -48,7 +48,9 @@ struct ContentView: View {
                             TestNavItem(viewModel: scrollViewModel)
                         ],
                         topInset: barHeight(geoProxy: geo, bar: .top),
-                        bottomInset: barHeight(geoProxy: geo, bar: .bottom))
+                        bottomInset: barHeight(geoProxy: geo, bar: .bottom)
+                    )
+                    .frame(maxWidth: geo.size.width)
                 }
                 
                 ZStack {
@@ -226,7 +228,7 @@ struct ContentView: View {
                     .shadow(radius: 5)
                 Rectangle()
                     .foregroundStyle(Color(.accentBackground))
-                    .offset(CGSize(width: geoProxy.size.width - ribbonHeight / 1.75, height: 0))
+                    .offset(CGSize(width: geoProxy.size.width - ribbonHeight / 1.75 - 10, height: 0))
                     .shadow(radius: 5, x: 10)
             }
         }
@@ -243,7 +245,7 @@ struct ContentView: View {
         
         switch barState {
         case .open:
-            return bar == .top ? viewHeight / 10 : viewHeight / 15
+            return bar == .top ? viewHeight / 13 : viewHeight / 15
         case .closed:
             return viewHeight / 2
         case .topFocus:

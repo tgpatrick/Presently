@@ -23,6 +23,7 @@ struct WishListNavItem: NavItemView {
             Text("\(assignedPerson.name)'s Wishlist")
                 .font(.title2)
                 .bold()
+                .multilineTextAlignment(.center)
             WishListView(wishList: assignedPerson.wishList)
         }
         .asAnyView()

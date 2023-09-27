@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AllPeopleNavItem: NavItemView {
+    @Environment(\.colorScheme) private var colorScheme
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
     @ObservedObject var viewModel: ScrollViewModel
@@ -29,24 +30,60 @@ struct AllPeopleNavItem: NavItemView {
             ForEach(allPeople) { person in
                 if (person != viewModel.currentUser() && person != viewModel.assignedPerson()) && (viewModel.focusedId == nil || focusedPerson == person) {
                     Button {
-                        focusedPerson = person
-                        viewModel.focus(id)
+                        withAnimation {
+                            focusedPerson = person
+                            viewModel.focus(id)
+                        }
                     } label: {
                         VStack {
                             HStack {
                                 Text(person.name)
                                     .transition(.identity)
+                                
+                                if viewModel.currentExchange().started && !viewModel.currentExchange().secret && viewModel.focusedId == nil {
+                                    HStack {
+                                        Image(systemName: "arrow.forward")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .padding(.vertical, 7.5)
+                                        Text(viewModel.getPerson(id: person.recipient).name)
+                                            .font(.caption)
+                                    }
+                                    .foregroundStyle(Color.secondary)
+                                    .frame(maxHeight: 25)
+                                }
+                                
                                 if viewModel.focusedId == nil {
                                     Spacer()
-                                    Image(systemName: "chevron.forward")
+                                    if person.organizer {
+                                        Image(systemName: "star.fill")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(maxHeight: 15)
+                                            .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
+                                    }
+                                    
+                                    if viewModel.focusedId == nil {
+                                        Spacer()
+                                        Image(systemName: "chevron.forward")
+                                    }
                                 }
                             }
+                            .minimumScaleFactor(0.5)
                             if viewModel.focusedId == nil {
                                 Divider()
                             }
                         }
                         .padding(.vertical, 2)
                         .contentShape(Rectangle())
+                        .contextMenu {
+                            Button("Open") {
+                                focusedPerson = person
+                                viewModel.focus(id)
+                            }
+                        } preview: {
+                            PersonPreview(id: person.personId, viewModel: viewModel)
+                        }
                     }
                 }
             }
@@ -70,6 +107,7 @@ struct NavListButtonStyle: ButtonStyle {
         configuration.label
             .foregroundStyle(Color.primary)
             .opacity(configuration.isPressed ? 0.5 : 1)
+            .contentShape(RoundedRectangle(cornerRadius: 15))
     }
 }
 
