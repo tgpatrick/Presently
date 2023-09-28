@@ -11,14 +11,11 @@ struct AllPeopleNavItem: NavItemView {
     @Environment(\.colorScheme) private var colorScheme
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
-    @ObservedObject var viewModel: ScrollViewModel
-    private let allPeople: [Person]
-    @State private var focusedPerson: Person?
+    @EnvironmentObject var environment: AppEnvironment
+    @EnvironmentObject var viewModel: ScrollViewModel
     
-    init(viewModel: ScrollViewModel) {
-        self.viewModel = viewModel
-        self.allPeople = viewModel.currentPeople()
-    }
+    let allPeople: [Person]
+    @State private var focusedPerson: Person?
     
     func closedView() -> AnyView {
         VStack {
@@ -28,7 +25,7 @@ struct AllPeopleNavItem: NavItemView {
                     .bold()
             }
             ForEach(allPeople) { person in
-                if (person != viewModel.currentUser() && person != viewModel.assignedPerson()) && (viewModel.focusedId == nil || focusedPerson == person) {
+                if (person != environment.currentUser && person != environment.userAssignment) && (viewModel.focusedId == nil || focusedPerson == person) {
                     Button {
                         withAnimation {
                             focusedPerson = person
@@ -37,6 +34,14 @@ struct AllPeopleNavItem: NavItemView {
                     } label: {
                         VStack {
                             HStack {
+                                if person.organizer {
+                                    Image(systemName: "star.fill")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxHeight: 15)
+                                        .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
+                                }
+                                
                                 Text(person.name)
                                     .transition(.identity)
                                 
@@ -55,16 +60,8 @@ struct AllPeopleNavItem: NavItemView {
                                 
                                 if viewModel.focusedId == nil {
                                     Spacer()
-                                    if person.organizer {
-                                        Image(systemName: "star.fill")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(maxHeight: 15)
-                                            .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
-                                    }
                                     
                                     if viewModel.focusedId == nil {
-                                        Spacer()
                                         Image(systemName: "chevron.forward")
                                     }
                                 }
@@ -123,6 +120,7 @@ struct ViewOffsetKey: PreferenceKey {
     var viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
-        AllPeopleNavItem(viewModel: viewModel)
+        AllPeopleNavItem(allPeople: testPeople)
     ])
+    .environmentObject(viewModel)
 }

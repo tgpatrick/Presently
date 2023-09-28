@@ -8,8 +8,7 @@
 import SwiftUI
 
 class LoginViewModel: ObservableObject {
-    @AppStorage("CurrentExchangeID") var exchangeID: String?
-    @AppStorage("CurrentPersonID") var personID: String?
+    @Published var environment = AppEnvironment()
     @Published var exchangeRepo = ExchangeRepository()
     @Published var peopleRepo = PeopleRepository()
     @Published var exchangeIdField = ""
@@ -42,17 +41,29 @@ class LoginViewModel: ObservableObject {
             if let onLoginStart {
                 onLoginStart()
             }
-            exchangeRepo.loadingState = .loading
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-            if Int.random(in: 1...10) != 1 {
-                exchangeRepo.loadingState = .success
-                if let onLoginSuccess {
-                    onLoginSuccess()
-                }
-            } else {
-                withAnimation(.easeInOut) {
-                    exchangeRepo.loadingState = .error(ErrorWrapper(error: NetworkError.serverError(code: 1, url: "www.apple.com"), guidance: "Nothing"))
+        if exchangeIdField != "" && personIdField != "" {
+            Task {
+                let _ = await exchangeRepo.get(exchangeIdField)
+                let _ = await peopleRepo.get(exchangeIdField)
+                
+                if case .success = exchangeRepo.loadingState, 
+                    case .success = peopleRepo.loadingState,
+                    let user = peopleRepo.storage?.first(where: {
+                        $0.personId == personIdField}) {
+                    
+                    DispatchQueue.main.async { [self] in
+                        environment.currentExchange = exchangeRepo.storage
+                        environment.allCurrentPeople = peopleRepo.storage
+                        environment.currentUser = user
+                        environment.userAssignment = peopleRepo.storage?.first(where: {
+                            $0.personId == user.recipient
+                        })
+                        
+                        if let onLoginSuccess {
+                            onLoginSuccess()
+                        }
+                    }
                 }
             }
         }

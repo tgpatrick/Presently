@@ -24,6 +24,7 @@ struct PersonView: View {
                 }
                 .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
                 .padding(.bottom, -25)
+                .offset(x: 0, y: -15)
             }
             
             if let greeting = person.greeting {
@@ -80,6 +81,7 @@ struct PersonView: View {
                             }
                             .scrollTargetLayout()
                             .scrollTargetBehavior(.viewAligned)
+                            .padding(.horizontal, -10)
                         } else {
                             ScrollView(.horizontal) {
                                 giftHistoryItem
@@ -149,7 +151,7 @@ struct PersonPreview: View {
                 .bold()
             VStack(alignment: .leading) {
                 if exchange.started && !exchange.secret {
-                    Text("Giving to \(viewModel.getPerson(id: person.id).name)")
+                    Text("Giving to \(viewModel.getPerson(id: person.recipient).name)")
                 }
             }
         }

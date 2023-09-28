@@ -42,9 +42,7 @@ extension View {
                 id: id,
                 title: title,
                 viewModel: viewModel,
-                maxHeight: maxHeight,
-                topInset: topInset,
-                bottomInset: bottomInset
+                maxHeight: maxHeight
             )
         )
     }

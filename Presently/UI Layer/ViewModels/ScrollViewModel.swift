@@ -56,14 +56,13 @@ class ScrollViewModel: ObservableObject {
             withAnimation(.spring()) {
                 focusedId = nil
             }
-            scrollTo(id, after: 0.15)
         }
     }
     
     func scrollTo(_ id: String, after: Double = 0) {
         DispatchQueue.main.asyncAfter(deadline: .now() + after) {
             withAnimation(.spring()) {
-                self.scrollViewReader?.scrollTo(id)
+                self.scrollViewReader?.scrollTo(id, anchor: .center)
             }
         }
     }

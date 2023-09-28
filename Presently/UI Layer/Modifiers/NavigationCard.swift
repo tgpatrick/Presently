@@ -12,8 +12,6 @@ struct NavigationCardModifier: ViewModifier {
     let title: String?
     @ObservedObject var viewModel: ScrollViewModel
     let maxHeight: CGFloat
-    let topInset: CGFloat
-    let bottomInset: CGFloat
     private let transitionTime: Double = 0.3
     @State private var maxSwipeOffset: CGFloat = 50
     @State private var swipeOffset: CGFloat = 0
@@ -59,11 +57,9 @@ struct NavigationCardModifier: ViewModifier {
                     }
                 }
                 .fillHorizontally()
-                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0, maxHeight: maxHeight)
                 .mainContentBox()
-                .padding(.top, viewModel.focusedId == id ? topInset : 0)
-                .padding(.bottom, viewModel.focusedId == id ? bottomInset : 0)
-                .id(id)
+                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0, maxHeight: maxHeight)
+                .padding(.horizontal, viewModel.focusedId == id ? 0 : 10)
                 .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
                 .background(
                     GeometryReader { geo in

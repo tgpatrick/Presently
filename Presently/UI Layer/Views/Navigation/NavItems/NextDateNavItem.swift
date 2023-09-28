@@ -10,18 +10,14 @@ import SwiftUI
 struct NextDateNavItem: NavItemView  {
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
-    @ObservedObject var viewModel: ScrollViewModel
-    private let exchange: Exchange
+    @EnvironmentObject var viewModel: ScrollViewModel
+    let exchange: Exchange
+    
     var dateFormatter: DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.day, .weekOfMonth, .month]
         formatter.unitsStyle = .full
         return formatter
-    }
-    
-    init(viewModel: ScrollViewModel) {
-        self.viewModel = viewModel
-        self.exchange = viewModel.currentExchange()
     }
     
     func closedView() -> AnyView {
@@ -39,8 +35,7 @@ struct NextDateNavItem: NavItemView  {
                     Text("Sit tight!")
                         .padding(.vertical)
                 }
-            }
-            if (!exchange.started && exchange.assignDate == nil) || exchange.started {
+            } else if (!exchange.started && exchange.assignDate == nil) || exchange.started {
                 if let theBigDay = exchange.theBigDay, let formattedDate = dateFormatter.string(from: Date(), to: theBigDay) {
                     let isTomorrow = dateFormatter.calendar?.isDateInTomorrow(theBigDay) ?? false
                     Text("It'll be the big day" + (isTomorrow ? "" : " in:"))
@@ -71,6 +66,7 @@ struct NextDateNavItem: NavItemView  {
                 .padding(.vertical)
             }
         }
+        .multilineTextAlignment(.center)
         .fillHorizontally()
         .asAnyView()
     }
@@ -80,6 +76,7 @@ struct NextDateNavItem: NavItemView  {
     var viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
-        NextDateNavItem(viewModel: viewModel)
+        NextDateNavItem(exchange: testExchange)
     ])
+    .environmentObject(viewModel)
 }

@@ -10,13 +10,9 @@ import SwiftUI
 struct WishListNavItem: NavItemView {
     var id: String = UUID().uuidString
     @Namespace var namespace: Namespace.ID
-    @ObservedObject var viewModel: ScrollViewModel
-    private let assignedPerson: Person
+    @EnvironmentObject var viewModel: ScrollViewModel
     
-    init(viewModel: ScrollViewModel) {
-        self.viewModel = viewModel
-        self.assignedPerson = viewModel.assignedPerson()
-    }
+    let assignedPerson: Person
     
     func closedView() -> AnyView {
         VStack {

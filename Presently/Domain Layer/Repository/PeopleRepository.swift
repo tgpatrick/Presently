@@ -14,6 +14,10 @@ class PeopleRepository: Repository {
     @MainActor
     func get(_ id: String) async {
         loadingState = .loading
+        #if targetEnvironment(simulator)
+        storage = testPeople
+        loadingState = .success
+        #else
         if let request = Requests.getAllPeople(fromExchange: id) {
             let result = await Network.load(request)
             if case let .success(success) = result {
@@ -26,6 +30,7 @@ class PeopleRepository: Repository {
         } else {
             loadingState = .error(ErrorWrapper(error: NetworkError.request, guidance: "Please file a bug report"))
         }
+        #endif
     }
     
     @MainActor

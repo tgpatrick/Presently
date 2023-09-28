@@ -95,7 +95,6 @@ struct TestView: View {
                         }
                         .navigationTitle("Storage")
                     })
-                    .buttonStyle(DepthButtonStyle())
                     .font(.title)
                     Spacer()
                     NavigationLink("Network", destination: {
@@ -189,11 +188,21 @@ struct TestView: View {
                         }
                         .navigationTitle("Network")
                     })
-                    .buttonStyle(DepthButtonStyle())
                     .font(.title)
+//                    Spacer()
+//                    Button("Testing") {
+//                        do {
+//                            let data = try JSONEncoder().encode(testExchange)
+//                            print(String(data: data, encoding: .utf8))
+//                        } catch {
+//                            print(error)
+//                        }
+//                    }
+//                    .font(.title2)
                     Spacer()
                 }
                 .toolbar(.hidden)
+                .buttonStyle(DepthButtonStyle())
             }
             
             if let errorWrapper {
@@ -209,7 +218,7 @@ struct TestView: View {
                     .buttonStyle(DepthButtonStyle())
                 }
                 .padding()
-                .background(Color.gray.opacity(0.9))
+                .background(.ultraThinMaterial)
                 .cornerRadius(15)
                 .padding()
             }

@@ -15,10 +15,18 @@ var testExchange = Exchange(
     startDate: Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date(),
     assignDate: Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date()),
     theBigDay: Calendar.current.date(byAdding: .weekOfYear, value: 4, to: Date()),
-    year: 2021,
+    year: 2023,
     secret: false,
     repeating: true,
     started: true,
+    members: [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005"
+    ],
+    organizers: ["0001"],
     yearsWithoutRepeat: 0)
 
 var testPeople = [

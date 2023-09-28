@@ -11,19 +11,15 @@ struct ExchangeNavItem: NavItemView {
     var id: String = UUID().uuidString
     // var title: String? = "Your exchange"
     @Namespace var namespace: Namespace.ID
-    @ObservedObject var viewModel: ScrollViewModel
-    private let userName: String
-    private let exchange: Exchange
+    @EnvironmentObject var viewModel: ScrollViewModel
+    
+    let userName: String
+    let exchange: Exchange
+    
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         return formatter
-    }
-    
-    init(viewModel: ScrollViewModel) {
-        self.viewModel = viewModel
-        self.userName = viewModel.currentUser().name
-        self.exchange = viewModel.currentExchange()
     }
     
     func closedView() -> AnyView {
@@ -137,14 +133,14 @@ struct ExchangeNavItem: NavItemView {
     }
     
     var isSecretMessage: String {
-        let firstDifference = self.exchange.secret ? " secret" : "n open"
-        let secondDifference = self.exchange.secret ? "can't " : "can "
+        let firstDifference = exchange.secret ? " secret" : "n open"
+        let secondDifference = exchange.secret ? "can't " : "can "
         
         return "This is a" + firstDifference + " exchange. You " + secondDifference + "see who everyone is assigned to."
     }
     
     var isRepeatingMessage: String {
-        let firstDifference = self.exchange.repeating ? "will" : "will NOT"
+        let firstDifference = exchange.repeating ? "will" : "will NOT"
         
         return "This exchange " + firstDifference + " repeat."
     }
@@ -154,6 +150,7 @@ struct ExchangeNavItem: NavItemView {
     var viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
-        ExchangeNavItem(viewModel: viewModel)
+        ExchangeNavItem(userName: testPerson.name, exchange: testExchange)
     ])
+    .environmentObject(viewModel)
 }

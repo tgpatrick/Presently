@@ -14,6 +14,10 @@ class PersonRepository: Repository {
     @MainActor
     func get(_ id: String) async {
         loadingState = .loading
+        #if targetEnvironment(simulator)
+        storage = testPeople.first(where: {$0.personId == id})
+        loadingState = (storage == nil) ? .error(ErrorWrapper(error: NetworkError.request, guidance: "Check the ID")) : .success
+        #else
         let eid = String(id.prefix(4))
         let pid = String(id.suffix(4))
         if let request = Requests.getPerson(exchangeId: eid, personId: pid) {
@@ -28,6 +32,7 @@ class PersonRepository: Repository {
         } else {
             loadingState = .error(ErrorWrapper(error: NetworkError.request, guidance: "Please file a bug report"))
         }
+        #endif
     }
     
     @MainActor

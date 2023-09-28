@@ -19,5 +19,7 @@ struct Exchange: Hashable, Codable, Equatable {
     var secret: Bool
     var repeating: Bool
     var started: Bool
+    var members: [String]
+    var organizers: [String]
     var yearsWithoutRepeat: Int
 }

@@ -20,37 +20,40 @@ enum Bar {
 }
 
 struct ContentView: View {
-    @AppStorage("CurrentExchangeID") var exchangeID: String?
-    @AppStorage("CurrentPersonID") var personID: String?
-    @State var barState: BarState = .closed
-    @State var shouldOpen: Bool = false
-    @StateObject var scrollViewModel = ScrollViewModel()
-    @StateObject var loginViewModel = LoginViewModel()
-    @Namespace var mainNamespace
-    var isLoggedIn: Bool {
-        exchangeID != nil || personID != nil
+    @EnvironmentObject var environment: AppEnvironment
+    @State private var barState: BarState = .closed
+    @State private var shouldOpen: Bool = false
+    @StateObject private var scrollViewModel = ScrollViewModel()
+    @StateObject private var loginViewModel = LoginViewModel()
+    @Namespace private var mainNamespace
+    private var isLoggedIn: Bool {
+        environment.currentExchange != nil && environment.currentUser != nil
     }
-    @State var ribbonHeight: CGFloat = 0
+    @State private var ribbonHeight: CGFloat = 0
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                //TODO: change to isLoggedIn
-                if barState != .closed {
+                if isLoggedIn,
+                   let currentUser = environment.currentUser,
+                   let currentExchange = environment.currentExchange,
+                   let allCurrentPeople = environment.allCurrentPeople {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: [
-                            ExchangeNavItem(viewModel: scrollViewModel),
-                            NextDateNavItem(viewModel: scrollViewModel),
-                            AssignedPersonNavItem(viewModel: scrollViewModel),
-                            WishListNavItem(viewModel: scrollViewModel),
-                            AllPeopleNavItem(viewModel: scrollViewModel),
-                            TestNavItem(viewModel: scrollViewModel)
+                            ExchangeNavItem(userName: currentUser.name, exchange: currentExchange),
+                            NextDateNavItem(exchange: currentExchange),
+                            //TODO: remove assignedPerson items when the exchange has not started
+                            AssignedPersonNavItem(assignedPerson: environment.getPerson(id: currentUser.recipient) ?? testPerson),
+                            WishListNavItem(assignedPerson: environment.getPerson(id: currentUser.recipient) ?? testPerson),
+                            AllPeopleNavItem(allPeople: allCurrentPeople),
+                            TestNavItem()
                         ],
-                        topInset: barHeight(geoProxy: geo, bar: .top),
-                        bottomInset: barHeight(geoProxy: geo, bar: .bottom)
+                        topInset: geo.size.height / 13,
+                        bottomInset: geo.size.height / 10
                     )
                     .frame(maxWidth: geo.size.width)
+                    .environmentObject(scrollViewModel)
                 }
                 
                 ZStack {
@@ -75,8 +78,7 @@ struct ContentView: View {
                                 transition: .move(edge: .trailing).combined(with: .opacity),
                                 animation: .barAnimation,
                                 showView: .init(get: {
-                                    //TODO: change to isLoggedIn
-                                    !shouldOpen
+                                    !isLoggedIn
                                 }, set: { _ in })) {
                                     barState = .open
                                 }

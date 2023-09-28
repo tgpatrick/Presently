@@ -11,13 +11,8 @@ struct AssignedPersonNavItem: NavItemView {
     var id: String = UUID().uuidString
     let title = "Your assigned person"
     @Namespace var namespace: Namespace.ID
-    @ObservedObject var viewModel: ScrollViewModel
-    private let assignedPerson: Person
-    
-    init(viewModel: ScrollViewModel) {
-        self.viewModel = viewModel
-        self.assignedPerson = viewModel.assignedPerson()
-    }
+    @EnvironmentObject var viewModel: ScrollViewModel
+    let assignedPerson: Person
     
     func closedView() -> AnyView {
         VStack {
@@ -61,12 +56,11 @@ struct AssignedPersonNavItem: NavItemView {
     }
 }
 
-struct AssignedPersonView_Previews: PreviewProvider {
-    static var viewModel = ScrollViewModel()
+#Preview {
+    var viewModel = ScrollViewModel()
     
-    static var previews: some View {
-        NavigationScrollView(viewModel: viewModel, items: [
-            AssignedPersonNavItem(viewModel: viewModel)
-        ])
-    }
+    return NavigationScrollView(viewModel: viewModel, items: [
+        AssignedPersonNavItem(assignedPerson: testPerson2)
+    ])
+    .environmentObject(viewModel)
 }

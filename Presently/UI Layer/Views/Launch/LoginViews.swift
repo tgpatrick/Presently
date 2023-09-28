@@ -101,9 +101,10 @@ struct RibbonLoginView: View {
 }
 
 struct BottomLoginView: View {
-    @ObservedObject var loginViewModel: LoginViewModel
+    @EnvironmentObject var environment: AppEnvironment
     @StateObject var exchangeRepo = ExchangeRepository()
     @StateObject var peopleRepo = PeopleRepository()
+    @ObservedObject var loginViewModel: LoginViewModel
     
     var body: some View {
         VStack {
@@ -137,6 +138,7 @@ struct BottomLoginView: View {
         }
         .padding(.top)
         .onAppear {
+            loginViewModel.environment = environment
             loginViewModel.exchangeRepo = exchangeRepo
             loginViewModel.peopleRepo = peopleRepo
         }

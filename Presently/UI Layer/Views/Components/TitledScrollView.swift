@@ -11,8 +11,8 @@ struct TitledScrollView<Content>: View where Content: View {
     let title: String
     var namespace: Namespace.ID
     let content: Content
+    @State private var barOpacity: Double = 0.0
     @State private var titleHeight: CGFloat = 0
-    @State private var isScrolled: Bool = false
     @State private var initialY: CGFloat = 0
     
     init(title: String, namespace: Namespace.ID, @ViewBuilder content: () -> Content) {
@@ -33,16 +33,14 @@ struct TitledScrollView<Content>: View where Content: View {
                             }
                         }
                     )
-                if isScrolled {
-                    Divider()
-                        .transition(.opacity)
-                        .padding(.horizontal, -15)
-                }
+                Divider()
+                    .opacity(barOpacity)
+                    .padding(.horizontal, -15)
             }
             .frame(maxHeight: titleHeight)
             .background(
                 Rectangle()
-                    .fill(.thinMaterial.opacity(isScrolled ? 1 : 0))
+                    .fill(.thinMaterial.opacity(barOpacity))
                     .padding(.horizontal, -16)
                     .padding(.top, -16)
                     .transition(.identity)
@@ -59,7 +57,7 @@ struct TitledScrollView<Content>: View where Content: View {
                             }
                         }
                 }
-                .frame(height: 0)
+                .frame(height: 10)
                 VStack(alignment: .leading, spacing: 25) {
                     content
                 }
@@ -69,11 +67,8 @@ struct TitledScrollView<Content>: View where Content: View {
             .zIndex(1)
         }
         .onPreferenceChange(ViewOffsetKey.self) { value in
-            if (value < initialY && !isScrolled) || (value >= initialY && isScrolled) {
-                withAnimation(.linear(duration: 0.05)) {
-                    isScrolled.toggle()
-                }
-            }
+            let offset = initialY - value
+            barOpacity = min(offset / 10, 1)
         }
     }
 }

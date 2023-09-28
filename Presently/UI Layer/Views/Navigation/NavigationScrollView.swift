@@ -17,19 +17,30 @@ struct NavigationScrollView: View {
         }
         return translated
     }
-    var topInset: CGFloat = 0
-    var bottomInset: CGFloat = 0
-    @State var maxHeight: CGFloat = 0
+    var topInset: CGFloat = 10
+    var bottomInset: CGFloat = 10
+    @State var maxHeight: CGFloat = 1
+    @State var showCards = false
     
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
                 VStack {
                     ForEach(translatedItems) { item in
-                        AnyView(item.view)
-                            .navigationCard(id: item.id, title: item.title, viewModel: viewModel, maxHeight: maxHeight, topInset: topInset, bottomInset: bottomInset, scrollViewReader: reader)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
+                        if showCards {
+                            AnyView(item.view)
+                                .navigationCard(
+                                    id: item.id,
+                                    title: item.title,
+                                    viewModel: viewModel,
+                                    maxHeight: maxHeight,
+                                    topInset: topInset,
+                                    bottomInset: bottomInset,
+                                    scrollViewReader: reader)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 10)
+                                .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
+                        }
                     }
                 }
                 .padding(.top, topInset)
@@ -37,16 +48,17 @@ struct NavigationScrollView: View {
                 .padding(.vertical, 15)
             }
             .background {
-                ShiftingBackground()
-                    .opacity(0.2)
-            }
-            .background(
                 GeometryReader { geo in
-                    Color.clear.onAppear {
-                        maxHeight = geo.size.height - topInset - topInset - 75
-                    }
+                    ShiftingBackground()
+                        .opacity(0.2)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                maxHeight = geo.size.height - topInset - bottomInset
+                                self.showCards = true
+                            }
+                        }
                 }
-            )
+            }
             .scrollDisabled(viewModel.focusedId != nil)
             .onAppear {
                 viewModel.scrollViewReader = reader
@@ -55,21 +67,21 @@ struct NavigationScrollView: View {
     }
 }
 
-struct NavigationScrollView_Previews: PreviewProvider {
-    static var viewModel = ScrollViewModel()
+#Preview {
+    var viewModel = ScrollViewModel()
     
-    static var previews: some View {
-        NavigationScrollView(
-            viewModel: viewModel,
-            items: [
-                ExchangeNavItem(viewModel: viewModel),
-                NextDateNavItem(viewModel: viewModel),
-                AssignedPersonNavItem(viewModel: viewModel),
-                WishListNavItem(viewModel: viewModel),
-                AllPeopleNavItem(viewModel: viewModel),
-                TestNavItem(viewModel: viewModel)
-            ],
-            topInset: 10,
-            bottomInset: 10)
-    }
+    return NavigationScrollView(
+        viewModel: viewModel,
+        items: [
+            ExchangeNavItem(userName: testPerson.name, exchange: testExchange),
+            NextDateNavItem(exchange: testExchange),
+            AssignedPersonNavItem(assignedPerson: testPerson2),
+            WishListNavItem(assignedPerson: testPerson2),
+            AllPeopleNavItem(allPeople: testPeople),
+            TestNavItem()
+        ],
+        topInset: 10,
+        bottomInset: 10
+    )
+    .environmentObject(viewModel)
 }

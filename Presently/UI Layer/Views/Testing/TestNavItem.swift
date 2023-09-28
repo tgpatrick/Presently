@@ -11,7 +11,7 @@ struct TestNavItem: NavItemView {
     var id: String = UUID().uuidString
     //var title: String? = "test"
     @Namespace var namespace: Namespace.ID
-    @ObservedObject var viewModel: ScrollViewModel
+    @EnvironmentObject var viewModel: ScrollViewModel
     
     func closedView() -> AnyView {
         VStack {
