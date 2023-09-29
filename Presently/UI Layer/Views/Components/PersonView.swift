@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PersonView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @EnvironmentObject var environment: AppEnvironment
     @ObservedObject var viewModel: ScrollViewModel
     @State var person: Person
     var namespace: Namespace.ID
@@ -34,7 +35,7 @@ struct PersonView: View {
             }
             
             SectionView(title: "Wishlist") {
-                if person.wishesPublic || viewModel.currentUser().recipient == person.id {
+                if person.wishesPublic || person == environment.userAssignment {
                     WishListView(wishList: person.wishList)
                 } else {
                     HStack {
@@ -45,10 +46,12 @@ struct PersonView: View {
                 }
             }
             
-            if viewModel.currentExchange().started && !viewModel.currentExchange().secret {
+            if let currentExchange = environment.currentExchange,
+                currentExchange.started && !currentExchange.secret,
+               let recipient = environment.getPerson(id: person.recipient){
                 SectionView(title: "Giving to") {
                     VStack {
-                        Text(viewModel.getPerson(id: person.recipient).name)
+                        Text(recipient.name)
                             .font(.title2)
                             .bold()
                     }
@@ -56,13 +59,13 @@ struct PersonView: View {
                     .mainContentBox()
                     .onTapGesture {
                         withAnimation {
-                            person = viewModel.getPerson(id: person.recipient)
+                            person = recipient
                         }
                     }
                     .contextMenu {
                         Button("Open") {
                             withAnimation {
-                                person = viewModel.getPerson(id: person.recipient)
+                                person = recipient
                             }
                         }
                     } preview: {
@@ -106,19 +109,25 @@ struct PersonView: View {
                 VStack {
                     Text(String(gift.year))
                         .bold()
-                    Text(viewModel.getPerson(id: gift.recipientId).name)
+                    if let recipient = environment.getPerson(id: gift.recipientId) {
+                        Text(recipient.name)
+                    }
                 }
                 .frame(minWidth: 200)
                 .mainContentBox()
                 .onTapGesture {
-                    withAnimation {
-                        person = viewModel.getPerson(id: gift.recipientId)
+                    if let recipient = environment.getPerson(id: gift.recipientId) {
+                        withAnimation {
+                            person = recipient
+                        }
                     }
                 }
                 .contextMenu {
-                    Button("Open") {
-                        withAnimation {
-                            person = viewModel.getPerson(id: gift.recipientId)
+                    if let recipient = environment.getPerson(id: gift.recipientId) {
+                        Button("Open") {
+                            withAnimation {
+                                person = recipient
+                            }
                         }
                     }
                 } preview: {
@@ -133,29 +142,24 @@ struct PersonView: View {
 }
 
 struct PersonPreview: View {
+    @EnvironmentObject var environment: AppEnvironment
+    let id: String
     let viewModel: ScrollViewModel
-    let person: Person
-    let exchange: Exchange
-    @State var height: CGFloat = 0
-    
-    init(id: String, viewModel: ScrollViewModel) {
-        self.viewModel = viewModel
-        self.person = viewModel.getPerson(id: id)
-        self.exchange = viewModel.currentExchange()
-    }
     
     var body: some View {
-        VStack {
-            Text(person.name)
-                .font(.title2)
-                .bold()
-            VStack(alignment: .leading) {
-                if exchange.started && !exchange.secret {
-                    Text("Giving to \(viewModel.getPerson(id: person.recipient).name)")
+        if let person = environment.getPerson(id: id), let exchange = environment.currentExchange {
+            VStack {
+                Text(person.name)
+                    .font(.title2)
+                    .bold()
+                VStack(alignment: .leading) {
+                    if exchange.started && !exchange.secret, let recipient = environment.getPerson(id: person.recipient) {
+                        Text("Giving to \(recipient.name)")
+                    }
                 }
             }
+            .padding(25)
         }
-        .padding(25)
     }
 }
 

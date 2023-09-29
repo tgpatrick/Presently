@@ -9,6 +9,13 @@ import SwiftUI
 
 struct NavigationScrollView: View {
     @ObservedObject var viewModel: ScrollViewModel
+    
+    @AppStorage("CurrentExchangeID") var exchangeID: String?
+    @AppStorage("CurrentPersonID") var personID: String?
+    @EnvironmentObject var environment: AppEnvironment
+    @StateObject var exchangeRepo = ExchangeRepository()
+    @StateObject var peopleRepo = PeopleRepository()
+    
     @State var items: [any NavItemView]
     private var translatedItems: [ScrollNavItem] {
         var translated: [ScrollNavItem] = []
@@ -25,7 +32,7 @@ struct NavigationScrollView: View {
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                VStack {
+                LazyVStack {
                     ForEach(translatedItems) { item in
                         if showCards {
                             AnyView(item.view)
@@ -52,7 +59,7 @@ struct NavigationScrollView: View {
                     ShiftingBackground()
                         .opacity(0.2)
                         .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 maxHeight = geo.size.height - topInset - bottomInset
                                 self.showCards = true
                             }
@@ -84,4 +91,5 @@ struct NavigationScrollView: View {
         bottomInset: 10
     )
     .environmentObject(viewModel)
+    .environmentObject(AppEnvironment())
 }

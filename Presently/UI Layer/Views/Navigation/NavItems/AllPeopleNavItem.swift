@@ -25,7 +25,8 @@ struct AllPeopleNavItem: NavItemView {
                     .bold()
             }
             ForEach(allPeople) { person in
-                if (person != environment.currentUser && person != environment.userAssignment) && (viewModel.focusedId == nil || focusedPerson == person) {
+                if (person != environment.currentUser && person != environment.userAssignment) &&
+                    (viewModel.focusedId == nil || focusedPerson == person) {
                     Button {
                         withAnimation {
                             focusedPerson = person
@@ -45,13 +46,15 @@ struct AllPeopleNavItem: NavItemView {
                                 Text(person.name)
                                     .transition(.identity)
                                 
-                                if viewModel.currentExchange().started && !viewModel.currentExchange().secret && viewModel.focusedId == nil {
+                                if let currentExchange = environment.currentExchange,
+                                   let recipient = environment.getPerson(id: person.recipient),
+                                    currentExchange.started && !currentExchange.secret && viewModel.focusedId == nil {
                                     HStack {
                                         Image(systemName: "arrow.forward")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .padding(.vertical, 7.5)
-                                        Text(viewModel.getPerson(id: person.recipient).name)
+                                        Text(recipient.name)
                                             .font(.caption)
                                     }
                                     .foregroundStyle(Color.secondary)

@@ -8,33 +8,10 @@
 import SwiftUI
 
 class ScrollViewModel: ObservableObject {
-    @AppStorage("CurrentExchangeID") var exchangeID: String?
-    @AppStorage("CurrentPersonID") var personID: String?
-    
     @Published var focusedId: String? = nil
     @Published var focusedExpanded: Bool = false
     var scrollViewReader: ScrollViewProxy? = nil
     private let transitionTime = 0.3
-    
-    func currentUser() -> Person {
-        testPerson
-    }
-    
-    func assignedPerson() -> Person {
-        testPeople.first(where: {$0.personId == currentUser().recipient}) ?? testPerson
-    }
-    
-    func getPerson(id: String) -> Person {
-        testPeople.first(where: {$0.personId == id}) ?? testPerson
-    }
-    
-    func currentExchange() -> Exchange {
-        testExchange
-    }
-    
-    func currentPeople() -> [Person] {
-        testPeople
-    }
 
     func focus(_ id: String) {
         withAnimation(.easeIn(duration: transitionTime)) {

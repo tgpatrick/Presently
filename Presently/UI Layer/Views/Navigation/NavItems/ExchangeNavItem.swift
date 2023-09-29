@@ -106,24 +106,22 @@ struct ExchangeNavItem: NavItemView {
                 SectionView(title: "Status") {
                     HStack {
                         Spacer()
-                        if !exchange.started {
-                            VStack {
+                        VStack {
+                            if !exchange.started {
                                 Text("Open")
                                     .font(.title3)
                                     .bold()
                                 Text("Assignments have not been made and people can still be added.")
                                     .multilineTextAlignment(.center)
-                            }
-                        } else {
-                            VStack {
+                            } else {
                                 Text("Started")
                                     .font(.title3)
                                     .bold()
                                 Text("Assignments have been made. Next step is gift giving!")
                                     .multilineTextAlignment(.center)
                             }
-                            .mainContentBox()
                         }
+                        .mainContentBox()
                         Spacer()
                     }
                 }

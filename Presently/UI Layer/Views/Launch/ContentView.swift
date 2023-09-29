@@ -30,30 +30,21 @@ struct ContentView: View {
         environment.currentExchange != nil && environment.currentUser != nil
     }
     @State private var ribbonHeight: CGFloat = 0
+    @State private var navItems: [any NavItemView] = []
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                if isLoggedIn,
-                   let currentUser = environment.currentUser,
-                   let currentExchange = environment.currentExchange,
-                   let allCurrentPeople = environment.allCurrentPeople {
+                if navItems.count > 0 {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
-                        items: [
-                            ExchangeNavItem(userName: currentUser.name, exchange: currentExchange),
-                            NextDateNavItem(exchange: currentExchange),
-                            //TODO: remove assignedPerson items when the exchange has not started
-                            AssignedPersonNavItem(assignedPerson: environment.getPerson(id: currentUser.recipient) ?? testPerson),
-                            WishListNavItem(assignedPerson: environment.getPerson(id: currentUser.recipient) ?? testPerson),
-                            AllPeopleNavItem(allPeople: allCurrentPeople),
-                            TestNavItem()
-                        ],
+                        items: navItems,
                         topInset: geo.size.height / 13,
                         bottomInset: geo.size.height / 10
                     )
                     .frame(maxWidth: geo.size.width)
                     .environmentObject(scrollViewModel)
+                    .transition(.opacity)
                 }
                 
                 ZStack {
@@ -80,6 +71,25 @@ struct ContentView: View {
                                 showView: .init(get: {
                                     !isLoggedIn
                                 }, set: { _ in })) {
+                                    
+                                    if let currentUser = environment.currentUser,
+                                       let currentExchange = environment.currentExchange,
+                                       let allCurrentPeople = environment.allCurrentPeople {
+                                        var items: [any NavItemView] = []
+                                        items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
+                                        items.append(NextDateNavItem(exchange: currentExchange))
+                                        if currentExchange.started, let userAssignment = environment.userAssignment {
+                                            items.append(AssignedPersonNavItem(assignedPerson: userAssignment))
+                                            items.append(WishListNavItem(assignedPerson: userAssignment))
+                                        }
+                                        items.append(AllPeopleNavItem(allPeople: allCurrentPeople))
+                                        if currentExchange.id == "0001" {
+                                            items.append(TestNavItem())
+                                        }
+                                        
+                                        navItems = items
+                                    }
+                                    
                                     barState = .open
                                 }
                                 .onAppear {
@@ -261,4 +271,5 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environmentObject(LoginStorage())
+        .environmentObject(AppEnvironment())
 }
