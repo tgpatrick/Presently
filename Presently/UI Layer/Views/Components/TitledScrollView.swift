@@ -84,6 +84,7 @@ struct TitledScrollView_Previews: PreviewProvider {
             PersonView(viewModel: viewModel, person: testPerson, namespace: namespace)
                 .mainContentBox()
                 .padding()
+                .environmentObject(AppEnvironment())
         }
     }
 }

@@ -20,6 +20,7 @@ struct PersonView: View {
                 HStack(spacing: 3) {
                     Spacer()
                     Image(systemName: "star.fill")
+                        .matchedGeometryEffect(id: "star", in: namespace)
                     Text("Organizer")
                     Spacer()
                 }
@@ -70,6 +71,7 @@ struct PersonView: View {
                         }
                     } preview: {
                         PersonPreview(id: person.recipient, viewModel: viewModel)
+                            .environmentObject(environment)
                     }
                     .fillHorizontally()
                 }
@@ -132,6 +134,7 @@ struct PersonView: View {
                     }
                 } preview: {
                     PersonPreview(id: gift.recipientId, viewModel: viewModel)
+                        .environmentObject(environment)
                 }
                 .padding(.vertical, 15)
                 .padding(.horizontal, 7.5)
@@ -174,4 +177,5 @@ struct PersonPreview: View {
             .mainContentBox()
             .padding()
     }
+    .environmentObject(AppEnvironment())
 }

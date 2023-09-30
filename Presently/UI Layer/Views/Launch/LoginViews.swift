@@ -25,6 +25,7 @@ struct TopLoginView: View {
                         .font(.title)
                         .bold()
                         .padding()
+                        .matchedGeometryEffect(id: "appName", in: mainNamespace)
                 }
                 .onChange(of: geo.size.height) { newValue in
                     withAnimation {
@@ -134,6 +135,7 @@ struct BottomLoginView: View {
             }
             .buttonStyle(DepthButtonStyle())
             .disabled(loginViewModel.isLoading)
+            .transition(.opacity)
             Spacer()
         }
         .padding(.top)
@@ -145,8 +147,15 @@ struct BottomLoginView: View {
     }
 }
 
-struct LoginViews_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    var environment = AppEnvironment()
+    var loginViewModel = LoginViewModel()
+    
+    return ContentView(loginViewModel: loginViewModel)
+        .environmentObject(LoginStorage())
+        .environmentObject(environment)
+        .onAppear(perform: {
+            loginViewModel.exchangeIdField = "0001"
+            loginViewModel.personIdField = "0001"
+        })
 }

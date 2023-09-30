@@ -53,15 +53,17 @@ class LoginViewModel: ObservableObject {
                         $0.personId == personIdField}) {
                     
                     DispatchQueue.main.async { [self] in
-                        environment.currentExchange = exchangeRepo.storage
-                        environment.allCurrentPeople = peopleRepo.storage
-                        environment.currentUser = user
-                        environment.userAssignment = peopleRepo.storage?.first(where: {
-                            $0.personId == user.recipient
-                        })
-                        
-                        if let onLoginSuccess {
-                            onLoginSuccess()
+                        withAnimation(.linear) {
+                            environment.currentExchange = exchangeRepo.storage
+                            environment.allCurrentPeople = peopleRepo.storage
+                            environment.currentUser = user
+                            environment.userAssignment = peopleRepo.storage?.first(where: {
+                                $0.personId == user.recipient
+                            })
+                            
+                            if let onLoginSuccess {
+                                onLoginSuccess()
+                            }
                         }
                     }
                 }

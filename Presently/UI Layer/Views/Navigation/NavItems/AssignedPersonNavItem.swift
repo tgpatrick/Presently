@@ -11,6 +11,7 @@ struct AssignedPersonNavItem: NavItemView {
     var id: String = UUID().uuidString
     let title = "Your assigned person"
     @Namespace var namespace: Namespace.ID
+    @EnvironmentObject var environment: AppEnvironment
     @EnvironmentObject var viewModel: ScrollViewModel
     let assignedPerson: Person
     
@@ -43,6 +44,7 @@ struct AssignedPersonNavItem: NavItemView {
                 }
             } preview: {
                 PersonPreview(id: assignedPerson.personId, viewModel: viewModel)
+                    .environmentObject(environment)
             }
             .padding()
         }
@@ -62,5 +64,6 @@ struct AssignedPersonNavItem: NavItemView {
     return NavigationScrollView(viewModel: viewModel, items: [
         AssignedPersonNavItem(assignedPerson: testPerson2)
     ])
+    .environmentObject(AppEnvironment())
     .environmentObject(viewModel)
 }

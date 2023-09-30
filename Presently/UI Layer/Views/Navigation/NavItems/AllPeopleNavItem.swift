@@ -41,6 +41,7 @@ struct AllPeopleNavItem: NavItemView {
                                         .aspectRatio(contentMode: .fit)
                                         .frame(maxHeight: 15)
                                         .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
+                                        .matchedGeometryEffect(id: "star", in: namespace)
                                 }
                                 
                                 Text(person.name)
@@ -83,6 +84,7 @@ struct AllPeopleNavItem: NavItemView {
                             }
                         } preview: {
                             PersonPreview(id: person.personId, viewModel: viewModel)
+                                .environmentObject(environment)
                         }
                     }
                 }
@@ -125,5 +127,6 @@ struct ViewOffsetKey: PreferenceKey {
     return NavigationScrollView(viewModel: viewModel, items: [
         AllPeopleNavItem(allPeople: testPeople)
     ])
+    .environmentObject(AppEnvironment())
     .environmentObject(viewModel)
 }

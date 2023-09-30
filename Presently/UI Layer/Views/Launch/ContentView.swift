@@ -20,11 +20,11 @@ enum Bar {
 }
 
 struct ContentView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var environment: AppEnvironment
-    @State private var barState: BarState = .closed
     @State private var shouldOpen: Bool = false
-    @StateObject private var scrollViewModel = ScrollViewModel()
-    @StateObject private var loginViewModel = LoginViewModel()
+    @StateObject var scrollViewModel = ScrollViewModel()
+    @StateObject var loginViewModel = LoginViewModel()
     @Namespace private var mainNamespace
     private var isLoggedIn: Bool {
         environment.currentExchange != nil && environment.currentUser != nil
@@ -49,18 +49,24 @@ struct ContentView: View {
                 
                 ZStack {
                     VStack(spacing: 0) {
-                        topBar(geoProxy: geo)
+                        TopBar(ribbonHeight: ribbonHeight(geoProxy: geo))
+                            .frame(height: barHeight(geoProxy: geo, bar: .top))
+                            .shiftingGlassBackground()
+                            .shadow(radius: 2)
                         
-                        if barState != .closed {
+                        if environment.barState != .closed {
                             Spacer()
                         }
                         
-                        bottomBar(geoProxy: geo)
+                        BottomBar(loginViewModel: loginViewModel, ribbonHeight: ribbonHeight(geoProxy: geo))
+                            .frame(height: barHeight(geoProxy: geo, bar: .bottom))
+                            .shiftingGlassBackground()
+                            .shadow(radius: 2)
                     }
                     .zIndex(1)
                     
                     VStack {
-                        if barState == .topFocus {
+                        if environment.barState == .topFocus {
                             Spacer()
                         }
                         
@@ -90,13 +96,13 @@ struct ContentView: View {
                                         navItems = items
                                     }
                                     
-                                    barState = .open
+                                    environment.barState = .open
                                 }
                                 .onAppear {
                                     ribbonHeight = ribbonHeight(geoProxy: geo)
                                 }
                         
-                        if barState == .bottomFocus {
+                        if environment.barState == .bottomFocus {
                             Spacer()
                         }
                     }
@@ -106,107 +112,12 @@ struct ContentView: View {
         }
     }
     
-    func topBar(geoProxy: GeometryProxy) -> some View {
-        HStack {
-            Spacer()
-            if barState == .closed && !isLoggedIn {
-                TopLoginView(mainNamespace: mainNamespace)
-                    .padding(.bottom, ribbonHeight / 2)
-            } else if barState == .open {
-                Image(systemName: "app.gift.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxHeight: 50)
-                    .matchedGeometryEffect(id: "logo", in: mainNamespace)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-            Spacer()
-        }
-        .frame(height: barHeight(geoProxy: geoProxy, bar: .top))
-        .shiftingGlassBackground()
-        .shadow(radius: 2)
-    }
-    
-    func bottomBar(geoProxy: GeometryProxy) -> some View {
-        HStack {
-            Spacer()
-            switch barState {
-            case .open:
-                Button {
-                    withAnimation(.spring()) {
-                        barState = .bottomFocus
-                    }
-                } label: {
-                    VStack {
-                        Image(systemName: "rectangle.and.pencil.and.ellipsis")
-                        Text("Wishlist")
-                            .font(.caption)
-                            .bold()
-                            .padding(.top, 5)
-                    }
-                    .padding(10)
-                }
-                .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
-                .matchedGeometryEffect(id: "wishlistButton", in: mainNamespace)
-            case .closed:
-                if !isLoggedIn {
-                    BottomLoginView(loginViewModel: loginViewModel)
-                        .padding(.top, ribbonHeight / 2)
-                }
-            case .topFocus:
-                EmptyView()
-            case .bottomFocus:
-                VStack {
-                    ZStack {
-                        HStack {
-                            Spacer()
-                            Text("Wishlist")
-                                .font(.title2)
-                            Spacer()
-                        }
-                        
-                        HStack {
-                            Spacer()
-                            Button {
-                                withAnimation(.spring()) {
-                                    barState = .open
-                                }
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
-                            .buttonStyle(DepthButtonStyle(shape: Circle()))
-                            .matchedGeometryEffect(id: "wishlistButton", in: mainNamespace)
-                            .padding()
-                        }
-                    }
-                    VStack(spacing: 15) {
-                        Text("This is the wishlist, I guess")
-                            .fillHorizontally()
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(15)
-                        Text("This a second piece of it, I guess")
-                            .fillHorizontally()
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(15)
-                    }
-                    .padding()
-                }
-            }
-            Spacer()
-        }
-        .frame(height: barHeight(geoProxy: geoProxy, bar: .bottom))
-        .shiftingGlassBackground()
-        .shadow(radius: 2)
-    }
-    
     func loginRibbon(geoProxy: GeometryProxy) -> some View {
         VStack {
             Divider()
                 .padding(.top)
             Spacer()
-            if barState == .closed {
+            if environment.barState == .closed {
                 RibbonLoginView(loginViewModel: loginViewModel)
                     .onAppear {
                         loginViewModel.setLoginSuccess {
@@ -245,7 +156,7 @@ struct ContentView: View {
             }
         }
         .frame(height: ribbonHeight)
-        .offset(CGSize(width: 0, height: barState == .closed ? 0 : -1 * ribbonHeight / 2))
+        .offset(CGSize(width: 0, height: environment.barState == .closed ? 0 : -1 * ribbonHeight / 2))
     }
     
     func ribbonHeight(geoProxy: GeometryProxy) -> CGFloat {
@@ -255,7 +166,7 @@ struct ContentView: View {
     func barHeight(geoProxy: GeometryProxy, bar: Bar) -> CGFloat {
         let viewHeight = geoProxy.size.height
         
-        switch barState {
+        switch environment.barState {
         case .open:
             return bar == .top ? viewHeight / 13 : viewHeight / 15
         case .closed:
@@ -269,7 +180,14 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    var environment = AppEnvironment()
+    var loginViewModel = LoginViewModel()
+    
+    return ContentView(loginViewModel: loginViewModel)
         .environmentObject(LoginStorage())
-        .environmentObject(AppEnvironment())
+        .environmentObject(environment)
+        .onAppear(perform: {
+            loginViewModel.exchangeIdField = "0001"
+            loginViewModel.personIdField = "0001"
+        })
 }

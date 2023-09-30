@@ -19,12 +19,12 @@ extension View {
         )
     }
     
-    func mainContentBox() -> some View {
+    func mainContentBox(material: Material = .thinMaterial) -> some View {
         self
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 15)
-                    .fill(.thinMaterial)
+                    .fill(material)
             )
             .mask(RoundedRectangle(cornerRadius: 15))
             .shadow(radius: 5)
