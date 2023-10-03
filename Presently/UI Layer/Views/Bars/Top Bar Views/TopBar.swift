@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TopBar: View {
-    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var environment: AppEnvironment
     @Namespace var topNamespace
     @State var ribbonHeight: CGFloat
@@ -21,7 +20,7 @@ struct TopBar: View {
             } else if environment.barState == .open {
                 HStack {
                     Spacer()
-                    Image(systemName: "app.gift.fill")
+                    Image(.logo)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 50)
@@ -47,7 +46,7 @@ struct TopBar: View {
                     }
                     .shadow(radius: 1)
                     .shadow(radius: 1)
-                    .foregroundStyle(colorScheme == .light ? Color(.accentBackground) : Color(.accent))
+                    .foregroundStyle(Color(.accentLight))
                     .matchedGeometryEffect(id: "topButton", in: topNamespace)
                 }
                 .padding(.horizontal)

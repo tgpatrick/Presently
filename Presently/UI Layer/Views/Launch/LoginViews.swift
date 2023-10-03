@@ -16,7 +16,7 @@ struct TopLoginView: View {
             HStack {
                 Spacer()
                 layout {
-                    Image(systemName: "app.gift.fill")
+                    Image(.logo)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 250)

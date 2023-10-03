@@ -20,7 +20,6 @@ enum Bar {
 }
 
 struct ContentView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var environment: AppEnvironment
     @State private var shouldOpen: Bool = false
     @StateObject var scrollViewModel = ScrollViewModel()

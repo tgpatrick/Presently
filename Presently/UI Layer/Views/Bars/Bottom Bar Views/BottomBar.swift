@@ -14,7 +14,6 @@ enum BottomBarPage {
 }
 
 struct BottomBar: View {
-    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var environment: AppEnvironment
     @Namespace private var botttomNamespace
     private var isLoggedIn: Bool {
@@ -27,7 +26,7 @@ struct BottomBar: View {
     @State private var barHeight: CGFloat = 50
     
     var body: some View {
-        HStack {
+        VStack {
             switch environment.barState {
             case .closed:
                 if !isLoggedIn {
@@ -37,63 +36,65 @@ struct BottomBar: View {
             case .topFocus:
                 EmptyView()
             case .open, .bottomFocus:
-                VStack {
-                    if isLoggedIn {
-                        if environment.barState == .bottomFocus {
-                            VStack {
-                                ZStack(alignment: .top) {
-                                    Group {
-                                        switch page {
-                                        case .profile:
-                                            TitledScrollView(
-                                                title: "Profile",
-                                                namespace: botttomNamespace) {
-                                                    ProfileView()
-                                                }
-                                        case .organizer:
-                                            TitledScrollView(
-                                                title: "Organizer Tools",
-                                                namespace: botttomNamespace) {
-                                                    VStack(spacing: 15) {
-                                                        Text("This is the organizer tool page, I guess")
-                                                            .fillHorizontally()
-                                                            .padding()
-                                                            .background(.ultraThinMaterial)
-                                                            .cornerRadius(15)
-                                                        Text("This a second piece of it, I guess")
-                                                            .fillHorizontally()
-                                                            .padding()
-                                                            .background(.ultraThinMaterial)
-                                                            .cornerRadius(15)
-                                                    }
-                                                    .padding()
-                                                }
-                                        case .home:
-                                            EmptyView()
-                                        }
-                                    }
-                                    .padding(.top)
-                                    
-                                    HStack {
-                                        Spacer()
-                                        Button {
-                                            withAnimation(.spring()) {
-                                                page = .home
-                                                environment.barState = .open
+                if isLoggedIn {
+                    if environment.barState == .bottomFocus {
+                        VStack {
+                            ZStack(alignment: .top) {
+                                Group {
+                                    switch page {
+                                    case .profile:
+                                        TitledScrollView(
+                                            title: "Profile",
+                                            namespace: botttomNamespace,
+                                            material: .ultraThin) {
+                                                ProfileView()
                                             }
-                                        } label: {
-                                            Image(systemName: "xmark")
-                                                .bold()
-                                        }
-                                        .buttonStyle(DepthButtonStyle(shape: Circle()))
+                                    case .organizer:
+                                        TitledScrollView(
+                                            title: "Organizer Tools",
+                                            namespace: botttomNamespace,
+                                            material: .ultraThin) {
+                                                VStack(spacing: 15) {
+                                                    Text("This is the organizer tool page, I guess")
+                                                        .fillHorizontally()
+                                                        .padding()
+                                                        .background(.ultraThinMaterial)
+                                                        .cornerRadius(15)
+                                                    Text("This a second piece of it, I guess")
+                                                        .fillHorizontally()
+                                                        .padding()
+                                                        .background(.ultraThinMaterial)
+                                                        .cornerRadius(15)
+                                                }
+                                                .padding()
+                                            }
+                                    case .home:
+                                        EmptyView()
                                     }
-                                    .padding()
                                 }
+                                .padding(.top)
+                                
+                                HStack {
+                                    Spacer()
+                                    Button {
+                                        withAnimation(.spring()) {
+                                            page = .home
+                                            environment.barState = .open
+                                        }
+                                    } label: {
+                                        Image(systemName: "xmark")
+                                            .bold()
+                                    }
+                                    .buttonStyle(DepthButtonStyle(shape: Circle()))
+                                }
+                                .padding()
                             }
                         }
-                        Spacer()
-                        bottomTabBar
                     }
+                    Spacer()
+                    bottomTabBar
+                } else {
+                    EmptyView()
                 }
             }
         }
@@ -115,7 +116,7 @@ struct BottomBar: View {
                         .fontWeight(.light)
                         .aspectRatio(contentMode: .fit)
                     Text("Home")
-                        .bold()
+                        .fontWeight(.black)
                 }
             }
             Spacer()
@@ -131,7 +132,7 @@ struct BottomBar: View {
                         .fontWeight(.light)
                         .aspectRatio(contentMode: .fit)
                     Text("Profile")
-                        .bold()
+                        .fontWeight(.black)
                 }
             }
             Spacer()
@@ -148,7 +149,7 @@ struct BottomBar: View {
                             .fontWeight(.light)
                             .aspectRatio(contentMode: .fit)
                         Text("Tools")
-                            .bold()
+                            .fontWeight(.black)
                     }
                 }
                 Spacer()
@@ -157,7 +158,7 @@ struct BottomBar: View {
         .font(.caption)
         .shadow(radius: 1)
         .shadow(radius: 1)
-        .foregroundStyle(colorScheme == .light ? Color(.accentBackground) : Color(.accent))
+        .foregroundStyle(Color(.accentLight))
         .padding(.bottom, 25)
         .padding(.top, 15)
         .ignoresSafeArea(.container, edges: .bottom)
