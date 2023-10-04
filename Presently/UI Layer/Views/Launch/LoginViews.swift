@@ -56,7 +56,6 @@ struct RibbonLoginView: View {
                 HStack {
                     Spacer()
                     TextField("", text: $loginViewModel.exchangeIdField)
-                        .textFieldStyle(InsetTextFieldStyle())
                         .textContentType(.oneTimeCode)
                         .submitLabel(.next)
                         .frame(width: 75)
@@ -74,7 +73,6 @@ struct RibbonLoginView: View {
                     RoundedRectangle(cornerRadius: 2)
                         .frame(width: 12, height: 3)
                     TextField("", text: $loginViewModel.personIdField)
-                        .textFieldStyle(InsetTextFieldStyle())
                         .textContentType(.oneTimeCode)
                         .submitLabel(.go)
                         .frame(width: 75)
@@ -89,6 +87,7 @@ struct RibbonLoginView: View {
                         }
                     Spacer()
                 }
+                .textFieldStyle(InsetTextFieldStyle())
             }
             Spacer()
         }

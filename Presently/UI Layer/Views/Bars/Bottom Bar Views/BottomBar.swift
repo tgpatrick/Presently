@@ -27,16 +27,12 @@ struct BottomBar: View {
     
     var body: some View {
         VStack {
-            switch environment.barState {
-            case .closed:
-                if !isLoggedIn {
-                    BottomLoginView(loginViewModel: loginViewModel)
-                        .padding(.top, ribbonHeight / 2)
-                }
-            case .topFocus:
-                EmptyView()
-            case .open, .bottomFocus:
-                if isLoggedIn {
+            if !isLoggedIn {
+                BottomLoginView(loginViewModel: loginViewModel)
+                    .padding(.top, ribbonHeight / 2)
+            } else {
+                switch environment.barState {
+                case .open, .bottomFocus:
                     if environment.barState == .bottomFocus {
                         VStack {
                             ZStack(alignment: .top) {
@@ -48,6 +44,7 @@ struct BottomBar: View {
                                             namespace: botttomNamespace,
                                             material: .ultraThin) {
                                                 ProfileView()
+                                                    .padding()
                                             }
                                     case .organizer:
                                         TitledScrollView(
@@ -93,7 +90,8 @@ struct BottomBar: View {
                     }
                     Spacer()
                     bottomTabBar
-                } else {
+                        .ignoresSafeArea(.keyboard)
+                default:
                     EmptyView()
                 }
             }

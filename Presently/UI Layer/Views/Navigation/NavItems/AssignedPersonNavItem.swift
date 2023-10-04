@@ -43,7 +43,7 @@ struct AssignedPersonNavItem: NavItemView {
                     viewModel.focus(id)
                 }
             } preview: {
-                PersonPreview(id: assignedPerson.personId, viewModel: viewModel)
+                PersonPreview(id: assignedPerson.personId)
                     .environmentObject(environment)
             }
             .padding()
@@ -53,7 +53,7 @@ struct AssignedPersonNavItem: NavItemView {
     }
     
     func openView() -> AnyView {
-        PersonView(viewModel: viewModel, person: assignedPerson, namespace: namespace)
+        PersonView(person: assignedPerson, namespace: namespace)
         .asAnyView()
     }
 }

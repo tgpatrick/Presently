@@ -83,7 +83,7 @@ struct AllPeopleNavItem: NavItemView {
                                 viewModel.focus(id)
                             }
                         } preview: {
-                            PersonPreview(id: person.personId, viewModel: viewModel)
+                            PersonPreview(id: person.personId)
                                 .environmentObject(environment)
                         }
                     }
@@ -97,7 +97,7 @@ struct AllPeopleNavItem: NavItemView {
     func openView() -> AnyView {
         Group {
             if let focusedPerson {
-                PersonView(viewModel: viewModel, person: focusedPerson, namespace: namespace)
+                PersonView(person: focusedPerson, namespace: namespace)
             }
         }
         .asAnyView()

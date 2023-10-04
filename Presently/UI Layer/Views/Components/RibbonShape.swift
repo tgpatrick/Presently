@@ -26,11 +26,9 @@ struct RibbonShape: View {
     }
 }
 
-struct RibbonShape_Previews: PreviewProvider {
-    static var previews: some View {
-        Rectangle()
-            .foregroundColor(.red)
-            .frame(height: 150)
-            .mask(RibbonShape())
-    }
+#Preview {
+    Rectangle()
+        .foregroundColor(.red)
+        .frame(height: 150)
+        .mask(RibbonShape())
 }

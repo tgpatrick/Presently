@@ -8,6 +8,13 @@
 import SwiftUI
 
 extension String {
+    func isValidURL() -> Bool {
+        if let url = URL(string: self) {
+            return UIApplication.shared.canOpenURL(url)
+        }
+        return false
+    }
+    
     func getURLIfValid() -> URL? {
         if let url = URL(string: self), UIApplication.shared.canOpenURL(url) {
             return url

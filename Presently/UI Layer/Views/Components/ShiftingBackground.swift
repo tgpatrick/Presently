@@ -39,8 +39,6 @@ struct ShiftingBackground: View {
     }
 }
 
-struct ShiftingBackground_Previews: PreviewProvider {
-    static var previews: some View {
-        ShiftingBackground()
-    }
+#Preview {
+    ShiftingBackground()
 }

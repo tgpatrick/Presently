@@ -9,6 +9,7 @@ import Foundation
 
 struct HistoricalGift: Codable, Hashable {
     var year: Int
+    //TODO: Add name in case someone gets removed
     var recipientId: String
     var description: String
 }

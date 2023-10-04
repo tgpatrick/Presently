@@ -23,6 +23,7 @@ struct TopBar: View {
                     Image(.logo)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(Color.primary)
                         .frame(maxHeight: 50)
                         .matchedGeometryEffect(id: "logo", in: topNamespace)
                         .transition(.move(edge: .top).combined(with: .opacity))

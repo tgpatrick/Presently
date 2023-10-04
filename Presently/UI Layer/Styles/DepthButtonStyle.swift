@@ -12,7 +12,7 @@ struct DepthButtonStyle: ButtonStyle {
     let backgroundColor: Color
     let shadowRadius: CGFloat
     
-    init(shape: any Shape = Capsule(), backgroundColor: Color = Color("AccentColor"), shadowRadius: CGFloat = 10) {
+    init(shape: any Shape = Capsule(), backgroundColor: Color = Color(.accentBackground), shadowRadius: CGFloat = 10) {
         self.shape = AnyShape(shape)
         self.backgroundColor = backgroundColor
         self.shadowRadius = shadowRadius
@@ -27,7 +27,7 @@ struct DepthButtonStyle: ButtonStyle {
         .background(
             shape
                 .fill(.shadow(.inner(radius: configuration.isPressed ? 0 : 5)))
-                .foregroundColor(Color(.accentBackground))
+                .foregroundColor(backgroundColor)
                 .overlay {
                     LinearGradient(
                         gradient: Gradient(
@@ -52,16 +52,14 @@ struct DepthButtonStyle: ButtonStyle {
     }
 }
 
-struct DepthButtonStyle_Previews: PreviewProvider {
-    static var previews: some View {
-        ZStack {
-            Color(.primaryBackground).opacity(0.2).ignoresSafeArea()
-            Button {} label: {
-                Text("Test!")
-                    .font(.title)
-                    .bold()
-            }
-            .buttonStyle(DepthButtonStyle())
+#Preview {
+    ZStack {
+        ShiftingBackground().ignoresSafeArea()
+        Button {} label: {
+            Text("Test!")
+                .font(.title)
+                .bold()
         }
+        .buttonStyle(DepthButtonStyle())
     }
 }

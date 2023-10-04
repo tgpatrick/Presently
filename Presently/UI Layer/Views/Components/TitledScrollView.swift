@@ -76,18 +76,15 @@ struct TitledScrollView<Content>: View where Content: View {
     }
 }
 
-struct TitledScrollView_Previews: PreviewProvider {
-    static var viewModel = ScrollViewModel()
-    @Namespace static var namespace: Namespace.ID
+#Preview {
+    @Namespace var namespace: Namespace.ID
     
-    static var previews: some View {
-        ZStack {
-            Color(.primaryBackground).opacity(0.2)
-                .ignoresSafeArea()
-            PersonView(viewModel: viewModel, person: testPerson, namespace: namespace)
-                .mainContentBox()
-                .padding()
-                .environmentObject(AppEnvironment())
-        }
+    return ZStack {
+        ShiftingBackground().ignoresSafeArea()
+        PersonView(person: testPerson, namespace: namespace)
+            .mainContentBox()
+            .padding()
+            .environmentObject(AppEnvironment())
+            .environmentObject(ScrollViewModel())
     }
 }

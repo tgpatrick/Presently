@@ -10,7 +10,7 @@ import SwiftUI
 struct PersonView: View {
     @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var environment: AppEnvironment
-    @ObservedObject var viewModel: ScrollViewModel
+    @EnvironmentObject var scrollViewModel: ScrollViewModel
     @State var person: Person
     var namespace: Namespace.ID
     
@@ -70,7 +70,7 @@ struct PersonView: View {
                             }
                         }
                     } preview: {
-                        PersonPreview(id: person.recipient, viewModel: viewModel)
+                        PersonPreview(id: person.recipient)
                             .environmentObject(environment)
                     }
                     .fillHorizontally()
@@ -78,76 +78,21 @@ struct PersonView: View {
             }
             
             SectionView(title: "History") {
-                Group {
-                    if person.giftHistory.count > 0 {
-                        if #available(iOS 17.0, *) {
-                            ScrollView(.horizontal) {
-                                giftHistoryItem
-                            }
-                            .scrollTargetLayout()
-                            .scrollTargetBehavior(.viewAligned)
-                            .padding(.horizontal, -10)
-                        } else {
-                            ScrollView(.horizontal) {
-                                giftHistoryItem
-                            }
-                        }
-                    } else {
-                        HStack {
-                            Spacer()
-                            Text("(nothing here yet)")
-                            Spacer()
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-            }
-        }
-    }
-    
-    var giftHistoryItem: some View {
-        HStack(spacing: 0) {
-            ForEach(person.giftHistory, id: \.self) { gift in
-                VStack {
-                    Text(String(gift.year))
-                        .bold()
-                    if let recipient = environment.getPerson(id: gift.recipientId) {
-                        Text(recipient.name)
-                    }
-                }
-                .frame(minWidth: 200)
-                .mainContentBox()
-                .onTapGesture {
+                GiftHistoryView(giftHistory: person.giftHistory, onTap: { gift in
                     if let recipient = environment.getPerson(id: gift.recipientId) {
                         withAnimation {
                             person = recipient
                         }
                     }
-                }
-                .contextMenu {
-                    if let recipient = environment.getPerson(id: gift.recipientId) {
-                        Button("Open") {
-                            withAnimation {
-                                person = recipient
-                            }
-                        }
-                    }
-                } preview: {
-                    PersonPreview(id: gift.recipientId, viewModel: viewModel)
-                        .environmentObject(environment)
-                }
-                .padding(.vertical, 15)
-                .padding(.horizontal, 7.5)
+                })
             }
         }
-        .padding(.horizontal, 10)
     }
 }
 
 struct PersonPreview: View {
     @EnvironmentObject var environment: AppEnvironment
     let id: String
-    let viewModel: ScrollViewModel
     
     var body: some View {
         if let person = environment.getPerson(id: id), let exchange = environment.currentExchange {
@@ -167,15 +112,15 @@ struct PersonPreview: View {
 }
 
 #Preview {
-    var viewModel = ScrollViewModel()
     @Namespace var namespace: Namespace.ID
     
     return ZStack {
         Color(.primaryBackground).opacity(0.2)
             .ignoresSafeArea()
-        PersonView(viewModel: viewModel, person: testPerson, namespace: namespace)
+        PersonView(person: testPerson, namespace: namespace)
             .mainContentBox()
             .padding()
     }
     .environmentObject(AppEnvironment())
+    .environmentObject(ScrollViewModel())
 }
