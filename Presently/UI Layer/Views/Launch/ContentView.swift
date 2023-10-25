@@ -34,7 +34,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                if navItems.count > 0 {
+                if !navItems.isEmpty {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: navItems,

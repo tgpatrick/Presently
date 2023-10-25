@@ -19,6 +19,8 @@ struct ProfileView: View {
     @State var editState: ProfileEditState = .none
     
     @Namespace var profileNamespace
+    @StateObject var profileViewModel = ProfileViewModel()
+    @StateObject var personRepo = PersonRepository()
     
     @State var greetingTextField: String = ""
     @FocusState var greetingFieldFocused
@@ -27,6 +29,7 @@ struct ProfileView: View {
     @State var wishlistTextField: String = ""
     @State var wishLinkTextField: String = ""
     @State var wishHasLink: Bool = false
+    @State var focusedWish: WishListItem? = nil
     @FocusState var wishlistFieldFocused
     
     let noIntroText = "Say a little bit about yourself, explain that you really don't want anything not on your list, or just say hi!"
@@ -85,6 +88,7 @@ struct ProfileView: View {
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .red))
                                     Button("Save") {
                                         withAnimation {
+                                            profileViewModel.saveIntro(personRepo: personRepo, environment: environment, newIntro: greetingTextField)
                                             editState = .none
                                         }
                                     }
@@ -100,7 +104,7 @@ struct ProfileView: View {
                 if editState == .none || editState == .wishlist {
                     SectionView(title: "Wishlist") {
                         if editState != .wishlist {
-                            if currentUser.wishList.count > 0 {
+                            if !currentUser.wishList.isEmpty {
                                 editableWishList
                             } else {
                                 Text("Add a couple ideas, some specific links, or both!")
@@ -110,12 +114,13 @@ struct ProfileView: View {
                             VStack {
                                 TextField("Describe something you'd like...", text: $wishlistTextField)
                                     .matchedGeometryEffect(id: wishlistTextField, in: profileNamespace)
+                                    .focused($wishlistFieldFocused)
                                 if wishHasLink {
                                     ZStack {
                                         TextField("Put your link here", text: $wishLinkTextField)
                                             .keyboardType(.URL)
                                             .transition(.move(edge: .top).combined(with: .opacity))
-                                        if wishLinkTextField.count > 0 {
+                                        if !wishLinkTextField.isEmpty {
                                             HStack {
                                                 Spacer()
                                                 if wishLinkTextField.isValidURL() {
@@ -138,18 +143,22 @@ struct ProfileView: View {
                                     }
                                     Button("Cancel") {
                                         withAnimation {
+                                            wishHasLink = false
                                             editState = .none
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .red))
                                     Button("Save") {
                                         withAnimation {
+                                            if let focusedWish {
+                                                profileViewModel.saveWishList(personRepo: personRepo, environment: environment, oldWish: focusedWish, newWish: WishListItem(description: wishlistTextField, link: wishLinkTextField))
+                                            }
                                             editState = .none
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .green))
                                 }
-                                .matchedGeometryEffect(id: "\(wishlistTextField)WishListButton", in: profileNamespace)
+                                .matchedGeometryEffect(id: "\(wishlistTextField)-WishListButton", in: profileNamespace)
                                 .bold()
                             }
                         }
@@ -158,7 +167,7 @@ struct ProfileView: View {
                 }
                 if editState == .none || editState == .history {
                     SectionView(title: "History") {
-                        if currentUser.giftHistory.count > 0 {
+                        if !currentUser.giftHistory.isEmpty {
                             GiftHistoryView(giftHistory: currentUser.giftHistory)
                         } else {
                             Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
@@ -171,6 +180,7 @@ struct ProfileView: View {
         .fillHorizontally()
         .mainContentBox(material: .ultraThin)
         .buttonStyle(DepthButtonStyle())
+        .disabled(personRepo.isLoading)
     }
     
     @ViewBuilder
@@ -184,37 +194,47 @@ struct ProfileView: View {
                         HStack {
                             Spacer()
                             if deletedWishes.first(where: { $0 == wish }) == nil {
-                                Button("Delete") {
-                                    withAnimation {
-                                        deletedWishes.append(wish)
+                                HStack {
+                                    Button("Delete") {
+                                        withAnimation {
+                                            deletedWishes.append(wish)
+                                        }
                                     }
-                                }
-                                .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
-                                Button("Edit") {
-                                    withAnimation {
-                                        wishlistTextField = wish.description
-                                        editState = .wishlist
+                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                    Button("Edit") {
+                                        withAnimation {
+                                            focusedWish = wish
+                                            wishlistTextField = wish.description
+                                            wishHasLink = !wish.link.isEmpty
+                                            wishLinkTextField = wish.link
+                                            editState = .wishlist
+                                            wishlistFieldFocused = true
+                                        }
                                     }
+                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                 }
-                                .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
+                                .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
                             } else {
+                                HStack {
+                                    Button("Delete") {
+                                        withAnimation {
+                                            deletedWishes.removeAll(where: { $0 == wish })
+                                        }
+                                    }
+                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                    Button("Keep") {
+                                        withAnimation {
+                                            deletedWishes.removeAll(where: { $0 == wish })
+                                        }
+                                    }
+                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
+                                }
+                                .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
                                 Text("Are you sure?")
-                                Button("Delete") {
-                                    withAnimation {
-                                        deletedWishes.removeAll(where: { $0 == wish })
-                                    }
-                                }
-                                .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
-                                Button("Keep") {
-                                    withAnimation {
-                                        deletedWishes.removeAll(where: { $0 == wish })
-                                    }
-                                }
-                                .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                             }
                         }
                         .font(.caption)
-                        .matchedGeometryEffect(id: "\(wish.description)WishListButton", in: profileNamespace)
+                        .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: profileNamespace)
                         Divider()
                             .foregroundStyle(.primary)
                             .bold()

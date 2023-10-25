@@ -11,7 +11,7 @@ struct WishListView: View {
     let wishList: [WishListItem]
     
     var body: some View {
-        if wishList.count > 0 {
+        if !wishList.isEmpty {
             VStack {
                 ForEach(wishList, id: \.self) { wish in
                     VStack {
@@ -32,7 +32,8 @@ struct WishListView: View {
                                     .frame(maxHeight: 15)
                                     .padding(.horizontal, 2)
                                 }
-                                .fixedSize(horizontal: true, vertical: false)
+//                                .fixedSize(horizontal: true, vertical: false)
+                                .allowsTightening(true)
                                 .padding(.trailing, 8)
                             }
                         }

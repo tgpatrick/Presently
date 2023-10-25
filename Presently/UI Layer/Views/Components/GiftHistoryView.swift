@@ -15,7 +15,7 @@ struct GiftHistoryView: View {
     
     var body: some View {
         Group {
-            if giftHistory.count > 0 {
+            if !giftHistory.isEmpty {
                 if #available(iOS 17.0, *) {
                     ScrollView(.horizontal) {
                         giftHistoryItem

@@ -178,7 +178,7 @@ struct TestView: View {
                                 Text("ID: \(person.personId)")
                             }
                             
-                            if let people, people.count > 0 {
+                            if let people, !people.isEmpty {
                                 Text("Got all people!")
                                     .font(.title3)
                                 ForEach(people) { person in
