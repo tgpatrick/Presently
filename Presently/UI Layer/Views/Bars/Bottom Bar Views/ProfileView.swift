@@ -86,10 +86,22 @@ struct ProfileView: View {
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .red))
-                                    Button("Save") {
-                                        withAnimation {
-                                            profileViewModel.saveIntro(personRepo: personRepo, environment: environment, newIntro: greetingTextField)
-                                            editState = .none
+                                    Button {
+                                        Task {
+                                            await profileViewModel.saveIntro(personRepo: personRepo, environment: environment, newIntro: greetingTextField)
+                                            if case .success = personRepo.loadingState {
+                                                DispatchQueue.main.async {
+                                                    withAnimation {
+                                                        editState = .none
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } label: {
+                                        if case .loading = personRepo.loadingState {
+                                            ProgressView()
+                                        } else {
+                                            Text("Save")
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .green))
@@ -148,12 +160,25 @@ struct ProfileView: View {
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .red))
-                                    Button("Save") {
-                                        withAnimation {
+                                    Button {
+                                        Task {
                                             if let focusedWish {
-                                                profileViewModel.saveWishList(personRepo: personRepo, environment: environment, oldWish: focusedWish, newWish: WishListItem(description: wishlistTextField, link: wishLinkTextField))
+                                                await profileViewModel.saveWishList(personRepo: personRepo, environment: environment, oldWish: focusedWish, newWish: WishListItem(description: wishlistTextField, link: wishLinkTextField))
+                                                if case .success = personRepo.loadingState {
+                                                    DispatchQueue.main.async {
+                                                        withAnimation {
+                                                            editState = .none
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            editState = .none
+                                        }
+                                    } label: {
+                                        if case .loading = personRepo.loadingState {
+                                            ProgressView()
+                                        } else {
+                                            Text("Save")
+                                            
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .green))
@@ -179,8 +204,49 @@ struct ProfileView: View {
         }
         .fillHorizontally()
         .mainContentBox(material: .ultraThin)
+        .alert("Network Error", isPresented: .init(
+            get: {
+                if case .error(_) = personRepo.loadingState {
+                    return true
+                } else {
+                    return false
+                }
+            }, set: { value in
+                if !value {
+                    personRepo.loadingState = .resting
+                }
+            })) {
+                if let lastRequest = profileViewModel.lastRequest {
+                    Button("Try again") {
+                        if profileViewModel.lastRequest == .intro {
+                            Task {
+                                await profileViewModel.saveIntro(
+                                    personRepo: personRepo,
+                                    environment: environment,
+                                    newIntro: greetingTextField)
+                            }
+                        } else if profileViewModel.lastRequest == .wishList, let focusedWish {
+                            Task {
+                                await profileViewModel.saveWishList(
+                                    personRepo: personRepo,
+                                    environment: environment,
+                                    oldWish: focusedWish,
+                                    newWish: WishListItem(
+                                        description: wishlistTextField,
+                                        link: wishLinkTextField))
+                            }
+                        }
+                    }
+                }
+                Button("Cancel", role: .cancel) {}
+            }
         .buttonStyle(DepthButtonStyle())
         .disabled(personRepo.isLoading)
+        .onChange(of: editState) { state in
+            withAnimation(.easeInOut(duration: 1)) {
+                environment.hideTabBar = (state != .none)
+            }
+        }
     }
     
     @ViewBuilder

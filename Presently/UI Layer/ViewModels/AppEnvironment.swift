@@ -17,6 +17,7 @@ class AppEnvironment: ObservableObject {
     @Published var allCurrentPeople: [Person]?
     
     @Published var barState: BarState = .closed
+    @Published var hideTabBar: Bool = false
     
     func getPerson(id: String) -> Person? {
         allCurrentPeople?.first(where: {$0.personId == id})

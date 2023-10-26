@@ -89,8 +89,10 @@ struct BottomBar: View {
                         }
                     }
                     Spacer()
-                    bottomTabBar
-                        .ignoresSafeArea(.keyboard)
+                    if !environment.hideTabBar {
+                        bottomTabBar
+                            .transition(.opacity)
+                    }
                 default:
                     EmptyView()
                 }

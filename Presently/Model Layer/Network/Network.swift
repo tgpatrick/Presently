@@ -20,7 +20,10 @@ struct Network {
                 return .failure(.serverError(code: -1, url: request.url()))
             }
             guard httpResponse.statusCode == 200 else {
-                print("Non-200 response code while fetching exchange: \n\(response)")
+                print("Received non-200 response code from network")
+                print("URL:\n" + (String(describing: response.url)))
+                print("REQUEST BODY:\n" + (String(data: request.urlRequest.httpBody ?? "(no body)".data(using: .utf8)!, encoding: .utf8) ?? "(string decoding error)"))
+                print("RESPONSE BODY:\n" + (String(data: data, encoding: .utf8) ?? "(no body)"))
                 return .failure(.serverError(code: httpResponse.statusCode, url: request.url()))
             }
             do {
