@@ -25,7 +25,7 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    func saveWishList(personRepo: PersonRepository, environment: AppEnvironment, oldWish: WishListItem, newWish: WishListItem) async {
+    func saveWishList(personRepo: PersonRepository, environment: AppEnvironment, oldWish: WishListItem?, newWish: WishListItem) async {
         guard var editedPerson = environment.currentUser else { return }
         if oldWish != newWish {
             editedPerson.wishList.removeAll(where: { $0 == oldWish })
@@ -34,6 +34,12 @@ class ProfileViewModel: ObservableObject {
         } else {
             personRepo.loadingState = .success
         }
+    }
+    
+    func deleteWish(personRepo: PersonRepository, environment: AppEnvironment, wish: WishListItem) async {
+        guard var editedPerson = environment.currentUser else { return }
+        editedPerson.wishList.removeAll(where: { $0 == wish })
+        await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
     }
     
     private func putAndSave(personRepo: PersonRepository, environment: AppEnvironment, editedPerson: Person) async {

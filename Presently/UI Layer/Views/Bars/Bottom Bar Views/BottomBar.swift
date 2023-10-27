@@ -73,16 +73,18 @@ struct BottomBar: View {
                                 
                                 HStack {
                                     Spacer()
-                                    Button {
-                                        withAnimation(.spring()) {
-                                            page = .home
-                                            environment.barState = .open
+                                    if !environment.hideTabBar {
+                                        Button {
+                                            withAnimation(.spring()) {
+                                                page = .home
+                                                environment.barState = .open
+                                            }
+                                        } label: {
+                                            Image(systemName: "xmark")
+                                                .bold()
                                         }
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                            .bold()
+                                        .buttonStyle(DepthButtonStyle(shape: Circle()))
                                     }
-                                    .buttonStyle(DepthButtonStyle(shape: Circle()))
                                 }
                                 .padding()
                             }

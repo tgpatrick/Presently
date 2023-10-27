@@ -25,7 +25,7 @@ struct AllPeopleNavItem: NavItemView {
                     .bold()
             }
             ForEach(allPeople) { person in
-                if (person != environment.currentUser && person != environment.userAssignment) &&
+                if (person.personId != environment.currentUser?.personId && person.personId != environment.userAssignment?.personId) &&
                     (viewModel.focusedId == nil || focusedPerson == person) {
                     Button {
                         withAnimation {

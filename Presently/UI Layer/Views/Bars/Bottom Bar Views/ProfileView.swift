@@ -31,6 +31,7 @@ struct ProfileView: View {
     @State var wishHasLink: Bool = false
     @State var focusedWish: WishListItem? = nil
     @FocusState var wishlistFieldFocused
+    @FocusState var linkFieldFocused
     
     let noIntroText = "Say a little bit about yourself, explain that you really don't want anything not on your list, or just say hi!"
     
@@ -82,6 +83,7 @@ struct ProfileView: View {
                                     Spacer()
                                     Button("Cancel") {
                                         withAnimation {
+                                            greetingFieldFocused = false
                                             editState = .none
                                         }
                                     }
@@ -131,6 +133,7 @@ struct ProfileView: View {
                                     ZStack {
                                         TextField("Put your link here", text: $wishLinkTextField)
                                             .keyboardType(.URL)
+                                            .focused($linkFieldFocused)
                                             .transition(.move(edge: .top).combined(with: .opacity))
                                         if !wishLinkTextField.isEmpty {
                                             HStack {
@@ -155,6 +158,8 @@ struct ProfileView: View {
                                     }
                                     Button("Cancel") {
                                         withAnimation {
+                                            wishlistFieldFocused = false
+                                            linkFieldFocused = false
                                             wishHasLink = false
                                             editState = .none
                                         }
@@ -162,13 +167,11 @@ struct ProfileView: View {
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .red))
                                     Button {
                                         Task {
-                                            if let focusedWish {
-                                                await profileViewModel.saveWishList(personRepo: personRepo, environment: environment, oldWish: focusedWish, newWish: WishListItem(description: wishlistTextField, link: wishLinkTextField))
-                                                if case .success = personRepo.loadingState {
-                                                    DispatchQueue.main.async {
-                                                        withAnimation {
-                                                            editState = .none
-                                                        }
+                                            await profileViewModel.saveWishList(personRepo: personRepo, environment: environment, oldWish: focusedWish, newWish: WishListItem(description: wishlistTextField, link: wishLinkTextField))
+                                            if case .success = personRepo.loadingState {
+                                                DispatchQueue.main.async {
+                                                    withAnimation {
+                                                        editState = .none
                                                     }
                                                 }
                                             }
@@ -178,7 +181,6 @@ struct ProfileView: View {
                                             ProgressView()
                                         } else {
                                             Text("Save")
-                                            
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .green))
@@ -225,7 +227,7 @@ struct ProfileView: View {
                                     environment: environment,
                                     newIntro: greetingTextField)
                             }
-                        } else if profileViewModel.lastRequest == .wishList, let focusedWish {
+                        } else if profileViewModel.lastRequest == .wishList {
                             Task {
                                 await profileViewModel.saveWishList(
                                     personRepo: personRepo,
@@ -243,7 +245,7 @@ struct ProfileView: View {
         .buttonStyle(DepthButtonStyle())
         .disabled(personRepo.isLoading)
         .onChange(of: editState) { state in
-            withAnimation(.easeInOut(duration: 1)) {
+            withAnimation(.easeInOut) {
                 environment.hideTabBar = (state != .none)
             }
         }
@@ -282,9 +284,18 @@ struct ProfileView: View {
                                 .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
                             } else {
                                 HStack {
-                                    Button("Delete") {
-                                        withAnimation {
-                                            deletedWishes.removeAll(where: { $0 == wish })
+                                    Button {
+                                        Task {
+                                            await profileViewModel.deleteWish(personRepo: personRepo, environment: environment, wish: wish)
+                                            withAnimation {
+                                                deletedWishes.removeAll(where: { $0 == wish })
+                                            }
+                                        }
+                                    } label: {
+                                        if case .loading = personRepo.loadingState, deletedWishes.contains(where: { $0 == wish }) {
+                                            ProgressView()
+                                        } else {
+                                            Text("Delete")
                                         }
                                     }
                                     .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
@@ -306,6 +317,13 @@ struct ProfileView: View {
                             .bold()
                     }
                 }
+                Button("Add a wish") {
+                    withAnimation {
+                        editState = .wishlist
+                        wishlistFieldFocused = true
+                    }
+                }
+                .fillHorizontally()
             }
         }
     }
