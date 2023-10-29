@@ -21,6 +21,7 @@ struct TopLoginView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 250)
                         .matchedGeometryEffect(id: "logo", in: mainNamespace)
+                        .accessibilityIdentifier("logo")
                     Text("Presently")
                         .font(.title)
                         .bold()
@@ -70,6 +71,7 @@ struct RibbonLoginView: View {
                             }
                             loginViewModel.onEidChange()
                         }
+                        .accessibilityIdentifier("exchangeIdTextField")
                     RoundedRectangle(cornerRadius: 2)
                         .frame(width: 12, height: 3)
                     TextField("", text: $loginViewModel.personIdField)
@@ -85,6 +87,7 @@ struct RibbonLoginView: View {
                         .onChange(of: loginViewModel.personIdField) { _ in
                             loginViewModel.onPidChange()
                         }
+                        .accessibilityIdentifier("personIdTextField")
                     Spacer()
                 }
                 .textFieldStyle(InsetTextFieldStyle())
@@ -135,6 +138,7 @@ struct BottomLoginView: View {
             .buttonStyle(DepthButtonStyle())
             .disabled(loginViewModel.isLoading)
             .transition(.opacity)
+            .accessibilityIdentifier("LoginButton")
             Spacer()
         }
         .padding(.top)

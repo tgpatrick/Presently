@@ -44,6 +44,7 @@ struct ContentView: View {
                     .frame(maxWidth: geo.size.width)
                     .environmentObject(scrollViewModel)
                     .transition(.opacity)
+                    .accessibilityIdentifier("NavScrollView")
                 }
                 
                 ZStack {
