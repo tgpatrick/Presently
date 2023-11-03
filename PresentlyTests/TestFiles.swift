@@ -29,6 +29,54 @@ var testExchange = Exchange(
     organizers: ["0001"],
     yearsWithoutRepeat: 0)
 
+var testExchange2 = Exchange(
+    id: "0002",
+    name: "Test Exchange",
+    intro: "Welcome to the test exchange! You must be special to have gotten a code.",
+    rules: "There are NO RULES. Spend a billion dollars per gift, see if I care.",
+    startDate: Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date(),
+    assignDate: Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date()),
+    theBigDay: Calendar.current.date(byAdding: .weekOfYear, value: 4, to: Date()),
+    year: 2023,
+    secret: false,
+    repeating: true,
+    started: false,
+    members: [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005"
+    ],
+    organizers: ["0001"],
+    yearsWithoutRepeat: 0)
+
+var testExchange3 = Exchange(
+    id: "0003",
+    name: "Test Exchange",
+    intro: "Welcome to the test exchange! You must be special to have gotten a code.",
+    rules: "There are NO RULES. Spend a billion dollars per gift, see if I care.",
+    startDate: Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date(),
+    assignDate: Calendar.current.date(byAdding: .weekOfYear, value: 1, to: Date()),
+    theBigDay: Calendar.current.date(byAdding: .weekOfYear, value: 4, to: Date()),
+    year: 2023,
+    secret: true,
+    repeating: false,
+    started: true,
+    members: [
+        "0001",
+        "0002",
+        "0003",
+        "0004",
+        "0005"
+    ],
+    organizers: ["0001"],
+    yearsWithoutRepeat: 0)
+
+var testExchanges = [
+    testExchange, testExchange2, testExchange3
+]
+
 var testPeople = [
     testPerson, testPerson2, testPerson3, testPerson4, testPerson5
 ]

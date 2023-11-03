@@ -15,8 +15,8 @@ class ExchangeRepository: Repository {
     func get(_ id: String) async {
         loadingState = .loading
         #if targetEnvironment(simulator)
-        if id == testExchange.id {
-            storage = testExchange
+        if let exchange = testExchanges.first(where: { $0.id == id }) {
+            storage = exchange
             loadingState = .success
         } else {
             loadingState = .error(ErrorWrapper(error: NetworkError.serverError(code: 404, url: ""), guidance: "Please try again"))

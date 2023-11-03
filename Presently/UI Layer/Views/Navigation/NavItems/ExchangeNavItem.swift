@@ -84,6 +84,7 @@ struct ExchangeNavItem: NavItemView {
                 }
                 .padding()
             }
+            .accessibilityLabel("ExchangeDetailButton")
         }
         .asAnyView()
     }
@@ -93,13 +94,17 @@ struct ExchangeNavItem: NavItemView {
             TitledScrollView(title: exchange.name, namespace: namespace) {
                 SectionView(title: "Intro") {
                     Text(exchange.intro)
+                        .accessibilityLabel("IntroText")
                 }
                 
                 SectionView(title: "Rules") {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(exchange.rules)
+                            .accessibilityLabel("RulesText1")
                         Text(isSecretMessage)
+                            .accessibilityLabel("RulesText2")
                         Text(isRepeatingMessage)
+                            .accessibilityLabel("RulesText3")
                     }
                 }
                 

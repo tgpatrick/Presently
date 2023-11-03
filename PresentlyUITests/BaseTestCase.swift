@@ -38,7 +38,7 @@ class BaseTestCase: XCTestCase {
                 XCTFail("Timed out waiting for element \(element) to exist")
                 break
             }
-            usleep(10000)
+            usleep(10000) // waits for 0.01 seconds
         }
     }
     
@@ -64,8 +64,47 @@ class BaseTestCase: XCTestCase {
                 XCTFail("Timed out waiting for element \(element) to contain value \(value)")
                 break
             }
-            usleep(10000) // waits for 0.01 seconds
+            usleep(10000)
         }
+    }
+    
+    func loginToStartedExchange() {
+        let exchangeField = app.textFields["exchangeIdTextField"]
+        let personField = app.textFields["personIdTextField"]
+        let loginButton = app.buttons["LoginButton"]
+        
+        exchangeField.tap()
+        exchangeField.typeText("0001")
+        personField.typeText("0001")
+        loginButton.tap()
+        
+        mozWaitForElementToExist(app.scrollViews["NavScrollView"])
+    }
+    
+    func loginToOpenExchange() {
+        let exchangeField = app.textFields["exchangeIdTextField"]
+        let personField = app.textFields["personIdTextField"]
+        let loginButton = app.buttons["LoginButton"]
+        
+        exchangeField.tap()
+        exchangeField.typeText("0002")
+        personField.typeText("0001")
+        loginButton.tap()
+        
+        mozWaitForElementToExist(app.scrollViews["NavScrollView"])
+    }
+    
+    func loginToSecretExchange() {
+        let exchangeField = app.textFields["exchangeIdTextField"]
+        let personField = app.textFields["personIdTextField"]
+        let loginButton = app.buttons["LoginButton"]
+        
+        exchangeField.tap()
+        exchangeField.typeText("0003")
+        personField.typeText("0001")
+        loginButton.tap()
+        
+        mozWaitForElementToExist(app.scrollViews["NavScrollView"])
     }
 }
 
