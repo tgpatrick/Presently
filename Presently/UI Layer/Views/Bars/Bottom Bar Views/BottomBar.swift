@@ -33,67 +33,41 @@ struct BottomBar: View {
             } else {
                 switch environment.barState {
                 case .open, .bottomFocus:
-                    if environment.barState == .bottomFocus {
-                        VStack {
-                            ZStack(alignment: .top) {
-                                Group {
-                                    switch page {
-                                    case .profile:
-                                        TitledScrollView(
-                                            title: "Profile",
-                                            namespace: botttomNamespace,
-                                            material: .ultraThin) {
-                                                ProfileView()
-                                                    .padding()
-                                            }
-                                    case .organizer:
-                                        TitledScrollView(
-                                            title: "Organizer Tools",
-                                            namespace: botttomNamespace,
-                                            material: .ultraThin) {
-                                                VStack(spacing: 15) {
-                                                    Text("This is the organizer tool page, I guess")
-                                                        .fillHorizontally()
-                                                        .padding()
-                                                        .background(.ultraThinMaterial)
-                                                        .cornerRadius(15)
-                                                    Text("This a second piece of it, I guess")
-                                                        .fillHorizontally()
-                                                        .padding()
-                                                        .background(.ultraThinMaterial)
-                                                        .cornerRadius(15)
-                                                }
-                                                .padding()
-                                            }
-                                    case .home:
-                                        EmptyView()
-                                    }
-                                }
-                                .padding(.top)
-                                
-                                HStack {
-                                    Spacer()
-                                    if !environment.hideTabBar {
-                                        Button {
-                                            withAnimation(.spring()) {
-                                                page = .home
-                                                environment.barState = .open
-                                            }
-                                        } label: {
-                                            Image(systemName: "xmark")
-                                                .bold()
+                    if !environment.showOnboarding {
+                        tabView
+                    } else if environment.barState == .bottomFocus {
+                        OnboardingView(
+                            items: [
+                                Text("Onboarding 1!").asAnyView(),
+                                Text("Onboarding 2!").asAnyView(),
+                                Text("Onboarding 3!").asAnyView()
+                            ],
+                            onComplete: {
+                                withAnimation(.bouncy) {
+                                    // TODO: set setUp to true
+                                    environment.showOnboarding = false
+                                    environment.barState = .closed
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        withAnimation(.bouncy) {
+                                            environment.shouldOpen = true
                                         }
-                                        .buttonStyle(DepthButtonStyle(shape: Circle()))
                                     }
                                 }
-                                .padding()
+                            },
+                            onCancel: {
+                                withAnimation(.bouncy) {
+                                    // TODO: use an alert to choose whether to set setUp to true
+                                    environment.showOnboarding = false
+                                    environment.barState = .closed
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        withAnimation(.bouncy) {
+                                            environment.shouldOpen = true
+                                        }
+                                    }
+                                }
                             }
-                        }
-                    }
-                    Spacer()
-                    if !environment.hideTabBar {
-                        bottomTabBar
-                            .transition(.opacity)
+                        )
+                        .padding(.top, ribbonHeight / 2)
                     }
                 default:
                     EmptyView()
@@ -101,6 +75,72 @@ struct BottomBar: View {
             }
         }
         .fillHorizontally()
+    }
+    
+    var tabView: some View {
+        VStack {
+            if environment.barState == .bottomFocus {
+                ZStack(alignment: .top) {
+                    Group {
+                        switch page {
+                        case .profile:
+                            TitledScrollView(
+                                title: "Profile",
+                                namespace: botttomNamespace,
+                                material: .ultraThin) {
+                                    ProfileView()
+                                        .padding()
+                                }
+                        case .organizer:
+                            TitledScrollView(
+                                title: "Organizer Tools",
+                                namespace: botttomNamespace,
+                                material: .ultraThin) {
+                                    VStack(spacing: 15) {
+                                        Text("This is the organizer tool page, I guess")
+                                            .fillHorizontally()
+                                            .padding()
+                                            .background(.ultraThinMaterial)
+                                            .cornerRadius(15)
+                                        Text("This a second piece of it, I guess")
+                                            .fillHorizontally()
+                                            .padding()
+                                            .background(.ultraThinMaterial)
+                                            .cornerRadius(15)
+                                    }
+                                    .padding()
+                                }
+                        case .home:
+                            EmptyView()
+                        }
+                    }
+                    .padding(.top)
+                    
+                    HStack {
+                        Spacer()
+                        if !environment.hideTabBar {
+                            Button {
+                                withAnimation(.spring()) {
+                                    page = .home
+                                    environment.barState = .open
+                                }
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .bold()
+                            }
+                            .buttonStyle(DepthButtonStyle(shape: Circle()))
+                        }
+                    }
+                    .padding()
+                }
+            }
+            
+            Spacer()
+            if !environment.hideTabBar {
+                bottomTabBar
+                    .transition(.opacity)
+            }
+        }
     }
     
     var bottomTabBar: some View {

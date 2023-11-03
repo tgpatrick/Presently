@@ -17,6 +17,8 @@ class AppEnvironment: ObservableObject {
     @Published var allCurrentPeople: [Person]?
     
     @Published var barState: BarState = .closed
+    @Published var shouldOpen: Bool = false
+    @Published var showOnboarding: Bool = false
     @Published var hideTabBar: Bool = false
     
     func getPerson(id: String) -> Person? {

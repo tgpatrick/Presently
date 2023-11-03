@@ -21,7 +21,6 @@ enum Bar {
 
 struct ContentView: View {
     @EnvironmentObject var environment: AppEnvironment
-    @State private var shouldOpen: Bool = false
     @StateObject var scrollViewModel = ScrollViewModel()
     @StateObject var loginViewModel = LoginViewModel()
     @Namespace private var mainNamespace
@@ -75,7 +74,7 @@ struct ContentView: View {
                                 transition: .move(edge: .trailing).combined(with: .opacity),
                                 animation: .barAnimation,
                                 showView: .init(get: {
-                                    !isLoggedIn
+                                    !environment.shouldOpen
                                 }, set: { _ in })) {
                                     
                                     if let currentUser = environment.currentUser,
@@ -121,7 +120,14 @@ struct ContentView: View {
                 RibbonLoginView(loginViewModel: loginViewModel)
                     .onAppear {
                         loginViewModel.setLoginSuccess {
-                            shouldOpen = true
+                            if let currentUser = environment.currentUser, !currentUser.setUp {
+                                environment.showOnboarding = true
+                                withAnimation(.bouncy) {
+                                    environment.barState = .bottomFocus
+                                }
+                            } else if environment.currentUser != nil {
+                                environment.shouldOpen = true
+                            }
                         }
                     }
             }
