@@ -86,7 +86,7 @@ var testPerson = Person(
     personId: "0001",
     name: "Tester McTesterson",
     greeting: "Hello! I'm Tester (of McTesterson fame). Nice to be in a gift exchange with you!",
-    setUp: false,
+    setUp: true,
     giftHistory: [
         HistoricalGift(year: 2020, recipientId: "0002", description: "Bag of four grapes"),
         HistoricalGift(year: 2019, recipientId: "0003", description: "Bag of three grapes"),

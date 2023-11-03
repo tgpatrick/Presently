@@ -19,10 +19,11 @@ struct GiftHistoryView: View {
                 if #available(iOS 17.0, *) {
                     ScrollView(.horizontal) {
                         giftHistoryItem
+                            .scrollTargetLayout()
                     }
-                    .scrollTargetLayout()
                     .scrollTargetBehavior(.viewAligned)
                     .padding(.horizontal, -10)
+                    
                 } else {
                     ScrollView(.horizontal) {
                         giftHistoryItem
@@ -76,4 +77,6 @@ struct GiftHistoryView: View {
 
 #Preview {
     GiftHistoryView(giftHistory: testPerson.giftHistory)
+        .environmentObject(AppEnvironment())
+        .environmentObject(ScrollViewModel())
 }

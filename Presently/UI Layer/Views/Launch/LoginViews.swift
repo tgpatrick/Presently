@@ -117,9 +117,7 @@ struct BottomLoginView: View {
                     .bold()
                     .multilineTextAlignment(.center)
                     .transition(.move(edge: .top).combined(with: .opacity))
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(15)
+                    .mainContentBox(material: .ultraThin)
                     .padding(.bottom, 5)
             }
             Button(action: loginViewModel.login) {
