@@ -19,9 +19,9 @@ extension View {
         )
     }
     
-    func mainContentBox(material: Material = .thinMaterial) -> some View {
+    func mainContentBox(material: Material = .thinMaterial, padding: CGFloat = 15) -> some View {
         self
-            .padding()
+            .padding(padding)
             .background(
                 RoundedRectangle(cornerRadius: 15)
                     .fill(material)

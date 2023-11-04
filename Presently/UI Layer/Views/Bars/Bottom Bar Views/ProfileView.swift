@@ -92,7 +92,7 @@ struct ProfileView: View {
                                     Button {
                                         Task {
                                             await profileViewModel.saveIntro(personRepo: personRepo, environment: environment, newIntro: greetingTextField)
-                                            if case .success = personRepo.loadingState {
+                                            if personRepo.succeeded {
                                                 DispatchQueue.main.async {
                                                     withAnimation {
                                                         editState = .none
@@ -168,7 +168,7 @@ struct ProfileView: View {
                                     Button {
                                         Task {
                                             await profileViewModel.saveWishList(personRepo: personRepo, environment: environment, oldWish: focusedWish, newWish: WishListItem(description: wishlistTextField, link: wishLinkTextField))
-                                            if case .success = personRepo.loadingState {
+                                            if personRepo.succeeded {
                                                 DispatchQueue.main.async {
                                                     withAnimation {
                                                         editState = .none
@@ -260,6 +260,21 @@ struct ProfileView: View {
                         Text(wish.description)
                             .matchedGeometryEffect(id: wish.description, in: profileNamespace)
                         HStack {
+                            if !wish.link.isEmpty, let url = URL(string: wish.link) {
+                                Link(destination: url) {
+                                    HStack(spacing: 5) {
+                                        Text("Link")
+                                            .bold()
+                                        Image(.externalLink)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .foregroundStyle(.primary)
+                                            .frame(height: 15)
+                                    }
+                                    .padding(.horizontal, 2)
+                                }
+                                .padding(.trailing, 8)
+                            }
                             Spacer()
                             if deletedWishes.first(where: { $0 == wish }) == nil {
                                 HStack {
@@ -311,6 +326,7 @@ struct ProfileView: View {
                             }
                         }
                         .font(.caption)
+                        .frame(maxHeight: 25)
                         .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: profileNamespace)
                         Divider()
                             .foregroundStyle(.primary)

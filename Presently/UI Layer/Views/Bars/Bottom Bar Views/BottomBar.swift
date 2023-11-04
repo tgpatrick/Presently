@@ -41,7 +41,7 @@ struct BottomBar: View {
                             items: [
                                 OnboardWelcomePersonView().asAnyView(),
                                 OnboardGreetingView().asAnyView(),
-                                OnboardingWishListView().asAnyView()
+                                OnboardWishListView().asAnyView()
                             ],
                             onComplete: {
                                 withAnimation(.bouncy) {

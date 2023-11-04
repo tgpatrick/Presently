@@ -31,8 +31,7 @@ class AppEnvironment: ObservableObject {
             let _ = await exchangeRepo.get(exchangeID)
             let _ = await peopleRepo.get(exchangeID)
             
-            if case .success = exchangeRepo.loadingState,
-               case .success = peopleRepo.loadingState,
+            if exchangeRepo.succeeded && peopleRepo.succeeded,
                let user = peopleRepo.storage?.first(where: {
                    $0.personId == personID}) {
                 

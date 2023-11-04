@@ -48,8 +48,7 @@ class LoginViewModel: ObservableObject {
                 let _ = await exchangeRepo.get(exchangeIdField)
                 let _ = await peopleRepo.get(exchangeIdField)
                 
-                if case .success = exchangeRepo.loadingState,
-                   case .success = peopleRepo.loadingState,
+                if exchangeRepo.succeeded && peopleRepo.succeeded,
                    let user = peopleRepo.storage?.first(where: {
                        $0.personId == personIdField}) {
                     

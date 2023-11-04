@@ -44,7 +44,7 @@ class ProfileViewModel: ObservableObject {
     
     private func putAndSave(personRepo: PersonRepository, environment: AppEnvironment, editedPerson: Person) async {
         await personRepo.put(editedPerson)
-        if case .success = personRepo.loadingState {
+        if personRepo.succeeded {
             await environment.replaceCurrentUser(with: editedPerson)
         }
     }
