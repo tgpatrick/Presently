@@ -25,6 +25,7 @@ class AppEnvironment: ObservableObject {
         allCurrentPeople?.first(where: {$0.personId == id})
     }
     
+    @MainActor
     func refreshFromServer(exchangeRepo: ExchangeRepository, peopleRepo: PeopleRepository) async {
         if let exchangeID, let personID {
             let _ = await exchangeRepo.get(exchangeID)
@@ -35,15 +36,20 @@ class AppEnvironment: ObservableObject {
                let user = peopleRepo.storage?.first(where: {
                    $0.personId == personID}) {
                 
-                DispatchQueue.main.async { [self] in
-                    currentExchange = exchangeRepo.storage
-                    allCurrentPeople = peopleRepo.storage
-                    currentUser = user
-                    userAssignment = peopleRepo.storage?.first(where: {
-                        $0.personId == user.recipient
-                    })
-                }
+                currentExchange = exchangeRepo.storage
+                allCurrentPeople = peopleRepo.storage
+                currentUser = user
+                userAssignment = peopleRepo.storage?.first(where: {
+                    $0.personId == user.recipient
+                })
             }
         }
+    }
+    
+    @MainActor
+    func replaceCurrentUser(with editedUser: Person) {
+        allCurrentPeople?.removeAll(where: { $0 == currentUser })
+        allCurrentPeople?.append(editedUser)
+        currentUser = editedUser
     }
 }

@@ -36,6 +36,7 @@ class LoginViewModel: ObservableObject {
         onLoginSuccess = function
     }
     
+    @MainActor
     func login() {
         withAnimation {
             if let onLoginStart {
@@ -47,23 +48,21 @@ class LoginViewModel: ObservableObject {
                 let _ = await exchangeRepo.get(exchangeIdField)
                 let _ = await peopleRepo.get(exchangeIdField)
                 
-                if case .success = exchangeRepo.loadingState, 
-                    case .success = peopleRepo.loadingState,
-                    let user = peopleRepo.storage?.first(where: {
-                        $0.personId == personIdField}) {
+                if case .success = exchangeRepo.loadingState,
+                   case .success = peopleRepo.loadingState,
+                   let user = peopleRepo.storage?.first(where: {
+                       $0.personId == personIdField}) {
                     
-                    DispatchQueue.main.async { [self] in
-                        withAnimation(.linear) {
-                            environment.currentExchange = exchangeRepo.storage
-                            environment.allCurrentPeople = peopleRepo.storage
-                            environment.currentUser = user
-                            environment.userAssignment = peopleRepo.storage?.first(where: {
-                                $0.personId == user.recipient
-                            })
-                            
-                            if let onLoginSuccess {
-                                onLoginSuccess()
-                            }
+                    withAnimation(.linear) {
+                        environment.currentExchange = exchangeRepo.storage
+                        environment.allCurrentPeople = peopleRepo.storage
+                        environment.currentUser = user
+                        environment.userAssignment = peopleRepo.storage?.first(where: {
+                            $0.personId == user.recipient
+                        })
+                        
+                        if let onLoginSuccess {
+                            onLoginSuccess()
                         }
                     }
                 }

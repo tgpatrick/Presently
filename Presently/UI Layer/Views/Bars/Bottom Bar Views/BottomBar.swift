@@ -20,6 +20,7 @@ struct BottomBar: View {
         environment.currentExchange != nil && environment.currentUser != nil
     }
     
+    @StateObject var personOnboardingViewModel = PersonOnboardingViewModel()
     @ObservedObject var loginViewModel: LoginViewModel
     @State var ribbonHeight: CGFloat
     @State private var page: BottomBarPage = .home
@@ -38,9 +39,8 @@ struct BottomBar: View {
                     } else if environment.barState == .bottomFocus {
                         OnboardingView(
                             items: [
-                                Text("Onboarding 1!").asAnyView(),
-                                Text("Onboarding 2!").asAnyView(),
-                                Text("Onboarding 3!").asAnyView()
+                                OnboardWelcomePersonView().asAnyView(),
+                                OnboardGreetingView().asAnyView()
                             ],
                             onComplete: {
                                 withAnimation(.bouncy) {
@@ -68,6 +68,7 @@ struct BottomBar: View {
                             }
                         )
                         .padding(.top, ribbonHeight / 2)
+                        .environmentObject(personOnboardingViewModel)
                     }
                 default:
                     EmptyView()
@@ -217,8 +218,8 @@ struct BottomBar: View {
 }
 
 #Preview {
-    var environment = AppEnvironment()
-    var loginViewModel = LoginViewModel()
+    let environment = AppEnvironment()
+    let loginViewModel = LoginViewModel()
     
     return ContentView(loginViewModel: loginViewModel)
         .environmentObject(LoginStorage())

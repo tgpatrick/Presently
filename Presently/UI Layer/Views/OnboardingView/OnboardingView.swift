@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
+    var buttonSize: CGFloat {
+        onboardingViewModel.smallButtons ? 15 : 25
+    }
+    var buttonPadding: CGFloat {
+        onboardingViewModel.smallButtons ? 3 : 10
+    }
+    
     let items: [AnyView]
     var onComplete: () -> Void
     var onCancel: () -> Void
@@ -98,6 +106,7 @@ struct OnboardingView: View {
                 }
             }
             .frame(maxHeight: 15)
+            .padding(.bottom)
         }
     }
     
@@ -122,8 +131,8 @@ struct OnboardingView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .bold()
-                                .frame(width: 25, height: 25)
-                                .padding(10)
+                                .frame(width: buttonSize, height: buttonSize)
+                                .padding(buttonPadding)
                         }
                         .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
                     }
@@ -144,8 +153,8 @@ struct OnboardingView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .bold()
-                            .frame(width: 25, height: 25)
-                            .padding(10)
+                            .frame(width: buttonSize, height: buttonSize)
+                            .padding(buttonPadding)
                     }
                     .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15), backgroundColor: index != lastIndex ? Color(.accentBackground) : .green))
                 }
@@ -179,4 +188,5 @@ struct OnboardingView: View {
         ShiftingBackground()
             .ignoresSafeArea(.all)
     }
+    .environmentObject(PersonOnboardingViewModel())
 }

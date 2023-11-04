@@ -120,7 +120,9 @@ struct BottomLoginView: View {
                     .mainContentBox(material: .ultraThin)
                     .padding(.bottom, 5)
             }
-            Button(action: loginViewModel.login) {
+            Button {
+                loginViewModel.login()
+            } label: {
                 Group {
                     if !loginViewModel.isLoading {
                         Text("Log in")
@@ -149,8 +151,8 @@ struct BottomLoginView: View {
 }
 
 #Preview {
-    var environment = AppEnvironment()
-    var loginViewModel = LoginViewModel()
+    let environment = AppEnvironment()
+    let loginViewModel = LoginViewModel()
     
     return ContentView(loginViewModel: loginViewModel)
         .environmentObject(LoginStorage())

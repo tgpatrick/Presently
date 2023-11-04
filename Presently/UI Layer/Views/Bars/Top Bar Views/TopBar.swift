@@ -86,8 +86,8 @@ struct TopBar: View {
 }
 
 #Preview {
-    var environment = AppEnvironment()
-    var loginViewModel = LoginViewModel()
+    let environment = AppEnvironment()
+    let loginViewModel = LoginViewModel()
     
     return ContentView(loginViewModel: loginViewModel)
         .environmentObject(LoginStorage())

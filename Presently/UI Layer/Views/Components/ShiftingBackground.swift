@@ -35,7 +35,7 @@ struct ShiftingBackground: View {
                 #endif
             }
         }
-        .edgesIgnoringSafeArea(.all)
+        .ignoresSafeArea()
     }
 }
 

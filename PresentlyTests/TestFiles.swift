@@ -109,6 +109,7 @@ var testPerson2 = Person(
     exchangeId: "0001",
     personId: "0002",
     name: "Tes2 McTes2son",
+    greeting: "Hello!",
     setUp: false,
     giftHistory: [
         HistoricalGift(year: 2020, recipientId: "0003", description: "Bag of four grapes"),

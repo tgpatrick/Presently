@@ -122,7 +122,7 @@ struct ViewOffsetKey: PreferenceKey {
 }
 
 #Preview {
-    var viewModel = ScrollViewModel()
+    let viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
         AllPeopleNavItem(allPeople: testPeople)

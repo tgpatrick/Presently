@@ -150,7 +150,7 @@ struct ExchangeNavItem: NavItemView {
 }
 
 #Preview {
-    var viewModel = ScrollViewModel()
+    let viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
         ExchangeNavItem(userName: testPerson.name, exchange: testExchange)

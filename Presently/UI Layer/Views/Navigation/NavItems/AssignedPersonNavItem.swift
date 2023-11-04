@@ -59,7 +59,7 @@ struct AssignedPersonNavItem: NavItemView {
 }
 
 #Preview {
-    var viewModel = ScrollViewModel()
+    let viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
         AssignedPersonNavItem(assignedPerson: testPerson2)

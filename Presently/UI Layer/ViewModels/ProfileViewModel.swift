@@ -21,7 +21,7 @@ class ProfileViewModel: ObservableObject {
             editedPerson.greeting = newIntro
             await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
         } else {
-            personRepo.loadingState = .success
+            personRepo.manualSuccess()
         }
     }
     
@@ -32,7 +32,7 @@ class ProfileViewModel: ObservableObject {
             editedPerson.wishList.append(newWish)
             await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
         } else {
-            personRepo.loadingState = .success
+            personRepo.manualSuccess()
         }
     }
     
@@ -45,11 +45,7 @@ class ProfileViewModel: ObservableObject {
     private func putAndSave(personRepo: PersonRepository, environment: AppEnvironment, editedPerson: Person) async {
         await personRepo.put(editedPerson)
         if case .success = personRepo.loadingState {
-            DispatchQueue.main.async {
-                environment.allCurrentPeople?.removeAll(where: { $0 == environment.currentUser })
-                environment.allCurrentPeople?.append(editedPerson)
-                environment.currentUser = editedPerson
-            }
+            await environment.replaceCurrentUser(with: editedPerson)
         }
     }
 }

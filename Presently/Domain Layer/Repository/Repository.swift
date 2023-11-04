@@ -20,10 +20,13 @@ protocol Repository: ObservableObject {
     var storage: T? { get set }
     var loadingState: LoadingState { get set }
     var isLoading: Bool { get }
+    var succeeded: Bool { get }
     
     func get(_ id: String) async
     func put(_ : T) async
     func delete(_ id: String) async
+    
+    func manualSuccess()
 }
 
 extension Repository {
@@ -32,5 +35,16 @@ extension Repository {
             return true
         }
         return false
+    }
+    
+    var succeeded: Bool {
+        if case .success = loadingState {
+            return true
+        }
+        return false
+    }
+    
+    func manualSuccess() {
+        self.loadingState = .success
     }
 }

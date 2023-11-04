@@ -73,7 +73,7 @@ struct NextDateNavItem: NavItemView  {
 }
 
 #Preview {
-    var viewModel = ScrollViewModel()
+    let viewModel = ScrollViewModel()
     
     return NavigationScrollView(viewModel: viewModel, items: [
         NextDateNavItem(exchange: testExchange)

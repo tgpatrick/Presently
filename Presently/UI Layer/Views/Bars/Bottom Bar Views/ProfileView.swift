@@ -79,6 +79,7 @@ struct ProfileView: View {
                                 TextField("Introduce yourself or say hi", text: $greetingTextField, axis: .vertical)
                                     .focused($greetingFieldFocused)
                                     .matchedGeometryEffect(id: "greetingTextField", in: profileNamespace)
+                                    .textFieldStyle(InsetTextFieldStyle(shape: RoundedRectangle(cornerRadius: 15), alignment: .leading, minHeight: 50))
                                 HStack {
                                     Spacer()
                                     Button("Cancel") {
@@ -113,7 +114,6 @@ struct ProfileView: View {
                             }
                         }
                     }
-                    .textFieldStyle(InsetTextFieldStyle(shape: RoundedRectangle(cornerRadius: 15), alignment: .leading))
                 }
                 if editState == .none || editState == .wishlist {
                     SectionView(title: "Wishlist") {
@@ -220,14 +220,14 @@ struct ProfileView: View {
             })) {
                 if let lastRequest = profileViewModel.lastRequest {
                     Button("Try again") {
-                        if profileViewModel.lastRequest == .intro {
+                        if lastRequest == .intro {
                             Task {
                                 await profileViewModel.saveIntro(
                                     personRepo: personRepo,
                                     environment: environment,
                                     newIntro: greetingTextField)
                             }
-                        } else if profileViewModel.lastRequest == .wishList {
+                        } else if lastRequest == .wishList {
                             Task {
                                 await profileViewModel.saveWishList(
                                     personRepo: personRepo,
@@ -330,7 +330,7 @@ struct ProfileView: View {
 }
 
 #Preview {
-    var environment = AppEnvironment()
+    let environment = AppEnvironment()
     
     return ZStack {
         ShiftingBackground()

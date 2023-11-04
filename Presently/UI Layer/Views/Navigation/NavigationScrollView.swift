@@ -75,7 +75,7 @@ struct NavigationScrollView: View {
 }
 
 #Preview {
-    var viewModel = ScrollViewModel()
+    let viewModel = ScrollViewModel()
     
     return NavigationScrollView(
         viewModel: viewModel,
