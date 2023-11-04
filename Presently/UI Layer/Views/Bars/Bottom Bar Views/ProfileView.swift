@@ -88,9 +88,6 @@ struct ProfileView: View {
                                     HStack {
                                         Spacer()
                                         Button("Cancel") {
-                                            focusedWish = nil
-                                            wishlistTextField = ""
-                                            wishLinkTextField = ""
                                             withAnimation {
                                                 greetingFieldFocused = false
                                                 editState = .none
@@ -103,9 +100,6 @@ struct ProfileView: View {
                                                 if personRepo.succeeded {
                                                     DispatchQueue.main.async {
                                                         withAnimation {
-                                                            focusedWish = nil
-                                                            wishlistTextField = ""
-                                                            wishLinkTextField = ""
                                                             editState = .none
                                                         }
                                                     }
@@ -179,6 +173,9 @@ struct ProfileView: View {
                                     }
                                     Button("Cancel") {
                                         withAnimation {
+                                            focusedWish = nil
+                                            wishlistTextField = ""
+                                            wishLinkTextField = ""
                                             wishlistFieldFocused = false
                                             linkFieldFocused = false
                                             wishHasLink = false
@@ -192,6 +189,9 @@ struct ProfileView: View {
                                             if personRepo.succeeded {
                                                 DispatchQueue.main.async {
                                                     withAnimation {
+                                                        focusedWish = nil
+                                                        wishlistTextField = ""
+                                                        wishLinkTextField = ""
                                                         editState = .none
                                                     }
                                                 }
