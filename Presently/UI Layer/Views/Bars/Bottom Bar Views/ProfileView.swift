@@ -33,6 +33,11 @@ struct ProfileView: View {
     @FocusState var wishlistFieldFocused
     @FocusState var linkFieldFocused
     
+    private let thisYear: Int = Calendar.current.component(.year, from: .now)
+    @State private var giftYear = Calendar.current.component(.year, from: Calendar.current.date(byAdding: .year, value: -1, to: .now) ?? .now)
+    @State private var giftRecipientId = ""
+    @State var focusedGift: HistoricalGift? = nil
+    
     let noIntroText = "Say a little bit about yourself, explain that you really don't want anything not on your list, or just say hi!"
     
     var body: some View {
@@ -106,13 +111,14 @@ struct ProfileView: View {
                                                 }
                                             }
                                         } label: {
-                                            if case .loading = personRepo.loadingState {
+                                            if personRepo.isLoading {
                                                 ProgressView()
                                             } else {
                                                 Text("Save")
                                             }
                                         }
                                         .buttonStyle(DepthButtonStyle(backgroundColor: .green))
+                                        .disabled(personRepo.isLoading)
                                     }
                                     .matchedGeometryEffect(id: "greetingButton", in: profileNamespace)
                                     .bold()
@@ -209,12 +215,96 @@ struct ProfileView: View {
                 if editState == .none || editState == .history {
                     SectionView(title: "History") {
                         VStack {
-                            if !currentUser.giftHistory.isEmpty {
-                                GiftHistoryView(user: currentUser)
-                                    .fixedSize(horizontal: false, vertical: true)
+                            Text("Please note: for the moment, you can only edit or delete the record of who you gave to")
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                            if editState != .history {
+                                if !currentUser.giftHistory.isEmpty {
+                                    GiftHistoryView(
+                                        user: currentUser,
+                                        onEdit: { gift in
+                                            giftYear = gift.year
+                                            giftRecipientId = gift.recipientId
+                                            focusedGift = gift
+                                            withAnimation {
+                                                editState = .history
+                                            }
+                                        },
+                                        onDelete: { gift in
+                                            Task {
+                                                await profileViewModel.deleteGift(personRepo: personRepo, environment: environment, gift: gift)
+                                            }
+                                        })
+                                    .matchedGeometryEffect(id: "GiftHistory", in: profileNamespace)
+                                } else {
+                                    Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
+                                        .foregroundStyle(Color.secondary)
+                                }
+                                Button("Add a gift") {
+                                    withAnimation {
+                                        editState = .history
+                                    }
+                                }
+                                .padding(.bottom)
                             } else {
-                                Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
-                                    .foregroundStyle(Color.secondary)
+                                VStack(spacing: 0) {
+                                    VStack(spacing: 0) {
+                                        HStack(spacing: 0) {
+                                            Text("In")
+                                            Picker("Select a year", selection: $giftYear) {
+                                                ForEach(2000..<thisYear, id: \.self) { year in
+                                                    Text("\(String(year))").tag(year)
+                                                }
+                                            }
+                                        }
+                                        HStack(spacing: 0) {
+                                            Text("I gave to")
+                                            Picker("Select a name", selection: $giftRecipientId) {
+                                                ForEach(environment.allCurrentPeople ?? []) { person in
+                                                    if person != environment.currentUser {
+                                                        Text(person.name).tag(person.personId)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .mainContentBox(material: .ultraThin)
+                                    .matchedGeometryEffect(id: "GiftHistory", in: profileNamespace)
+                                    HStack {
+                                        Spacer()
+                                        Button("Cancel") {
+                                            focusedGift = nil
+                                            withAnimation {
+                                                editState = .none
+                                            }
+                                        }
+                                        .buttonStyle(DepthButtonStyle(backgroundColor: .red))
+                                        Spacer()
+                                        Button {
+                                            Task {
+                                                await profileViewModel.saveGift(personRepo: personRepo, environment: environment, oldGift: focusedGift, newGift: HistoricalGift(year: giftYear, recipientId: giftRecipientId, description: ""))
+                                                if personRepo.succeeded {
+                                                    DispatchQueue.main.async {
+                                                        focusedGift = nil
+                                                        withAnimation {
+                                                            editState = .none
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } label: {
+                                            if personRepo.isLoading {
+                                                ProgressView()
+                                            } else {
+                                                Text("Save")
+                                            }
+                                        }
+                                        .buttonStyle(DepthButtonStyle(backgroundColor: .green))
+                                        Spacer()
+                                    }
+                                    .padding(.vertical)
+                                }
                             }
                         }
                     }

@@ -31,8 +31,17 @@ struct OnboardHistoryView: View {
                         VStack(alignment: .leading) {
                             ForEach(onboardingViewModel.giftHistory, id: \.self) { gift in
                                 if let person = environment.getPerson(id: gift.recipientId) {
-                                    Text("In \(String(gift.year)), you gave to \(person.name)")
-                                        .padding()
+                                    HStack {
+                                        Text("In \(String(gift.year)), you gave to \(person.name)")
+                                        Spacer()
+                                        Button("Delete") {
+                                            withAnimation {
+                                                onboardingViewModel.giftHistory.removeAll(where: { $0 == gift })
+                                            }
+                                        }
+                                        .buttonStyle(DepthButtonStyle(backgroundColor: .red))
+                                    }
+                                    .padding()
                                     Divider()
                                 }
                             }

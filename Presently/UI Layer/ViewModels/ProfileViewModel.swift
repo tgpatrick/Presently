@@ -42,6 +42,23 @@ class ProfileViewModel: ObservableObject {
         await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
     }
     
+    func saveGift(personRepo: PersonRepository, environment: AppEnvironment, oldGift: HistoricalGift?, newGift: HistoricalGift) async {
+        guard var editedPerson = environment.currentUser else { return }
+        if oldGift != newGift {
+            editedPerson.giftHistory.removeAll(where: { $0 == oldGift })
+            editedPerson.giftHistory.append(newGift)
+            await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
+        } else {
+            personRepo.manualSuccess()
+        }
+    }
+    
+    func deleteGift(personRepo: PersonRepository, environment: AppEnvironment, gift: HistoricalGift) async {
+        guard var editedPerson = environment.currentUser else { return }
+        editedPerson.giftHistory.removeAll(where: { $0 == gift })
+        await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
+    }
+    
     private func putAndSave(personRepo: PersonRepository, environment: AppEnvironment, editedPerson: Person) async {
         await personRepo.put(editedPerson)
         if personRepo.succeeded {

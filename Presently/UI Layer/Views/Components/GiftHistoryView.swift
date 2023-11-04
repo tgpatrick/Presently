@@ -10,7 +10,25 @@ import SwiftUI
 struct GiftHistoryView: View {
     @EnvironmentObject var environment: AppEnvironment
     @State var fullHistory = [Int: String]()
+    @State var giftToDelete: (Int, String)?
     let user: Person
+    let editable: Bool
+    let onEdit: ((HistoricalGift) -> Void)?
+    let onDelete: ((HistoricalGift) -> Void)?
+    
+    init(user: Person) {
+        self.user = user
+        self.editable = false
+        self.onEdit = nil
+        self.onDelete = nil
+    }
+    
+    init(user: Person, onEdit: @escaping (HistoricalGift) -> Void, onDelete: @escaping (HistoricalGift) -> Void) {
+        self.user = user
+        self.editable = true
+        self.onEdit = onEdit
+        self.onDelete = onDelete
+    }
     
     var body: some View {
         VStack {
@@ -43,29 +61,68 @@ struct GiftHistoryView: View {
         HStack(spacing: 0) {
             ForEach(fullHistory.sorted(by: >), id: \.key) { year, description in
                 VStack {
-                    Text(String(year))
-                        .bold()
+                    HStack {
+                        Text(String(year))
+                            .bold()
+                        if editable && user.giftHistory.first(where: { $0.year == year }) != nil {
+                            Spacer()
+                            HStack {
+                                Button("Delete") {
+                                    if giftToDeleteMatches((year, description)) {
+                                        if let onDelete { onDelete(user.giftHistory.first(where: { $0.year == year})!) }
+                                    } else {
+                                        withAnimation {
+                                            giftToDelete = (year, description)
+                                        }
+                                    }
+                                }
+                                .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                Button(giftToDeleteMatches((year, description)) ? "Keep" : "Edit") {
+                                    if giftToDeleteMatches((year, description)) {
+                                        withAnimation {
+                                            giftToDelete = nil
+                                        }
+                                    } else {
+                                        if let onEdit { onEdit(user.giftHistory.first(where: { $0.year == year})!) }
+                                    }
+                                }
+                                .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
+                                if giftToDeleteMatches((year, description)) {
+                                    Text("Are you sure?")
+                                }
+                            }
+                            .font(.caption)
+                        }
+                    }
                     Text(description)
                 }
                 .frame(minWidth: 200)
                 .mainContentBox(material: .ultraThin)
+                .fixedSize(horizontal: false, vertical: true)
                 /*
-                .contextMenu {
-                    if let onTap {
-                        Button("Open") {
-                            onTap(gift)
-                        }
-                    }
-                } preview: {
-                    PersonPreview(id: gift.recipientId)
-                        .environmentObject(environment)
-                }
+                 .contextMenu {
+                 if let onTap {
+                 Button("Open") {
+                 onTap(gift)
+                 }
+                 }
+                 } preview: {
+                 PersonPreview(id: gift.recipientId)
+                 .environmentObject(environment)
+                 }
                  */
                 .padding(.vertical, 15)
                 .padding(.horizontal, 7.5)
             }
         }
         .padding(.horizontal, 10)
+    }
+    
+    func giftToDeleteMatches(_ giftTuple: (Int, String)) -> Bool {
+        if let giftToDelete, giftToDelete == giftTuple {
+            return true
+        }
+        return false
     }
     
     func getFullHistory() {
@@ -94,7 +151,7 @@ struct GiftHistoryView: View {
         ShiftingBackground()
             .ignoresSafeArea()
         ScrollView {
-            GiftHistoryView(user: testPerson2)
+            GiftHistoryView(user: testPerson2, onEdit: {_ in}, onDelete: {_ in})
                 .padding()
                 .environmentObject(environment)
                 .onAppear {
