@@ -39,7 +39,9 @@ class PersonRepository: Repository {
     func put(_ person: Person) async {
         loadingState = .loading
         #if targetEnvironment(simulator)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: manualSuccess)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.manualSuccess()
+        }
         #else
         if let request = Requests.putPerson(person) {
             let result = await Network.load(request)

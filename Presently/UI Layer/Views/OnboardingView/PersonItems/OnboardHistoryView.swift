@@ -104,6 +104,7 @@ struct OnboardHistoryView: View {
             .padding(.vertical)
             .padding(.bottom, 5)
             .disabled(showEdit)
+            .opacity(showEdit ? 0 : 1)
         }
         .onAppear {
             recipientId = environment.allCurrentPeople?.first?.personId ?? ""

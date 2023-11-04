@@ -71,6 +71,8 @@ class LoginViewModel: ObservableObject {
                             onLoginSuccess()
                         }
                     }
+                } else {
+                    forceUpdate.toggle()
                 }
             }
         }

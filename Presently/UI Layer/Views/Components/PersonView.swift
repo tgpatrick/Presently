@@ -78,13 +78,7 @@ struct PersonView: View {
             }
             
             SectionView(title: "History") {
-                GiftHistoryView(giftHistory: person.giftHistory, onTap: { gift in
-                    if let recipient = environment.getPerson(id: gift.recipientId) {
-                        withAnimation {
-                            person = recipient
-                        }
-                    }
-                })
+                GiftHistoryView(user: person)
             }
         }
     }

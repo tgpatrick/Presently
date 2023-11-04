@@ -54,9 +54,9 @@ struct RibbonLoginView: View {
     
     var body: some View {
         VStack {
-            Text("Please enter your code:")
-                .bold()
             if exchangeID?.count ?? 0 < 4 || personID?.count ?? 0 < 4 || loginViewModel.hasError {
+                Text("Please enter your code:")
+                    .bold()
                 HStack {
                     Spacer()
                     TextField("", text: $loginViewModel.exchangeIdField)
@@ -95,6 +95,7 @@ struct RibbonLoginView: View {
                 }
                 .textFieldStyle(InsetTextFieldStyle())
             } else {
+                Spacer()
                 ProgressView()
             }
             Spacer()

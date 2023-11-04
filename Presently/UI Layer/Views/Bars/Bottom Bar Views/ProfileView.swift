@@ -48,9 +48,9 @@ struct ProfileView: View {
                 }
                 if editState == .none || editState == .greeting {
                     SectionView(title: "Intro") {
-                        if editState != .greeting {
-                            if let greeting = currentUser.greeting {
-                                VStack {
+                        VStack(alignment: .leading) {
+                            if editState != .greeting {
+                                if let greeting = currentUser.greeting {
                                     Text(greeting)
                                         .matchedGeometryEffect(id: "greetingTextField", in: profileNamespace)
                                     Button("Edit Intro") {
@@ -61,9 +61,8 @@ struct ProfileView: View {
                                         }
                                     }
                                     .matchedGeometryEffect(id: "greetingButton", in: profileNamespace)
-                                }
-                            } else {
-                                VStack {
+                                    .fillHorizontally()
+                                } else {
                                     Text(noIntroText)
                                         .foregroundStyle(Color.secondary)
                                     Button("Add Intro") {
@@ -72,45 +71,52 @@ struct ProfileView: View {
                                             greetingFieldFocused = true
                                         }
                                     }
+                                    .fillHorizontally()
                                 }
-                            }
-                        } else {
-                            VStack {
-                                TextField("Introduce yourself or say hi", text: $greetingTextField, axis: .vertical)
-                                    .focused($greetingFieldFocused)
-                                    .matchedGeometryEffect(id: "greetingTextField", in: profileNamespace)
-                                    .textFieldStyle(InsetTextFieldStyle(shape: RoundedRectangle(cornerRadius: 15), alignment: .leading, minHeight: 50))
-                                HStack {
-                                    Spacer()
-                                    Button("Cancel") {
-                                        withAnimation {
-                                            greetingFieldFocused = false
-                                            editState = .none
+                            } else {
+                                VStack {
+                                    TextField("Introduce yourself or say hi", text: $greetingTextField, axis: .vertical)
+                                        .focused($greetingFieldFocused)
+                                        .matchedGeometryEffect(id: "greetingTextField", in: profileNamespace)
+                                        .textFieldStyle(InsetTextFieldStyle(shape: RoundedRectangle(cornerRadius: 15), alignment: .leading, minHeight: 50))
+                                    HStack {
+                                        Spacer()
+                                        Button("Cancel") {
+                                            focusedWish = nil
+                                            wishlistTextField = ""
+                                            wishLinkTextField = ""
+                                            withAnimation {
+                                                greetingFieldFocused = false
+                                                editState = .none
+                                            }
                                         }
-                                    }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red))
-                                    Button {
-                                        Task {
-                                            await profileViewModel.saveIntro(personRepo: personRepo, environment: environment, newIntro: greetingTextField)
-                                            if personRepo.succeeded {
-                                                DispatchQueue.main.async {
-                                                    withAnimation {
-                                                        editState = .none
+                                        .buttonStyle(DepthButtonStyle(backgroundColor: .red))
+                                        Button {
+                                            Task {
+                                                await profileViewModel.saveIntro(personRepo: personRepo, environment: environment, newIntro: greetingTextField)
+                                                if personRepo.succeeded {
+                                                    DispatchQueue.main.async {
+                                                        withAnimation {
+                                                            focusedWish = nil
+                                                            wishlistTextField = ""
+                                                            wishLinkTextField = ""
+                                                            editState = .none
+                                                        }
                                                     }
                                                 }
                                             }
+                                        } label: {
+                                            if case .loading = personRepo.loadingState {
+                                                ProgressView()
+                                            } else {
+                                                Text("Save")
+                                            }
                                         }
-                                    } label: {
-                                        if case .loading = personRepo.loadingState {
-                                            ProgressView()
-                                        } else {
-                                            Text("Save")
-                                        }
+                                        .buttonStyle(DepthButtonStyle(backgroundColor: .green))
                                     }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green))
+                                    .matchedGeometryEffect(id: "greetingButton", in: profileNamespace)
+                                    .bold()
                                 }
-                                .matchedGeometryEffect(id: "greetingButton", in: profileNamespace)
-                                .bold()
                             }
                         }
                     }
@@ -118,11 +124,19 @@ struct ProfileView: View {
                 if editState == .none || editState == .wishlist {
                     SectionView(title: "Wishlist") {
                         if editState != .wishlist {
-                            if !currentUser.wishList.isEmpty {
-                                editableWishList
-                            } else {
-                                Text("Add a couple ideas, some specific links, or both!")
-                                    .foregroundStyle(Color.secondary)
+                            VStack {
+                                if !currentUser.wishList.isEmpty {
+                                    editableWishList
+                                } else {
+                                    Text("Add a couple ideas, some specific links, or both!")
+                                        .foregroundStyle(Color.secondary)
+                                }
+                                Button("Add a wish") {
+                                    withAnimation {
+                                        editState = .wishlist
+                                        wishlistFieldFocused = true
+                                    }
+                                }
                             }
                         } else {
                             VStack {
@@ -194,11 +208,14 @@ struct ProfileView: View {
                 }
                 if editState == .none || editState == .history {
                     SectionView(title: "History") {
-                        if !currentUser.giftHistory.isEmpty {
-                            GiftHistoryView(giftHistory: currentUser.giftHistory)
-                        } else {
-                            Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
-                                .foregroundStyle(Color.secondary)
+                        VStack {
+                            if !currentUser.giftHistory.isEmpty {
+                                GiftHistoryView(user: currentUser)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            } else {
+                                Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
+                                    .foregroundStyle(Color.secondary)
+                            }
                         }
                     }
                 }
@@ -242,108 +259,100 @@ struct ProfileView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             }
-        .buttonStyle(DepthButtonStyle())
-        .disabled(personRepo.isLoading)
-        .onChange(of: editState) { state in
-            withAnimation(.easeInOut) {
-                environment.hideTabBar = (state != .none)
+            .buttonStyle(DepthButtonStyle())
+            .disabled(personRepo.isLoading)
+            .onChange(of: editState) { state in
+                withAnimation(.easeInOut) {
+                    environment.hideTabBar = (state != .none)
+                }
             }
-        }
     }
     
     @ViewBuilder
     var editableWishList: some View {
         if let wishlist = environment.currentUser?.wishList {
-            VStack(alignment: .leading) {
-                ForEach(wishlist, id: \.self) { wish in
-                    VStack(alignment: .leading) {
-                        Text(wish.description)
-                            .matchedGeometryEffect(id: wish.description, in: profileNamespace)
-                        HStack {
-                            if !wish.link.isEmpty, let url = URL(string: wish.link) {
-                                Link(destination: url) {
-                                    HStack(spacing: 5) {
-                                        Text("Link")
-                                            .bold()
-                                        Image(.externalLink)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundStyle(.primary)
-                                            .frame(height: 15)
-                                    }
-                                    .padding(.horizontal, 2)
+            ForEach(wishlist, id: \.self) { wish in
+                VStack(alignment: .leading) {
+                    Text(wish.description)
+                        .matchedGeometryEffect(id: wish.description, in: profileNamespace)
+                    HStack {
+                        if !wish.link.isEmpty, let url = URL(string: wish.link) {
+                            Link(destination: url) {
+                                HStack(spacing: 5) {
+                                    Text("Link")
+                                        .bold()
+                                    Image(.externalLink)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .foregroundStyle(.primary)
+                                        .frame(height: 15)
                                 }
-                                .padding(.trailing, 8)
+                                .padding(.horizontal, 2)
                             }
-                            Spacer()
-                            if deletedWishes.first(where: { $0 == wish }) == nil {
-                                HStack {
-                                    Button("Delete") {
-                                        withAnimation {
-                                            deletedWishes.append(wish)
-                                        }
+                            .padding(.trailing, 8)
+                        }
+                        Spacer()
+                        if deletedWishes.first(where: { $0 == wish }) == nil {
+                            HStack {
+                                Button("Delete") {
+                                    withAnimation {
+                                        deletedWishes.append(wish)
                                     }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
-                                    Button("Edit") {
-                                        withAnimation {
-                                            focusedWish = wish
-                                            wishlistTextField = wish.description
-                                            wishHasLink = !wish.link.isEmpty
-                                            wishLinkTextField = wish.link
-                                            editState = .wishlist
-                                            wishlistFieldFocused = true
-                                        }
-                                    }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                 }
-                                .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
-                            } else {
-                                HStack {
-                                    Button {
-                                        Task {
-                                            await profileViewModel.deleteWish(personRepo: personRepo, environment: environment, wish: wish)
-                                            withAnimation {
-                                                deletedWishes.removeAll(where: { $0 == wish })
-                                            }
-                                        }
-                                    } label: {
-                                        if case .loading = personRepo.loadingState, deletedWishes.contains(where: { $0 == wish }) {
-                                            ProgressView()
-                                        } else {
-                                            Text("Delete")
-                                        }
+                                .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                Button("Edit") {
+                                    withAnimation {
+                                        focusedWish = wish
+                                        wishlistTextField = wish.description
+                                        wishHasLink = !wish.link.isEmpty
+                                        wishLinkTextField = wish.link
+                                        editState = .wishlist
+                                        wishlistFieldFocused = true
                                     }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
-                                    Button("Keep") {
+                                }
+                                .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
+                            }
+                            .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
+                        } else {
+                            HStack {
+                                Button {
+                                    Task {
+                                        await profileViewModel.deleteWish(personRepo: personRepo, environment: environment, wish: wish)
                                         withAnimation {
                                             deletedWishes.removeAll(where: { $0 == wish })
                                         }
                                     }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
+                                } label: {
+                                    if case .loading = personRepo.loadingState, deletedWishes.contains(where: { $0 == wish }) {
+                                        ProgressView()
+                                    } else {
+                                        Text("Delete")
+                                    }
                                 }
-                                .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
-                                Text("Are you sure?")
+                                .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                Button("Keep") {
+                                    withAnimation {
+                                        deletedWishes.removeAll(where: { $0 == wish })
+                                    }
+                                }
+                                .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                             }
+                            .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
+                            Text("Are you sure?")
                         }
-                        .font(.caption)
-                        .frame(maxHeight: 25)
-                        .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: profileNamespace)
-                        Divider()
-                            .foregroundStyle(.primary)
-                            .bold()
                     }
+                    .font(.caption)
+                    .frame(maxHeight: 25)
+                    .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: profileNamespace)
+                    Divider()
+                        .foregroundStyle(.primary)
+                        .bold()
                 }
-                Button("Add a wish") {
-                    withAnimation {
-                        editState = .wishlist
-                        wishlistFieldFocused = true
-                    }
-                }
-                .fillHorizontally()
             }
         }
     }
 }
+
 
 #Preview {
     let environment = AppEnvironment()
@@ -356,7 +365,7 @@ struct ProfileView: View {
                 .padding()
                 .environmentObject(environment)
                 .onAppear {
-                    environment.currentUser = testPerson
+                    environment.currentUser = testPerson2
                     environment.currentExchange = testExchange
                     environment.allCurrentPeople = testPeople
                 }
