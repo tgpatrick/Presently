@@ -107,80 +107,88 @@ struct OnboardWishListView: View {
     
     var editableWishList: some View {
         VStack {
-            ScrollView {
-                ForEach(onboardingViewModel.wishList, id: \.self) { wish in
-                    VStack(alignment: .leading) {
-                        Text(wish.description)
-                            .matchedGeometryEffect(id: wish.description, in: namespace)
-                        HStack {
-                            if !wish.link.isEmpty, let url = URL(string: wish.link) {
-                                Link(destination: url) {
-                                    HStack(spacing: 5) {
-                                        Text("Link")
-                                            .bold()
-                                            .minimumScaleFactor(0.5)
-                                        Image(.externalLink)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .foregroundStyle(.primary)
-                                    }
-                                    .frame(maxHeight: 15)
-                                    .padding(.horizontal, 2)
-                                }
-                                .allowsTightening(true)
-                                .padding(.trailing, 8)
-                            }
-                            Spacer()
-                            if deletedWishes.first(where: { $0 == wish }) == nil {
+            VStack {
+                if onboardingViewModel.wishList.isEmpty {
+                    Spacer()
+                    Text("(nothing yet)")
+                    Spacer()
+                } else {
+                    ScrollView {
+                        ForEach(onboardingViewModel.wishList, id: \.self) { wish in
+                            VStack(alignment: .leading) {
+                                Text(wish.description)
+                                    .matchedGeometryEffect(id: wish.description, in: namespace)
                                 HStack {
-                                    Button("Delete") {
-                                        withAnimation {
-                                            deletedWishes.append(wish)
+                                    if !wish.link.isEmpty, let url = URL(string: wish.link) {
+                                        Link(destination: url) {
+                                            HStack(spacing: 5) {
+                                                Text("Link")
+                                                    .bold()
+                                                    .minimumScaleFactor(0.5)
+                                                Image(.externalLink)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .foregroundStyle(.primary)
+                                            }
+                                            .frame(maxHeight: 15)
+                                            .padding(.horizontal, 2)
                                         }
+                                        .allowsTightening(true)
+                                        .padding(.trailing, 8)
                                     }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
-                                    Button("Edit") {
-                                        withAnimation {
-                                            focusedWish = wish
-                                            wishlistTextField = wish.description
-                                            wishHasLink = !wish.link.isEmpty
-                                            wishLinkTextField = wish.link
-                                            wishlistFieldFocused = true
-                                            showTextFields = true
+                                    Spacer()
+                                    if deletedWishes.first(where: { $0 == wish }) == nil {
+                                        HStack {
+                                            Button("Delete") {
+                                                withAnimation {
+                                                    deletedWishes.append(wish)
+                                                }
+                                            }
+                                            .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                            Button("Edit") {
+                                                withAnimation {
+                                                    focusedWish = wish
+                                                    wishlistTextField = wish.description
+                                                    wishHasLink = !wish.link.isEmpty
+                                                    wishLinkTextField = wish.link
+                                                    wishlistFieldFocused = true
+                                                    showTextFields = true
+                                                }
+                                            }
+                                            .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                         }
+                                        .matchedGeometryEffect(id: wish.description + "-buttons", in: namespace)
+                                    } else {
+                                        HStack {
+                                            Button {
+                                                withAnimation {
+                                                    onboardingViewModel.wishList.removeAll(where: { $0 == wish })
+                                                    deletedWishes.removeAll(where: { $0 == wish })
+                                                }
+                                            } label: {
+                                                Text("Delete")
+                                            }
+                                            .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
+                                            Button("Keep") {
+                                                withAnimation {
+                                                    deletedWishes.removeAll(where: { $0 == wish })
+                                                }
+                                            }
+                                            .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
+                                        }
+                                        .matchedGeometryEffect(id: wish.description + "-buttons", in: namespace)
+                                        Text("Are you sure?")
                                     }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                 }
-                                .matchedGeometryEffect(id: wish.description + "-buttons", in: namespace)
-                            } else {
-                                HStack {
-                                    Button {
-                                        withAnimation {
-                                            onboardingViewModel.wishList.removeAll(where: { $0 == wish })
-                                            deletedWishes.removeAll(where: { $0 == wish })
-                                        }
-                                    } label: {
-                                        Text("Delete")
-                                    }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red, shadowRadius: 5))
-                                    Button("Keep") {
-                                        withAnimation {
-                                            deletedWishes.removeAll(where: { $0 == wish })
-                                        }
-                                    }
-                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
-                                }
-                                .matchedGeometryEffect(id: wish.description + "-buttons", in: namespace)
-                                Text("Are you sure?")
+                                .font(.caption)
+                                .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: namespace)
+                                Divider()
+                                    .foregroundStyle(.primary)
+                                    .bold()
                             }
+                            .padding()
                         }
-                        .font(.caption)
-                        .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: namespace)
-                        Divider()
-                            .foregroundStyle(.primary)
-                            .bold()
                     }
-                    .padding()
                 }
             }
             .fillHorizontally()
@@ -206,6 +214,5 @@ struct OnboardWishListView: View {
         onComplete: {},
         onCancel: {})
     .background { ShiftingBackground().ignoresSafeArea() }
-    .environmentObject(AppEnvironment())
     .environmentObject(PersonOnboardingViewModel())
 }

@@ -41,7 +41,9 @@ struct BottomBar: View {
                             items: [
                                 OnboardWelcomePersonView().asAnyView(),
                                 OnboardGreetingView().asAnyView(),
-                                OnboardWishListView().asAnyView()
+                                OnboardWishListView().asAnyView(),
+                                OnboardHistoryView().asAnyView(),
+                                OnboardFinishPersonView().asAnyView()
                             ],
                             onComplete: {
                                 withAnimation(.bouncy) {
@@ -227,6 +229,6 @@ struct BottomBar: View {
         .environmentObject(environment)
         .onAppear(perform: {
             loginViewModel.exchangeIdField = "0001"
-            loginViewModel.personIdField = "0001"
+            loginViewModel.personIdField = "0002"
         })
 }

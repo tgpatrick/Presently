@@ -1,5 +1,5 @@
 //
-//  OnboardWelcomePersonView.swift
+//  OnboardFinishPersonView.swift
 //  Presently
 //
 //  Created by Thomas Patrick on 11/3/23.
@@ -7,33 +7,27 @@
 
 import SwiftUI
 
-struct OnboardWelcomePersonView: View {
-    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
+struct OnboardFinishPersonView: View {
     @EnvironmentObject var environment: AppEnvironment
+    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
     
     @State private var showContent = false
     
     var body: some View {
         VStack {
             if showContent {
-                Text("Welcome to Presently!")
+                Text("You're all set, " + (environment.currentUser?.name ?? "") + "!")
                     .font(.title)
                     .bold()
                     .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
-                Text("Let's get you set up...")
-                    .font(.title2)
                     .padding()
+                Text("Don't forget, you can change any of this later from your profile.")
                     .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
             }
         }
+        .multilineTextAlignment(.center)
         .onAppear {
-            if let currentUser = environment.currentUser, !onboardingViewModel.initialized {
-                onboardingViewModel.greeting = currentUser.greeting ?? ""
-                onboardingViewModel.wishList = currentUser.wishList
-                onboardingViewModel.giftHistory = currentUser.giftHistory
-                onboardingViewModel.initialized = true
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 withAnimation(.easeInOut(duration: 1)) {
                     showContent = true
                 }
@@ -43,14 +37,18 @@ struct OnboardWelcomePersonView: View {
 }
 
 #Preview {
-    OnboardingView(
+    let environment = AppEnvironment()
+    
+    return OnboardingView(
         items: [
-            OnboardWelcomePersonView().asAnyView(),
-            Text("Second View").asAnyView()
+            OnboardFinishPersonView().asAnyView()
         ],
         onComplete: {},
         onCancel: {})
     .background { ShiftingBackground().ignoresSafeArea() }
+    .environmentObject(environment)
     .environmentObject(PersonOnboardingViewModel())
-    .environmentObject(AppEnvironment())
+    .onAppear {
+        environment.currentUser = testPerson
+    }
 }
