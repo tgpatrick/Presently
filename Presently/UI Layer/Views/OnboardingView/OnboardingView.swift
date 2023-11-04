@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @EnvironmentObject var environment: AppEnvironment
     @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
+    @StateObject var personRepo = PersonRepository()
+    
     var buttonSize: CGFloat {
         onboardingViewModel.smallButtons ? 15 : 25
     }
@@ -22,6 +25,7 @@ struct OnboardingView: View {
     
     @State private var scrollPosition: Int? = 0
     @State private var movingForward: Bool = true
+    @State private var showAlert: Bool = false
     
     var body: some View {
         VStack {
@@ -32,13 +36,26 @@ struct OnboardingView: View {
                 HStack {
                     Spacer()
                     Button {
-                        onCancel()
+                        showAlert = true
                     } label: {
                         Image(systemName: "xmark")
                             .bold()
                     }
                 }
                 .buttonStyle(DepthButtonStyle())
+                .alert("Hang on", isPresented: $showAlert, actions: {
+                    Button("Good point, I'll stay") {}
+                    Button("Remind me next time") {
+                        onCancel()
+                    }
+                    Button("I'll do this later in my profile") {
+                        Task {
+                            await onboardingViewModel.save(personRepo: personRepo, environment: environment)
+                        }
+                    }
+                }) {
+                    Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
+                }
             }
             .padding(.horizontal)
             .padding(.top)
@@ -144,17 +161,39 @@ struct OnboardingView: View {
                                 scrollPosition! += 1
                             }
                         } else {
-                            withAnimation(.easeInOut) {
-                                onComplete()
+                            Task {
+                                await onboardingViewModel.save(personRepo: personRepo, environment: environment)
+                                if personRepo.succeeded {
+                                    DispatchQueue.main.async {
+                                        withAnimation(.easeInOut) {
+                                            onComplete()
+                                        }
+                                    }
+                                }
                             }
                         }
                     } label: {
-                        Image(systemName: index == lastIndex ? "checkmark" : "arrow.forward")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .bold()
-                            .frame(width: buttonSize, height: buttonSize)
-                            .padding(buttonPadding)
+                        if index == lastIndex {
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .bold()
+                                .frame(width: buttonSize, height: buttonSize)
+                                .padding(buttonPadding)
+                        } else {
+                            if personRepo.isLoading {
+                                ProgressView()
+                                    .frame(width: buttonSize, height: buttonSize)
+                                    .padding(buttonPadding)
+                            } else {
+                                Image(systemName: "arrow.forward")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .bold()
+                                    .frame(width: buttonSize, height: buttonSize)
+                                    .padding(buttonPadding)
+                            }
+                        }
                     }
                     .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15), backgroundColor: index != lastIndex ? Color(.accentBackground) : .green))
                 }
@@ -188,5 +227,6 @@ struct OnboardingView: View {
         ShiftingBackground()
             .ignoresSafeArea(.all)
     }
+    .environmentObject(AppEnvironment())
     .environmentObject(PersonOnboardingViewModel())
 }

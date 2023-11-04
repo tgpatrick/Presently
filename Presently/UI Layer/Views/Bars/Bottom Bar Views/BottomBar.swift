@@ -47,7 +47,6 @@ struct BottomBar: View {
                             ],
                             onComplete: {
                                 withAnimation(.bouncy) {
-                                    // TODO: set setUp to true
                                     environment.showOnboarding = false
                                     environment.barState = .closed
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -59,7 +58,6 @@ struct BottomBar: View {
                             },
                             onCancel: {
                                 withAnimation(.bouncy) {
-                                    // TODO: use an alert to choose whether to set setUp to true
                                     environment.showOnboarding = false
                                     environment.barState = .closed
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

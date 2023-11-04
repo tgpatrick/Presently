@@ -38,6 +38,9 @@ class PersonRepository: Repository {
     @MainActor
     func put(_ person: Person) async {
         loadingState = .loading
+        #if targetEnvironment(simulator)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: manualSuccess)
+        #else
         if let request = Requests.putPerson(person) {
             let result = await Network.load(request)
             if case .success = result {
@@ -49,6 +52,7 @@ class PersonRepository: Repository {
         } else {
             loadingState = .error(ErrorWrapper(error: NetworkError.request, guidance: "Please file a bug report"))
         }
+        #endif
     }
     
     @MainActor

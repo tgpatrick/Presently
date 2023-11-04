@@ -19,10 +19,11 @@ struct OnboardFinishPersonView: View {
                 Text("You're all set, " + (environment.currentUser?.name ?? "") + "!")
                     .font(.title)
                     .bold()
-                    .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+                    .transition(.fadeUp)
                     .padding()
                 Text("Don't forget, you can change any of this later from your profile.")
-                    .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+                .font(.title2)
+                    .transition(.fadeUp)
             }
         }
         .multilineTextAlignment(.center)

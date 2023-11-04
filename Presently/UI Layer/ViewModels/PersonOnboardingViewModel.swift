@@ -19,6 +19,7 @@ class PersonOnboardingViewModel: ObservableObject {
         editedPerson.greeting = greeting
         editedPerson.wishList = wishList
         editedPerson.giftHistory = giftHistory
+        editedPerson.setUp = true
         if editedPerson != environment.currentUser {
             await personRepo.put(editedPerson)
             if personRepo.succeeded {

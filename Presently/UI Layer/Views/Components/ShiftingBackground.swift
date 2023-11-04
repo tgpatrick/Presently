@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ShiftingBackground: View {
     @State private var center1: UnitPoint = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
+    @State private var center2: UnitPoint = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
     @State private var endRadius: CGFloat = .zero
     
     var body: some View {
@@ -22,6 +23,13 @@ struct ShiftingBackground: View {
                 ], center: center1, startRadius: .zero, endRadius: endRadius)
                 .opacity(0.4)
                 .blur(radius: 5)
+                RadialGradient(colors: [
+                    Color(.primaryBackground),
+                    Color(.secondaryBackground),
+                    Color(.primaryBackground)
+                ], center: center2, startRadius: .zero, endRadius: endRadius)
+                .opacity(0.4)
+                .blur(radius: 5)
             }
             .opacity(0.5)
             .onAppear {
@@ -30,6 +38,7 @@ struct ShiftingBackground: View {
                 Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
                     withAnimation(.easeInOut(duration: 2)) {
                         center1 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
+                        center2 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
                     }
                 }.fire()
                 #endif

@@ -8,11 +8,15 @@
 import SwiftUI
 
 class LoginViewModel: ObservableObject {
+    @AppStorage("CurrentExchangeID") private var exchangeID: String?
+    @AppStorage("CurrentPersonID") private var personID: String?
+    
     @Published var environment = AppEnvironment()
     @Published var exchangeRepo = ExchangeRepository()
     @Published var peopleRepo = PeopleRepository()
     @Published var exchangeIdField = ""
     @Published var personIdField = ""
+    @Published var forceUpdate = false
     var onLoginStart: (() -> Void)?
     var onLoginSuccess: (() -> Void)?
     var isLoading: Bool {
@@ -51,7 +55,10 @@ class LoginViewModel: ObservableObject {
                 if exchangeRepo.succeeded && peopleRepo.succeeded,
                    let user = peopleRepo.storage?.first(where: {
                        $0.personId == personIdField}) {
-                    
+                    exchangeID = exchangeIdField
+                    personID = personIdField
+                    exchangeIdField = ""
+                    personIdField = ""
                     withAnimation(.linear) {
                         environment.currentExchange = exchangeRepo.storage
                         environment.allCurrentPeople = peopleRepo.storage

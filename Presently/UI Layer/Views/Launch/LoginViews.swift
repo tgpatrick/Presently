@@ -45,6 +45,9 @@ struct TopLoginView: View {
 }
 
 struct RibbonLoginView: View {
+    @AppStorage("CurrentExchangeID") private var exchangeID: String?
+    @AppStorage("CurrentPersonID") private var personID: String?
+    
     @FocusState var exchangeIdFieldFocused
     @FocusState var personIdFieldFocused
     @ObservedObject var loginViewModel: LoginViewModel
@@ -53,7 +56,7 @@ struct RibbonLoginView: View {
         VStack {
             Text("Please enter your code:")
                 .bold()
-            VStack {
+            if exchangeID?.count ?? 0 < 4 || personID?.count ?? 0 < 4 || loginViewModel.hasError {
                 HStack {
                     Spacer()
                     TextField("", text: $loginViewModel.exchangeIdField)
@@ -66,7 +69,7 @@ struct RibbonLoginView: View {
                             personIdFieldFocused = true
                         }
                         .onChange(of: loginViewModel.exchangeIdField) { _ in
-                            if loginViewModel.exchangeIdField.count >= 4 {
+                            if exchangeIdFieldFocused && loginViewModel.exchangeIdField.count >= 4 {
                                 personIdFieldFocused = true
                             }
                             loginViewModel.onEidChange()
@@ -91,10 +94,17 @@ struct RibbonLoginView: View {
                     Spacer()
                 }
                 .textFieldStyle(InsetTextFieldStyle())
+            } else {
+                ProgressView()
             }
             Spacer()
         }
         .onAppear {
+            if let exchangeID, let personID {
+                loginViewModel.exchangeIdField = exchangeID
+                loginViewModel.personIdField = personID
+                loginViewModel.login()
+            }
             loginViewModel.setOnLoginStart {
                 exchangeIdFieldFocused = false
                 personIdFieldFocused = false
@@ -104,6 +114,9 @@ struct RibbonLoginView: View {
 }
 
 struct BottomLoginView: View {
+    @AppStorage("CurrentExchangeID") private var exchangeID: String?
+    @AppStorage("CurrentPersonID") private var personID: String?
+    
     @EnvironmentObject var environment: AppEnvironment
     @StateObject var exchangeRepo = ExchangeRepository()
     @StateObject var peopleRepo = PeopleRepository()
@@ -120,25 +133,27 @@ struct BottomLoginView: View {
                     .mainContentBox(material: .ultraThin)
                     .padding(.bottom, 5)
             }
-            Button {
-                loginViewModel.login()
-            } label: {
-                Group {
-                    if !loginViewModel.isLoading {
-                        Text("Log in")
-                            .bold()
-                            .frame(width: 100)
-                    } else {
-                        ProgressView()
-                            .frame(width: 100)
-                            .transition(.opacity)
+            if exchangeID?.count ?? 0 < 4 || personID?.count ?? 0 < 4 || loginViewModel.hasError {
+                Button {
+                    loginViewModel.login()
+                } label: {
+                    Group {
+                        if !loginViewModel.isLoading {
+                            Text("Log in")
+                                .bold()
+                                .frame(width: 100)
+                        } else {
+                            ProgressView()
+                                .frame(width: 100)
+                                .transition(.opacity)
+                        }
                     }
                 }
+                .buttonStyle(DepthButtonStyle())
+                .disabled(loginViewModel.isLoading)
+                .transition(.opacity)
+                .accessibilityIdentifier("LoginButton")
             }
-            .buttonStyle(DepthButtonStyle())
-            .disabled(loginViewModel.isLoading)
-            .transition(.opacity)
-            .accessibilityIdentifier("LoginButton")
             Spacer()
         }
         .padding(.top)

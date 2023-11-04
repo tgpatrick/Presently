@@ -26,6 +26,7 @@ protocol Repository: ObservableObject {
     func put(_ : T) async
     func delete(_ id: String) async
     
+    func reset()
     func manualSuccess()
 }
 
@@ -42,6 +43,11 @@ extension Repository {
             return true
         }
         return false
+    }
+    
+    func reset() {
+        self.loadingState = .resting
+        self.storage = nil
     }
     
     func manualSuccess() {

@@ -37,7 +37,7 @@ struct OnboardWishListView: View {
                         .focused($wishlistFieldFocused)
                     if wishHasLink {
                         ZStack {
-                            TextField("Put your link here", text: $wishLinkTextField)
+                            TextField("Paste your link here", text: $wishLinkTextField)
                                 .keyboardType(.URL)
                                 .focused($linkFieldFocused)
                                 .transition(.move(edge: .top).combined(with: .opacity))
@@ -64,6 +64,8 @@ struct OnboardWishListView: View {
                         }
                         Button("Cancel") {
                             focusedWish = nil
+                            wishlistTextField = ""
+                            wishLinkTextField = ""
                             withAnimation {
                                 wishlistFieldFocused = false
                                 linkFieldFocused = false
@@ -72,18 +74,18 @@ struct OnboardWishListView: View {
                             }
                         }
                         .buttonStyle(DepthButtonStyle(backgroundColor: .red))
-                        Button {
+                        Button("Save") {
                             let newWish = WishListItem(description: wishlistTextField, link: wishLinkTextField)
                             if newWish != focusedWish {
                                 onboardingViewModel.wishList.removeAll(where: { $0 == focusedWish })
                                 onboardingViewModel.wishList.append(newWish)
                             }
                             focusedWish = nil
+                            wishlistTextField = ""
+                            wishLinkTextField = ""
                             withAnimation {
                                 showTextFields = false
                             }
-                        } label: {
-                            Text("Save")
                         }
                         .buttonStyle(DepthButtonStyle(backgroundColor: .green))
                     }

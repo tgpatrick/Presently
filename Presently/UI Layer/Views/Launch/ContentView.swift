@@ -21,12 +21,14 @@ enum Bar {
 
 struct ContentView: View {
     @EnvironmentObject var environment: AppEnvironment
+    
     @StateObject var scrollViewModel = ScrollViewModel()
     @StateObject var loginViewModel = LoginViewModel()
     @Namespace private var mainNamespace
     private var isLoggedIn: Bool {
         environment.currentExchange != nil && environment.currentUser != nil
     }
+    
     @State private var ribbonHeight: CGFloat = 0
     @State private var navItems: [any NavItemView] = []
     

@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct OnboardWelcomePersonView: View {
-    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
     @EnvironmentObject var environment: AppEnvironment
+    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
     
     @State private var showContent = false
     
     var body: some View {
         VStack {
             if showContent {
-                Text("Welcome to Presently!")
+                Text("Welcome to Presently, " + (environment.currentUser?.name ?? "") + "!")
                     .font(.title)
                     .bold()
-                    .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
-                Text("Let's get you set up...")
+                    .transition(.fadeUp)
+                Text("Your organizer started your account, but let's take a second to make sure everything's in order...")
                     .font(.title2)
                     .padding()
-                    .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+                    .transition(.fadeUp)
             }
         }
+        .multilineTextAlignment(.center)
         .onAppear {
             if let currentUser = environment.currentUser, !onboardingViewModel.initialized {
                 onboardingViewModel.greeting = currentUser.greeting ?? ""
@@ -33,7 +34,7 @@ struct OnboardWelcomePersonView: View {
                 onboardingViewModel.giftHistory = currentUser.giftHistory
                 onboardingViewModel.initialized = true
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 withAnimation(.easeInOut(duration: 1)) {
                     showContent = true
                 }
@@ -43,7 +44,9 @@ struct OnboardWelcomePersonView: View {
 }
 
 #Preview {
-    OnboardingView(
+    let environment = AppEnvironment()
+    
+    return OnboardingView(
         items: [
             OnboardWelcomePersonView().asAnyView(),
             Text("Second View").asAnyView()
@@ -52,5 +55,8 @@ struct OnboardWelcomePersonView: View {
         onCancel: {})
     .background { ShiftingBackground().ignoresSafeArea() }
     .environmentObject(PersonOnboardingViewModel())
-    .environmentObject(AppEnvironment())
+    .environmentObject(environment)
+    .onAppear {
+        environment.currentUser = testPerson
+    }
 }

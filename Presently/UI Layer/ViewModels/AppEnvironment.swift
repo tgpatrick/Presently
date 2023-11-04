@@ -51,4 +51,17 @@ class AppEnvironment: ObservableObject {
         allCurrentPeople?.append(editedUser)
         currentUser = editedUser
     }
+    
+    func logOut() {
+        exchangeID = ""
+        personID = ""
+        currentUser = nil
+        currentExchange = nil
+        userAssignment = nil
+        allCurrentPeople = nil
+        barState = .closed
+        shouldOpen = false
+        showOnboarding = false
+        hideTabBar = false
+    }
 }
