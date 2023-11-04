@@ -57,6 +57,7 @@ struct ProfileView: View {
                             if editState != .greeting {
                                 if let greeting = currentUser.greeting {
                                     Text(greeting)
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .matchedGeometryEffect(id: "greetingTextField", in: profileNamespace)
                                     Button("Edit Intro") {
                                         withAnimation {
