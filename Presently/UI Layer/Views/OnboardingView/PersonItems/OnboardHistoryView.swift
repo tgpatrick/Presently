@@ -128,8 +128,7 @@ struct OnboardHistoryView: View {
             OnboardHistoryView().asAnyView(),
             OnboardWishListView().asAnyView()
         ],
-        onComplete: {},
-        onCancel: {})
+        onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }
     .environmentObject(environment)
     .environmentObject(PersonOnboardingViewModel())

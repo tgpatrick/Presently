@@ -10,7 +10,9 @@ import SwiftUI
 struct ShiftingBackground: View {
     @State private var center1: UnitPoint = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
     @State private var center2: UnitPoint = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
-    @State private var endRadius: CGFloat = .zero
+    @State private var endRadius: CGFloat = 1000
+    
+    let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
     
     var body: some View {
         GeometryReader { geo in
@@ -32,16 +34,14 @@ struct ShiftingBackground: View {
                 .blur(radius: 5)
             }
             .opacity(0.5)
+            .onReceive(timer) { _ in
+                withAnimation(.easeInOut(duration: 1.9)) {
+                    center1 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
+                    center2 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
+                }
+            }
             .onAppear {
-                #if !targetEnvironment(simulator)
-                endRadius = geo.size.width * 2
-                Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-                    withAnimation(.easeInOut(duration: 2)) {
-                        center1 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
-                        center2 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
-                    }
-                }.fire()
-                #endif
+                endRadius = geo.size.height
             }
         }
         .ignoresSafeArea()

@@ -51,8 +51,7 @@ struct OnboardWelcomePersonView: View {
             OnboardWelcomePersonView().asAnyView(),
             Text("Second View").asAnyView()
         ],
-        onComplete: {},
-        onCancel: {})
+        onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }
     .environmentObject(PersonOnboardingViewModel())
     .environmentObject(environment)

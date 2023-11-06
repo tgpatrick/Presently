@@ -28,6 +28,13 @@ struct OnboardGreetingView: View {
                 .focused($textFieldFocused)
                 .padding()
             Spacer()
+            if textFieldFocused {
+                Button("Done") {
+                    textFieldFocused = false
+                }
+                .buttonStyle(DepthButtonStyle())
+                .padding(.bottom)
+            }
         }
         .animation(.easeInOut, value: textFieldFocused)
         .onChange(of: textFieldFocused) { val in
@@ -44,8 +51,7 @@ struct OnboardGreetingView: View {
             OnboardGreetingView().asAnyView(),
             Text("Second View").asAnyView()
         ],
-        onComplete: {},
-        onCancel: {})
+        onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }
     .environmentObject(AppEnvironment())
     .environmentObject(PersonOnboardingViewModel())

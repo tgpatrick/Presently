@@ -213,8 +213,7 @@ struct OnboardWishListView: View {
             OnboardWishListView().asAnyView(),
             Text("Second View").asAnyView()
         ],
-        onComplete: {},
-        onCancel: {})
+        onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }
     .environmentObject(PersonOnboardingViewModel())
 }

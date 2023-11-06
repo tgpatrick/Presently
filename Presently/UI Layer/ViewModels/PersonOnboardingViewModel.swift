@@ -19,6 +19,11 @@ class PersonOnboardingViewModel: ObservableObject {
         editedPerson.greeting = greeting
         editedPerson.wishList = wishList
         editedPerson.giftHistory = giftHistory
+        await finish(personRepo: personRepo, environment: environment, person: editedPerson)
+    }
+    
+    func finish(personRepo: PersonRepository, environment: AppEnvironment, person: Person) async {
+        var editedPerson = person
         editedPerson.setUp = true
         if editedPerson != environment.currentUser {
             await personRepo.put(editedPerson)

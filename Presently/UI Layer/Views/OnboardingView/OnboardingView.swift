@@ -20,8 +20,7 @@ struct OnboardingView: View {
     }
     
     let items: [AnyView]
-    var onComplete: () -> Void
-    var onCancel: () -> Void
+    var onClose: () -> Void
     
     @State private var scrollPosition: Int? = 0
     @State private var movingForward: Bool = true
@@ -29,38 +28,43 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                Text("Set Up")
-                    .font(.largeTitle)
-                    .bold()
-                HStack {
-                    Spacer()
-                    Button {
-                        showAlert = true
-                    } label: {
-                        Image(systemName: "xmark")
-                            .bold()
-                    }
-                }
-                .buttonStyle(DepthButtonStyle())
-                .alert("Hang on", isPresented: $showAlert, actions: {
-                    Button("Good point, I'll stay") {}
-                    Button("Remind me next time") {
-                        onCancel()
-                    }
-                    Button("I'll do this later in my profile") {
-                        Task {
-                            await onboardingViewModel.save(personRepo: personRepo, environment: environment)
+            if !onboardingViewModel.smallButtons {
+                ZStack {
+                    Text("Set Up")
+                        .font(.largeTitle)
+                        .bold()
+                    HStack {
+                        Spacer()
+                        Button {
+                            showAlert = true
+                        } label: {
+                            Image(systemName: "xmark")
+                                .bold()
                         }
                     }
-                }) {
-                    Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
+                    .buttonStyle(DepthButtonStyle())
+                    .alert("Hang on", isPresented: $showAlert, actions: {
+                        Button("Good point, I'll stay") {}
+                        Button("Remind me next time") {
+                            onClose()
+                        }
+                        Button("I'll do this later in my profile") {
+                            if let currentUser = environment.currentUser {
+                                Task {
+                                    await onboardingViewModel.finish(personRepo: personRepo, environment: environment, person: currentUser)
+                                }
+                            }
+                        }
+                    }) {
+                        Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
+                    }
                 }
+                .padding(.horizontal)
+                .padding(.top)
             }
-            .padding(.horizontal)
-            .padding(.top)
             GeometryReader { geo in
-                if #available(iOS 17.0, *) {
+                //TODO: See if ScrollView version can be patched to work on smaller phones
+                if #available(iOS 17.0, *), geo.size.width > 390 {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack {
                             ForEach(items.indices, id: \.self) { index in
@@ -82,6 +86,7 @@ struct OnboardingView: View {
                     }
                     .scrollTargetBehavior(.viewAligned)
                     .scrollPosition(id: $scrollPosition)
+                    .scrollDisabled(personRepo.isLoading || personRepo.succeeded)
                 } else {
                     onboardingItem(
                         content: items[scrollPosition ?? 0],
@@ -152,6 +157,7 @@ struct OnboardingView: View {
                                 .padding(buttonPadding)
                         }
                         .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
+                        .disabled(personRepo.isLoading || personRepo.succeeded)
                     }
                     Spacer()
                     Button {
@@ -163,10 +169,10 @@ struct OnboardingView: View {
                         } else {
                             Task {
                                 await onboardingViewModel.save(personRepo: personRepo, environment: environment)
-                                if personRepo.succeeded {
-                                    DispatchQueue.main.async {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    if personRepo.succeeded {
                                         withAnimation(.easeInOut) {
-                                            onComplete()
+                                            onClose()
                                         }
                                     }
                                 }
@@ -174,25 +180,25 @@ struct OnboardingView: View {
                         }
                     } label: {
                         if index == lastIndex {
-                            Image(systemName: "checkmark")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .bold()
-                                .frame(width: buttonSize, height: buttonSize)
-                                .padding(buttonPadding)
-                        } else {
                             if personRepo.isLoading {
                                 ProgressView()
                                     .frame(width: buttonSize, height: buttonSize)
                                     .padding(buttonPadding)
                             } else {
-                                Image(systemName: "arrow.forward")
+                                Image(systemName: "checkmark")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .bold()
                                     .frame(width: buttonSize, height: buttonSize)
                                     .padding(buttonPadding)
                             }
+                        } else {
+                            Image(systemName: "arrow.forward")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .bold()
+                                .frame(width: buttonSize, height: buttonSize)
+                                .padding(buttonPadding)
                         }
                     }
                     .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15), backgroundColor: index != lastIndex ? Color(.accentBackground) : .green))
@@ -220,8 +226,7 @@ struct OnboardingView: View {
                 Text("Hello, World 3!")
             }.asAnyView()
         ],
-        onComplete: {},
-        onCancel: {}
+        onClose: {}
     )
     .background {
         ShiftingBackground()

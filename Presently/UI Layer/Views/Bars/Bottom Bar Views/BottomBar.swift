@@ -45,21 +45,9 @@ struct BottomBar: View {
                                 OnboardHistoryView().asAnyView(),
                                 OnboardFinishPersonView().asAnyView()
                             ],
-                            onComplete: {
+                            onClose: {
                                 withAnimation(.bouncy) {
                                     environment.showOnboarding = false
-                                    environment.barState = .closed
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        withAnimation(.bouncy) {
-                                            environment.shouldOpen = true
-                                        }
-                                    }
-                                }
-                            },
-                            onCancel: {
-                                withAnimation(.bouncy) {
-                                    environment.showOnboarding = false
-                                    environment.barState = .closed
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         withAnimation(.bouncy) {
                                             environment.shouldOpen = true
@@ -145,6 +133,7 @@ struct BottomBar: View {
         }
     }
     
+    //TODO: Show icons on iPhone SE
     var bottomTabBar: some View {
         HStack {
             Spacer()
