@@ -12,7 +12,7 @@ struct ShiftingBackground: View {
     @State private var center2: UnitPoint = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
     @State private var endRadius: CGFloat = 1000
     
-    let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
     
     var body: some View {
         GeometryReader { geo in
@@ -35,7 +35,7 @@ struct ShiftingBackground: View {
             }
             .opacity(0.5)
             .onReceive(timer) { _ in
-                withAnimation(.easeInOut(duration: 1.9)) {
+                withAnimation(.easeInOut(duration: 3.9)) {
                     center1 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
                     center2 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
                 }

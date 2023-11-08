@@ -15,7 +15,7 @@ enum BottomBarPage {
 
 struct BottomBar: View {
     @EnvironmentObject private var environment: AppEnvironment
-    @Namespace private var botttomNamespace
+    @Namespace private var bottomNamespace
     private var isLoggedIn: Bool {
         environment.currentExchange != nil && environment.currentUser != nil
     }
@@ -23,7 +23,7 @@ struct BottomBar: View {
     @StateObject var personOnboardingViewModel = PersonOnboardingViewModel()
     @ObservedObject var loginViewModel: LoginViewModel
     @State var ribbonHeight: CGFloat
-    @State private var page: BottomBarPage = .home
+    @State var page: BottomBarPage = .home
     @State private var barHeight: CGFloat = 50
     
     var body: some View {
@@ -76,30 +76,15 @@ struct BottomBar: View {
                         case .profile:
                             TitledScrollView(
                                 title: "Profile",
-                                namespace: botttomNamespace,
+                                namespace: bottomNamespace,
                                 material: .ultraThin) {
                                     ProfileView()
                                         .padding()
                                 }
                         case .organizer:
-                            TitledScrollView(
-                                title: "Organizer Tools",
-                                namespace: botttomNamespace,
-                                material: .ultraThin) {
-                                    VStack(spacing: 15) {
-                                        Text("This is the organizer tool page, I guess")
-                                            .fillHorizontally()
-                                            .padding()
-                                            .background(.ultraThinMaterial)
-                                            .cornerRadius(15)
-                                        Text("This a second piece of it, I guess")
-                                            .fillHorizontally()
-                                            .padding()
-                                            .background(.ultraThinMaterial)
-                                            .cornerRadius(15)
-                                    }
-                                    .padding()
-                                }
+                            OrganizerView(
+                                namespace: _bottomNamespace
+                            )
                         case .home:
                             EmptyView()
                         }
@@ -211,11 +196,13 @@ struct BottomBar: View {
     let environment = AppEnvironment()
     let loginViewModel = LoginViewModel()
     
-    return ContentView(loginViewModel: loginViewModel)
-        .environmentObject(LoginStorage())
+    return BottomBar(loginViewModel: loginViewModel, ribbonHeight: .zero, page: .profile)
+        .background(ShiftingBackground())
         .environmentObject(environment)
         .onAppear(perform: {
-            loginViewModel.exchangeIdField = "0001"
-            loginViewModel.personIdField = "0002"
+            environment.currentUser = testPerson
+            environment.currentExchange = testExchange
+            environment.allCurrentPeople = testPeople
+            environment.barState = .bottomFocus
         })
 }
