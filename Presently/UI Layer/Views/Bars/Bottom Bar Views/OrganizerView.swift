@@ -102,19 +102,22 @@ struct OrganizerView: View {
                 .padding(.horizontal)
             if let currentExchange = environment.currentExchange {
                 // TODO: add actions
-                if !currentExchange.started {
-                    SwipeBar(
-                        description: "Swipe to make assignments",
-                        onChanged: adjustBlur,
-                        action: {})
-                        .padding(.horizontal)
-                } else {
-                    SwipeBar(
-                        description: "Swipe to finish exchange",
-                        onChanged: adjustBlur,
-                        action: {})
-                        .padding(.horizontal)
+                Group {
+                    if !currentExchange.started {
+                        SwipeBar(
+                            description: "Swipe to make assignments",
+                            onChanged: adjustBlur,
+                            action: {})
+                    } else {
+                        SwipeBar(
+                            description: "Swipe to finish exchange",
+                            onChanged: adjustBlur,
+                            action: {})
+                    }
                 }
+                .padding(.horizontal)
+                .padding(.horizontal, 3)
+                .padding(.bottom)
             }
         }
     }

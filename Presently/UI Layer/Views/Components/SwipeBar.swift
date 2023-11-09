@@ -17,6 +17,8 @@ struct SwipeBar: View {
     @State private var swipeOffset: CGFloat = .zero
     @State private var circleDiameter: CGFloat = .zero
     @State private var barWidth: CGFloat = .zero
+    @State private var circleMaxX: CGFloat = .zero
+    @State private var descriptionMinX: CGFloat = .zero
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -26,7 +28,7 @@ struct SwipeBar: View {
                     .foregroundStyle(.ultraThinMaterial)
                     .background {
                         GeometryReader { geo in
-                            Color(.primaryBackground).opacity(swipeOffset / barWidth)
+                            Color(.accentBackground).opacity(swipeOffset / barWidth + 0.3)
                                 .onAppear {
                                     barWidth = geo.size.width - depth * 2
                                 }
@@ -37,6 +39,14 @@ struct SwipeBar: View {
                         .opacity(0.5)
                         .bold()
                         .blur(radius: 10 * (swipeOffset / barWidth))
+                        .padding(.leading, descriptionMinX > circleMaxX ? 0 : circleDiameter)
+                        .background {
+                            GeometryReader { geo in
+                                Color.clear.onAppear {
+                                    descriptionMinX = geo.frame(in: .global).minX
+                                }
+                            }
+                        }
                 }
             }
             .frame(maxHeight: maxHeight)
@@ -49,6 +59,7 @@ struct SwipeBar: View {
                         GeometryReader { geo in
                             Color.clear.opacity(0.8).onAppear {
                                 circleDiameter = geo.size.width
+                                circleMaxX = geo.frame(in: .global).maxX
                             }
                         }
                     )

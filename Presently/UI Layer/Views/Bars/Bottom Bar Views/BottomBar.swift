@@ -68,7 +68,7 @@ struct BottomBar: View {
     }
     
     var tabView: some View {
-        VStack {
+        VStack(spacing: 0) {
             if environment.barState == .bottomFocus {
                 ZStack(alignment: .top) {
                     Group {

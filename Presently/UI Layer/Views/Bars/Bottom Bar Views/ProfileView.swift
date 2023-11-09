@@ -313,7 +313,7 @@ struct ProfileView: View {
             }
         }
         .fillHorizontally()
-        .mainContentBox(material: .ultraThin)
+        .mainContentBox()
         .alert("Network Error", isPresented: .init(
             get: {
                 if case .error(_) = personRepo.loadingState {
