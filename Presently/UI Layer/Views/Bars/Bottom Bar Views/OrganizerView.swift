@@ -10,10 +10,13 @@ import SwiftUI
 struct OrganizerView: View {
     @EnvironmentObject private var environment: AppEnvironment
     @Namespace var namespace
-    @State private var blur: Double = 0
     
     @StateObject var organizerViewModel = OrganizerViewModel()
     @StateObject var exchangeRepo = ExchangeRepository()
+    @StateObject var peopleRepo = PeopleRepository()
+    
+    @State private var blur: Double = 0
+    @State private var showAssign = false
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -100,31 +103,136 @@ struct OrganizerView: View {
                 }
                 .blur(radius: blur)
                 .padding(.horizontal)
-            if let currentExchange = environment.currentExchange {
-                // TODO: add actions
+            if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, showAssign == false {
                 Group {
                     if !currentExchange.started {
                         SwipeBar(
                             description: "Swipe to make assignments",
                             onChanged: adjustBlur,
-                            action: {})
+                            action: {
+                                let (success, exchange, people) = organizerViewModel.assignGifts(exchange: currentExchange, people: currentPeople)
+                                if success {
+                                    withAnimation {
+                                        showAssign = true
+                                        environment.hideTabBar = true
+                                    }
+                                    organizerViewModel.assignUploadAndAnimate(
+                                        environment: environment,
+                                        assignedExchange: exchange,
+                                        assignedPeople: people,
+                                        exchangeRepo: exchangeRepo,
+                                        peopleRepo: peopleRepo)
+                                    return true
+                                } else {
+                                    return false
+                                }
+                            })
+                        .matchedGeometryEffect(id: "Assignments", in: namespace)
                     } else {
+                        // TODO: add action
                         SwipeBar(
                             description: "Swipe to finish exchange",
                             onChanged: adjustBlur,
-                            action: {})
+                            action: { false })
                     }
                 }
                 .padding(.horizontal)
                 .padding(.horizontal, 3)
                 .padding(.bottom)
             }
+            
+            if showAssign {
+                makingAssignmentsView
+            }
         }
+    }
+    
+    var makingAssignmentsView: some View {
+        ScrollView {
+            if organizerViewModel.animating {
+                HStack {
+                    if let animationCurrentPerson = organizerViewModel.animationCurrentPerson {
+                        Text(animationCurrentPerson.name)
+                            .id(animationCurrentPerson.name)
+                            .transition(
+                                .asymmetric(
+                                    insertion: .move(edge: .top).combined(with: .opacity),
+                                    removal: .move(edge: .bottom).combined(with: .opacity))
+                            )
+                        Spacer()
+                    }
+                    Text(organizerViewModel.animationCurrentRecipient)
+                        .id(organizerViewModel.animationCurrentRecipient)
+                        .transition(
+                            .asymmetric(
+                                insertion: .move(edge: .top).combined(with: .opacity),
+                                removal: .move(edge: .bottom).combined(with: .opacity))
+                        )
+                }
+                .padding()
+                .frame(minHeight: 100)
+                .mainContentBox()
+                .padding()
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+            ZStack(alignment: .topTrailing) {
+                SectionView(title: "Assignments") {
+                    if let allCurrentPeople = environment.allCurrentPeople {
+                        ForEach(organizerViewModel.animationAssignedPeople) { person in
+                            HStack {
+                                Text(person.name)
+                                Spacer()
+                                Image(systemName: "arrow.forward")
+                                Spacer()
+                                Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
+                            }
+                            .bold()
+                        }
+                    }
+                    if !organizerViewModel.animating {
+                        HStack {
+                            Spacer()
+                            Button {
+                                withAnimation {
+                                    organizerViewModel.animationAssignedPeople = []
+                                    environment.hideTabBar = false
+                                    showAssign = false
+                                    blur = 0
+                                }
+                            } label: {
+                                ZStack {
+                                    Text("Done")
+                                        .bold()
+                                        .opacity(exchangeRepo.isLoading || peopleRepo.isLoading ? 0 : 1)
+                                    ProgressView()
+                                        .opacity(exchangeRepo.isLoading || peopleRepo.isLoading ? 1 : 0)
+                                }
+                            }
+                            Spacer()
+                        }
+                        .buttonStyle(DepthButtonStyle())
+                    }
+                }
+                if !organizerViewModel.animating {
+                    ShareLink(item: organizerViewModel.getShareString()) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            .fillHorizontally()
+            .mainContentBox()
+            .transition(.move(edge: .top).combined(with: .opacity))
+            .padding()
+        }
+        .fillHorizontally()
+        .matchedGeometryEffect(id: "Assignments", in: namespace)
+        .scrollDisabled(organizerViewModel.animating)
     }
     
     func adjustBlur(percent: Double) {
         withAnimation {
-            blur = 10 * percent
+            blur = 20 * percent
         }
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 class PeopleRepository: Repository {
-    @Published var storage: [Person]? = nil
+    @Published var storage: People? = nil
     @Published var loadingState: LoadingState = .resting
     
     @MainActor
@@ -35,8 +35,13 @@ class PeopleRepository: Repository {
     
     @MainActor
     //TODO: create an endpoint + request for an array of people
-    func put(_ people: [Person]) async {
+    func put(_ people: People) async {
         loadingState = .loading
+        #if targetEnvironment(simulator)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            self.loadingState = .success
+        }
+        #else
         for person in people {
             if let request = Requests.putPerson(person) {
                 let result = await Network.load(request)
@@ -50,6 +55,7 @@ class PeopleRepository: Repository {
                 loadingState = .error(ErrorWrapper(error: NetworkError.request, guidance: "Please file a bug report"))
             }
         }
+        #endif
     }
     
     @MainActor

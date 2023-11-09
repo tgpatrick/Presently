@@ -10,7 +10,7 @@ import SwiftUI
 struct SwipeBar: View {
     var description: String? = nil
     var onChanged: ((Double) -> Void)? = nil
-    let action: () -> Void
+    let action: () -> Bool
     
     private let maxHeight: CGFloat = 75
     private let depth: CGFloat = 5
@@ -36,6 +36,7 @@ struct SwipeBar: View {
                     }
                 if let description {
                     Text(description)
+                        .multilineTextAlignment(.center)
                         .opacity(0.5)
                         .bold()
                         .blur(radius: 10 * (swipeOffset / barWidth))
@@ -97,24 +98,30 @@ struct SwipeBar: View {
                         }
                     }
                     .onEnded { endState in
-                        if endState.translation.width < (barWidth - circleDiameter) {
-                            withAnimation(.snappy) {
-                                swipeOffset = 0
+                        if endState.translation.width >= (barWidth - circleDiameter) {
+                            if !action() {
+                                reset()
                             }
-                            if let onChanged { onChanged(0) }
                         } else {
-                            action()
+                            reset()
                         }
                     }
             )
         }
+    }
+    
+    func reset() {
+        withAnimation(.snappy) {
+            swipeOffset = 0
+        }
+        if let onChanged { onChanged(0) }
     }
 }
 
 #Preview {
     ZStack {
         ShiftingBackground()
-        SwipeBar(description: "Swipe to do a thing", action: {})
+        SwipeBar(description: "Swipe to do a thing", action: { false })
             .padding()
     }
 }

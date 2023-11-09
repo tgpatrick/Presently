@@ -14,7 +14,7 @@ struct AllPeopleNavItem: NavItemView {
     @EnvironmentObject var environment: AppEnvironment
     @EnvironmentObject var viewModel: ScrollViewModel
     
-    let allPeople: [Person]
+    let allPeople: People
     @State private var focusedPerson: Person?
     
     func closedView() -> AnyView {

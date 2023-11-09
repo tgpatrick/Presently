@@ -40,6 +40,11 @@ class ExchangeRepository: Repository {
     @MainActor
     func put(_ exchange: Exchange) async {
         loadingState = .loading
+        #if targetEnvironment(simulator)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.loadingState = .success
+        }
+        #else
         if let request = Requests.putExchange(exchange) {
             let result = await Network.load(request)
             if case .success = result {
@@ -51,6 +56,7 @@ class ExchangeRepository: Repository {
         } else {
             loadingState = .error(ErrorWrapper(error: NetworkError.request, guidance: "Please file a bug report"))
         }
+        #endif
     }
     
     @MainActor

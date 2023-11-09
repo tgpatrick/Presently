@@ -10,16 +10,16 @@ import SwiftUI
 @MainActor
 class PeopleStorage: Storage, ObservableObject {
     static var fileName: String = "people.data"
-    @Published var items = [Person]()
+    @Published var items = People()
     @Published var loadingState: LoadingState = .resting
     
     func load() async {
-        let task = Task<[Person], Error> {
+        let task = Task<People, Error> {
             let fileURL = try Self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
                 return []
             }
-            let people = try JSONDecoder().decode([Person].self, from: data)
+            let people = try JSONDecoder().decode(People.self, from: data)
             return people
         }
         do {

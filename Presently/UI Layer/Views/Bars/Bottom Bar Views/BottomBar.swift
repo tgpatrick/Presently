@@ -113,7 +113,7 @@ struct BottomBar: View {
             Spacer()
             if !environment.hideTabBar {
                 bottomTabBar
-                    .transition(.opacity)
+                    .transition(.move(edge: .bottom))
             }
         }
     }

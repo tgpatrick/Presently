@@ -17,7 +17,7 @@ struct TestView: View {
     @State var errorWrapper: ErrorWrapper?
     @State var exchange: Exchange?
     @State var person: Person?
-    @State var people: [Person]?
+    @State var people: People?
     @StateObject var exchangeRepo = ExchangeRepository()
     @StateObject var personRepo = PersonRepository()
     @StateObject var peopleRepo = PeopleRepository()

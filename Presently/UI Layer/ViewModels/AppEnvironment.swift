@@ -14,7 +14,7 @@ class AppEnvironment: ObservableObject {
     @Published var currentUser: Person?
     @Published var currentExchange: Exchange?
     @Published var userAssignment: Person?
-    @Published var allCurrentPeople: [Person]?
+    @Published var allCurrentPeople: People?
     
     @Published var barState: BarState = .closed
     @Published var shouldOpen: Bool = false

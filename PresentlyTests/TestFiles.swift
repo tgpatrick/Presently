@@ -18,7 +18,7 @@ var testExchange = Exchange(
     year: 2023,
     secret: false,
     repeating: true,
-    started: true,
+    started: false,
     members: [
         "0001",
         "0002",

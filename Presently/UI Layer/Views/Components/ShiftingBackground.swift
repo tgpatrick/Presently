@@ -35,10 +35,12 @@ struct ShiftingBackground: View {
             }
             .opacity(0.5)
             .onReceive(timer) { _ in
+                #if !targetEnvironment(simulator)
                 withAnimation(.easeInOut(duration: 3.9)) {
                     center1 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
                     center2 = UnitPoint(x: CGFloat.random(in: 0...1.5), y: CGFloat.random(in: 0...1.5))
                 }
+                #endif
             }
             .onAppear {
                 endRadius = geo.size.height
