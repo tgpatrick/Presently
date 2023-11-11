@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TopBar: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject var environment: AppEnvironment
     @Namespace var topNamespace
     @State var ribbonHeight: CGFloat
@@ -66,7 +67,6 @@ struct TopBar: View {
             Image(.logo)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .foregroundStyle(Color.primary)
                 .frame(maxHeight: 50)
                 .matchedGeometryEffect(id: "logo", in: topNamespace)
                 .transition(.move(edge: .top).combined(with: .opacity))

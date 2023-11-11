@@ -111,6 +111,8 @@ struct ContentView: View {
                 }
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.large)
+        //TODO: Go through and set dynamicTypeSize max for different views
     }
     
     func loginRibbon(geoProxy: GeometryProxy) -> some View {
