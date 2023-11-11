@@ -12,12 +12,8 @@ struct OnboardingView: View {
     @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
     @StateObject var personRepo = PersonRepository()
     
-    var buttonSize: CGFloat {
-        onboardingViewModel.hideButtons ? 15 : 25
-    }
-    var buttonPadding: CGFloat {
-        onboardingViewModel.hideButtons ? 3 : 10
-    }
+    let buttonSize: CGFloat = 25
+    let buttonPadding: CGFloat = 10
     
     let items: [AnyView]
     var onClose: () -> Void
