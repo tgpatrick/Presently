@@ -67,6 +67,7 @@ struct TopBar: View {
             Image(.logo)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+                .if(colorScheme == .dark) { $0.colorInvert() }
                 .frame(maxHeight: 50)
                 .matchedGeometryEffect(id: "logo", in: topNamespace)
                 .transition(.move(edge: .top).combined(with: .opacity))

@@ -102,7 +102,7 @@ struct OnboardWishListView: View {
         .buttonStyle(DepthButtonStyle())
         .onChange(of: showTextFields) { val in
             withAnimation {
-                onboardingViewModel.smallButtons = val
+                onboardingViewModel.hideButtons = val
             }
         }
     }

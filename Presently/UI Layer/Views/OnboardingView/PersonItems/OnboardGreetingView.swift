@@ -18,7 +18,7 @@ struct OnboardGreetingView: View {
                 .font(.title)
                 .bold()
             if !textFieldFocused {
-                Text("Add a note that appears on your profile. You can say a little bit about yourself, explain that you really don't want anything not on your wish list, or just say hi!")
+                Text("Add a note that appears on your profile. Say a little about yourself, explain that you're excited to receive something from your very specific wish list, or just say hi!")
                     .multilineTextAlignment(.center)
                     .padding()
                     .transition(.opacity)
@@ -39,7 +39,7 @@ struct OnboardGreetingView: View {
         .animation(.easeInOut, value: textFieldFocused)
         .onChange(of: textFieldFocused) { val in
             withAnimation(.easeInOut) {
-                onboardingViewModel.smallButtons = val
+                onboardingViewModel.hideButtons = val
             }
         }
     }

@@ -13,10 +13,10 @@ struct OnboardingView: View {
     @StateObject var personRepo = PersonRepository()
     
     var buttonSize: CGFloat {
-        onboardingViewModel.smallButtons ? 15 : 25
+        onboardingViewModel.hideButtons ? 15 : 25
     }
     var buttonPadding: CGFloat {
-        onboardingViewModel.smallButtons ? 3 : 10
+        onboardingViewModel.hideButtons ? 3 : 10
     }
     
     let items: [AnyView]
@@ -28,7 +28,7 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack {
-            if !onboardingViewModel.smallButtons {
+            if !onboardingViewModel.hideButtons {
                 ZStack {
                     Text("Set Up")
                         .font(.largeTitle)
@@ -136,74 +136,76 @@ struct OnboardingView: View {
         let lastIndex = items.count - 1
         return ZStack {
             items[index]
-            Spacer()
-            VStack {
-                Spacer()
-                HStack {
-                    if items.count > 0 && index != 0 {
-                        Button {
-                            movingForward = false
-                            if scrollPosition != nil {
-                                withAnimation(.easeInOut) {
-                                    scrollPosition! -= 1
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "arrow.backward")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .bold()
-                                .frame(width: buttonSize, height: buttonSize)
-                                .padding(buttonPadding)
-                        }
-                        .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
-                        .disabled(personRepo.isLoading || personRepo.succeeded)
-                    }
+            
+            if !onboardingViewModel.hideButtons {
+                VStack {
                     Spacer()
-                    Button {
-                        movingForward = true
-                        if scrollPosition != nil, scrollPosition! < lastIndex {
-                            withAnimation(.easeInOut) {
-                                scrollPosition! += 1
-                            }
-                        } else {
-                            Task {
-                                await onboardingViewModel.save(personRepo: personRepo, environment: environment)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    if personRepo.succeeded {
-                                        withAnimation(.easeInOut) {
-                                            onClose()
-                                        }
+                    HStack {
+                        if items.count > 0 && index != 0 {
+                            Button {
+                                movingForward = false
+                                if scrollPosition != nil {
+                                    withAnimation(.easeInOut) {
+                                        scrollPosition! -= 1
                                     }
                                 }
-                            }
-                        }
-                    } label: {
-                        if index == lastIndex {
-                            if personRepo.isLoading {
-                                ProgressView()
-                                    .frame(width: buttonSize, height: buttonSize)
-                                    .padding(buttonPadding)
-                            } else {
-                                Image(systemName: "checkmark")
+                            } label: {
+                                Image(systemName: "arrow.backward")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .bold()
                                     .frame(width: buttonSize, height: buttonSize)
                                     .padding(buttonPadding)
                             }
-                        } else {
-                            Image(systemName: "arrow.forward")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .bold()
-                                .frame(width: buttonSize, height: buttonSize)
-                                .padding(buttonPadding)
+                            .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
+                            .disabled(personRepo.isLoading || personRepo.succeeded)
                         }
+                        Spacer()
+                        Button {
+                            movingForward = true
+                            if scrollPosition != nil, scrollPosition! < lastIndex {
+                                withAnimation(.easeInOut) {
+                                    scrollPosition! += 1
+                                }
+                            } else {
+                                Task {
+                                    await onboardingViewModel.save(personRepo: personRepo, environment: environment)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        if personRepo.succeeded {
+                                            withAnimation(.easeInOut) {
+                                                onClose()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } label: {
+                            if index == lastIndex {
+                                if personRepo.isLoading {
+                                    ProgressView()
+                                        .frame(width: buttonSize, height: buttonSize)
+                                        .padding(buttonPadding)
+                                } else {
+                                    Image(systemName: "checkmark")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .bold()
+                                        .frame(width: buttonSize, height: buttonSize)
+                                        .padding(buttonPadding)
+                                }
+                            } else {
+                                Image(systemName: "arrow.forward")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .bold()
+                                    .frame(width: buttonSize, height: buttonSize)
+                                    .padding(buttonPadding)
+                            }
+                        }
+                        .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15), backgroundColor: index != lastIndex ? Color(.accentBackground) : .green))
                     }
-                    .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15), backgroundColor: index != lastIndex ? Color(.accentBackground) : .green))
+                    .padding()
                 }
-                .padding()
             }
         }
         .fillHorizontally()

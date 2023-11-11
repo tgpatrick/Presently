@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TopLoginView: View {
+    @Environment(\.colorScheme) private var colorScheme
     var mainNamespace: Namespace.ID
     @State var layout = AnyLayout(VStackLayout())
     
@@ -19,6 +20,7 @@ struct TopLoginView: View {
                     Image(.logo)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .if(colorScheme == .dark) { $0.colorInvert() }
                         .frame(maxHeight: 250)
                         .matchedGeometryEffect(id: "logo", in: mainNamespace)
                         .accessibilityIdentifier("logo")

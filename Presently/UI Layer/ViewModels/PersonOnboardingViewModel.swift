@@ -11,7 +11,7 @@ class PersonOnboardingViewModel: ObservableObject {
     @Published var greeting = ""
     @Published var wishList = [WishListItem]()
     @Published var giftHistory = [HistoricalGift]()
-    @Published var smallButtons = false
+    @Published var hideButtons = false
     @Published var initialized = false
     
     func save(personRepo: PersonRepository, environment: AppEnvironment) async {
