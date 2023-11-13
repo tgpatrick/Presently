@@ -42,7 +42,7 @@ struct ProfileView: View {
     @State private var exclusionToDelete: String?
     @State private var exclusionId = ""
     
-    let noIntroText = "Say a little bit about yourself, explain that you really don't want anything not on your list, or just say hi!"
+    let noIntroText = "Say a little about yourself, explain that you're excited to receive something from your very specific wish list, or just say hi!"
     
     var body: some View {
         VStack(spacing: 20) {
@@ -75,6 +75,9 @@ struct ProfileView: View {
                                 } else {
                                     Text(noIntroText)
                                         .foregroundStyle(Color.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .multilineTextAlignment(.center)
+                                        .fillHorizontally()
                                     Button("Add Intro") {
                                         withAnimation {
                                             editState = .greeting
@@ -134,8 +137,10 @@ struct ProfileView: View {
                                 if !currentUser.wishList.isEmpty {
                                     editableWishList
                                 } else {
-                                    Text("Add a couple ideas, some specific links, or both!")
+                                    Text("Add a couple general ideas, some specific links, or both!")
                                         .foregroundStyle(Color.secondary)
+                                        .multilineTextAlignment(.center)
+                                        .fillHorizontally()
                                 }
                                 Button("Add a wish") {
                                     withAnimation {
@@ -246,6 +251,9 @@ struct ProfileView: View {
                                 } else {
                                     Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
                                         .foregroundStyle(Color.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .multilineTextAlignment(.center)
+                                        .fillHorizontally()
                                 }
                                 Button("Add a gift") {
                                     withAnimation {
@@ -361,6 +369,7 @@ struct ProfileView: View {
                                     }
                                 }
                             }
+                            .fillHorizontally()
                         } else {
                             VStack(spacing: 0) {
                                 HStack {
@@ -563,7 +572,7 @@ struct ProfileView: View {
                 .padding()
                 .environmentObject(environment)
                 .onAppear {
-                    environment.currentUser = testPerson2
+                    environment.currentUser = testPerson3
                     environment.currentExchange = testExchange
                     environment.allCurrentPeople = testPeople
                 }

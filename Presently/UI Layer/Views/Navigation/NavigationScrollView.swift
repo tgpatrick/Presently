@@ -32,10 +32,11 @@ struct NavigationScrollView: View {
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                LazyVStack {
+                VStack {
                     ForEach(translatedItems) { item in
                         if showCards {
-                            AnyView(item.view)
+                            item.view
+                                .asAnyView()
                                 .navigationCard(
                                     id: item.id,
                                     title: item.title,

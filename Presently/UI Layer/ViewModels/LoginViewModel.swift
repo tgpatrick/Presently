@@ -41,9 +41,9 @@ class LoginViewModel: ObservableObject {
     }
     
     @MainActor
-    func login() {
-        withAnimation {
-            if let onLoginStart {
+    func login(loginStorage: LoginStorage) {
+        if let onLoginStart {
+            withAnimation {
                 onLoginStart()
             }
         }
@@ -51,10 +51,23 @@ class LoginViewModel: ObservableObject {
             Task {
                 let _ = await exchangeRepo.get(exchangeIdField)
                 let _ = await peopleRepo.get(exchangeIdField)
+                let _ = await loginStorage.load()
                 
                 if exchangeRepo.succeeded && peopleRepo.succeeded,
                    let user = peopleRepo.storage?.first(where: {
                        $0.personId == personIdField}) {
+                    
+                    if let exchange = exchangeRepo.storage, let people = peopleRepo.storage, let person = people.getPersonById(personIdField) {
+                        let loginItem = LoginStorageItem(
+                            exchangeName: exchange.name,
+                            personName: person.name,
+                            exchangeID: person.exchangeId,
+                            personID: person.personId)
+                        if !loginStorage.items.contains(where: { $0 == loginItem }) {
+                            await loginStorage.save(loginItem)
+                        }
+                    }
+                    
                     exchangeID = exchangeIdField
                     personID = personIdField
                     exchangeIdField = ""
@@ -68,7 +81,9 @@ class LoginViewModel: ObservableObject {
                         })
                         
                         if let onLoginSuccess {
-                            onLoginSuccess()
+                            withAnimation {
+                                onLoginSuccess()
+                            }
                         }
                     }
                 } else {

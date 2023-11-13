@@ -98,7 +98,7 @@ struct ExchangeNavItem: NavItemView {
                 }
                 
                 SectionView(title: "Rules") {
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: 5) {
                         Text(exchange.rules)
                             .accessibilityLabel("RulesText1")
                         Text(isSecretMessage)

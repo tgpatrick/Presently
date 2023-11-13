@@ -160,6 +160,7 @@ struct OnboardWishListView: View {
                                             .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                         }
                                         .matchedGeometryEffect(id: wish.description + "-buttons", in: namespace)
+                                        .foregroundStyle(Color.black)
                                     } else {
                                         HStack {
                                             Button {
@@ -179,6 +180,7 @@ struct OnboardWishListView: View {
                                             .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                         }
                                         .matchedGeometryEffect(id: wish.description + "-buttons", in: namespace)
+                                        .foregroundStyle(Color.black)
                                         Text("Are you sure?")
                                     }
                                 }

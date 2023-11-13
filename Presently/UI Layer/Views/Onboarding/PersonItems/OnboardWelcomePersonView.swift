@@ -31,6 +31,7 @@ struct OnboardWelcomePersonView: View {
             if let currentUser = environment.currentUser, !onboardingViewModel.initialized {
                 onboardingViewModel.greeting = currentUser.greeting ?? ""
                 onboardingViewModel.wishList = currentUser.wishList
+                onboardingViewModel.exclusions = currentUser.exceptions
                 onboardingViewModel.giftHistory = currentUser.giftHistory
                 onboardingViewModel.initialized = true
             }

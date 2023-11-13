@@ -14,6 +14,8 @@ protocol Storage {
     static var fileName: String { get }
     var items: [DataType] { get set }
     var loadingState: LoadingState { get set }
+    var isLoading: Bool { get }
+    var succeeded: Bool { get }
     
     static func fileURL() throws -> URL
     func load() async
@@ -22,6 +24,20 @@ protocol Storage {
 }
 
 extension Storage {
+    var isLoading: Bool {
+        if case .loading = loadingState {
+            return true
+        }
+        return false
+    }
+    
+    var succeeded: Bool {
+        if case .success = loadingState {
+            return true
+        }
+        return false
+    }
+    
     static func fileURL() throws -> URL {
         try FileManager.default.url(
             for: .documentDirectory,

@@ -62,16 +62,20 @@ class LoginStorage: Storage, ObservableObject {
 
     func delete(_ login: LoginStorageItem) async {
         await load()
-        items.removeAll(where: {
-            $0 == login
-        })
+        var itemsWithoutLogin = items
+        itemsWithoutLogin.removeAll(where: { $0 == login })
         let task = Task {
-            let data = try JSONEncoder().encode(items)
+            let data = try JSONEncoder().encode(itemsWithoutLogin)
             let outfile = try Self.fileURL()
             try data.write(to: outfile)
         }
         do {
             _ = try await task.value
+            withAnimation {
+                items.removeAll(where: {
+                    $0 == login
+                })
+            }
             loadingState = .success
         } catch {
             loadingState = .error(ErrorWrapper(error: error, guidance: "Try again later"))

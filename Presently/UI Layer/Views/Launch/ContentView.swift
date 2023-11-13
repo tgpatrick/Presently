@@ -38,7 +38,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                if isLoggedIn, !navItems.isEmpty {
+                if !navItems.isEmpty {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: navItems,
@@ -49,9 +49,6 @@ struct ContentView: View {
                     .environmentObject(scrollViewModel)
                     .transition(.opacity)
                     .accessibilityIdentifier("NavScrollView")
-                    .onDisappear {
-                        navItems = []
-                    }
                 }
                 
                 ZStack {
@@ -82,27 +79,8 @@ struct ContentView: View {
                                 transition: .move(edge: .trailing).combined(with: .opacity),
                                 animation: .barAnimation,
                                 showView: .init(get: {
-                                    !environment.shouldOpen
+                                    !environment.shouldOpen || (environment.barState == .bottomFocus && environment.showOnboarding)
                                 }, set: { _ in })) {
-                                    
-                                    if let currentUser = environment.currentUser,
-                                       let currentExchange = environment.currentExchange,
-                                       let allCurrentPeople = environment.allCurrentPeople {
-                                        var items: [any NavItemView] = []
-                                        items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
-                                        items.append(NextDateNavItem(exchange: currentExchange))
-                                        if currentExchange.started, let userAssignment = environment.userAssignment {
-                                            items.append(AssignedPersonNavItem(assignedPerson: userAssignment))
-                                            items.append(WishListNavItem(assignedPerson: userAssignment))
-                                        }
-                                        items.append(AllPeopleNavItem(allPeople: allCurrentPeople))
-                                        if currentExchange.id == "0001" {
-                                            items.append(TestNavItem())
-                                        }
-                                        
-                                        navItems = items
-                                    }
-                                    
                                     environment.barState = .open
                                 }
                                 .onAppear {
@@ -114,6 +92,29 @@ struct ContentView: View {
                         }
                     }
                     .zIndex(2)
+                }
+            }
+            .onChange(of: environment.currentUser) { _ in
+                if let currentUser = environment.currentUser,
+                   let currentExchange = environment.currentExchange,
+                   let allCurrentPeople = environment.allCurrentPeople {
+                    navItems = []
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        var items: [any NavItemView] = []
+                        items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
+                        items.append(NextDateNavItem(exchange: currentExchange))
+                        if currentExchange.started, let userAssignment = environment.userAssignment {
+                            items.append(AssignedPersonNavItem(assignedPerson: userAssignment))
+                            items.append(WishListNavItem(assignedPerson: userAssignment))
+                        }
+                        items.append(AllPeopleNavItem(allPeople: allCurrentPeople))
+                        if currentExchange.id == "0001" {
+                            items.append(TestNavItem())
+                        }
+                        
+                        navItems = items
+                    }
                 }
             }
         }

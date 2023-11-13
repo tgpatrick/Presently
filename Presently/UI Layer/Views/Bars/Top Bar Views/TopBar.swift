@@ -35,6 +35,7 @@ struct TopBar: View {
                         
                         Button {
                             withAnimation(.spring()) {
+                                environment.hideTabBar = false
                                 environment.barState = .open
                             }
                         } label: {
@@ -45,14 +46,7 @@ struct TopBar: View {
                         .padding()
                     }
                     Spacer()
-                    Button {
-                        environment.logOut()
-                    } label: {
-                        Text("Log Out")
-                            .font(.title2)
-                            .bold()
-                            .padding(5)
-                    }
+                    AllLoginsView()
                     Spacer()
                 }
                 .buttonStyle(DepthButtonStyle())
