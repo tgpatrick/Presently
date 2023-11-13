@@ -11,25 +11,26 @@ enum ProfileEditState: String {
     case greeting
     case wishlist
     case history
+    case exclusions
     case none
 }
 
 struct ProfileView: View {
     @EnvironmentObject var environment: AppEnvironment
-    @State var editState: ProfileEditState = .none
+    @State private var editState: ProfileEditState = .none
     
     @Namespace var profileNamespace
     @StateObject var profileViewModel = ProfileViewModel()
     @StateObject var personRepo = PersonRepository()
     
-    @State var greetingTextField: String = ""
-    @FocusState var greetingFieldFocused
+    @State private var greetingTextField: String = ""
+    @FocusState private var greetingFieldFocused
     
-    @State var deletedWishes: [WishListItem] = []
-    @State var wishlistTextField: String = ""
-    @State var wishLinkTextField: String = ""
-    @State var wishHasLink: Bool = false
-    @State var focusedWish: WishListItem? = nil
+    @State private var deletedWishes: [WishListItem] = []
+    @State private var wishlistTextField: String = ""
+    @State private var wishLinkTextField: String = ""
+    @State private var wishHasLink: Bool = false
+    @State private var focusedWish: WishListItem? = nil
     @FocusState var wishlistFieldFocused
     @FocusState var linkFieldFocused
     
@@ -37,6 +38,9 @@ struct ProfileView: View {
     @State private var giftYear = Calendar.current.component(.year, from: Calendar.current.date(byAdding: .year, value: -1, to: .now) ?? .now)
     @State private var giftRecipientId = ""
     @State var focusedGift: HistoricalGift? = nil
+    
+    @State private var exclusionToDelete: String?
+    @State private var exclusionId = ""
     
     let noIntroText = "Say a little bit about yourself, explain that you really don't want anything not on your list, or just say hi!"
     
@@ -306,7 +310,102 @@ struct ProfileView: View {
                                         Spacer()
                                     }
                                     .padding(.vertical)
+                                    .foregroundStyle(Color.black)
                                 }
+                            }
+                        }
+                    }
+                }
+                if editState == .none || editState == .exclusions {
+                    SectionView(title: "Exclusions") {
+                        if editState != .exclusions {
+                            VStack {
+                                if !currentUser.exceptions.isEmpty {
+                                    ForEach(currentUser.exceptions, id: \.self) { exclusion in
+                                        VStack(alignment: .leading) {
+                                            Text(environment.getPerson(id: exclusion)?.name ?? "")
+                                                .bold()
+                                            HStack {
+                                                Spacer()
+                                                Button("Delete") {
+                                                    if exclusionToDelete != exclusion {
+                                                        withAnimation {
+                                                            exclusionToDelete = exclusion
+                                                        }
+                                                    } else {
+                                                        Task {
+                                                            await profileViewModel.deleteExclusion(personRepo: personRepo, environment: environment, exclusion: exclusion)
+                                                        }
+                                                    }
+                                                }
+                                                .buttonStyle(DepthButtonStyle(backgroundColor: .red))
+                                                .foregroundStyle(Color.black)
+                                                if exclusionToDelete == exclusion {
+                                                    Button("Keep") {
+                                                        withAnimation {
+                                                            exclusionToDelete = nil
+                                                        }
+                                                    }
+                                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green))
+                                                    .foregroundStyle(Color.black)
+                                                    Text("Are you sure?")
+                                                }
+                                            }
+                                            Divider()
+                                        }
+                                    }
+                                }
+                                Button("Add an exclusion") {
+                                    withAnimation {
+                                        editState = .exclusions
+                                    }
+                                }
+                            }
+                        } else {
+                            VStack(spacing: 0) {
+                                HStack {
+                                    Text("I can't give to")
+                                    Picker("Select a name", selection: $exclusionId) {
+                                        ForEach(environment.allCurrentPeople ?? []) { person in
+                                            if person != environment.currentUser {
+                                                Text(person.name).tag(person.personId)
+                                            }
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
+                                HStack {
+                                    Spacer()
+                                    Button("Cancel") {
+                                        withAnimation {
+                                            editState = .none
+                                        }
+                                    }
+                                    .buttonStyle(DepthButtonStyle(backgroundColor: .red))
+                                    Spacer()
+                                    Button {
+                                        Task {
+                                            if exclusionId != "", let exclusionToDelete {
+                                                await profileViewModel.saveExclusion(personRepo: personRepo, environment: environment, exclusion: exclusionToDelete)
+                                                DispatchQueue.main.async {
+                                                    withAnimation {
+                                                        editState = .none
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } label: {
+                                        if !personRepo.isLoading {
+                                            Text("Save")
+                                        } else {
+                                            ProgressView()
+                                        }
+                                    }
+                                    .buttonStyle(DepthButtonStyle(backgroundColor: .green))
+                                    Spacer()
+                                }
+                                .padding(.vertical)
+                                .foregroundStyle(Color.black)
                             }
                         }
                     }
@@ -355,6 +454,8 @@ struct ProfileView: View {
             .disabled(personRepo.isLoading)
             .onChange(of: editState) { state in
                 withAnimation(.easeInOut) {
+                    deletedWishes = []
+                    exclusionToDelete = nil
                     environment.hideTabBar = (state != .none)
                 }
             }
@@ -381,7 +482,7 @@ struct ProfileView: View {
                                 }
                                 .padding(.horizontal, 2)
                             }
-                            .padding(.leading)
+                            .padding(.leading, 5)
                         }
                         Spacer()
                         if deletedWishes.first(where: { $0 == wish }) == nil {
@@ -438,7 +539,7 @@ struct ProfileView: View {
                     }
                     .font(.caption)
                     .frame(maxHeight: 25)
-                    .padding(.vertical)
+                    .padding(.vertical, 10)
                     .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: profileNamespace)
                     Divider()
                         .foregroundStyle(.primary)

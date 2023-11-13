@@ -11,6 +11,6 @@ typealias People = [Person]
 
 extension People {
     func getPersonById(_ id: String) -> Person? {
-        return self.first(where: { $0.id == id })
+        return self.first(where: { $0.personId == id })
     }
 }

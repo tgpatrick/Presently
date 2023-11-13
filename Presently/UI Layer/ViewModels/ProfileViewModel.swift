@@ -55,8 +55,32 @@ class ProfileViewModel: ObservableObject {
     
     func deleteGift(personRepo: PersonRepository, environment: AppEnvironment, gift: HistoricalGift) async {
         guard var editedPerson = environment.currentUser else { return }
-        editedPerson.giftHistory.removeAll(where: { $0 == gift })
-        await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
+        if editedPerson.giftHistory.contains(where: { $0 == gift }) {
+            editedPerson.giftHistory.removeAll(where: { $0 == gift })
+            await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
+        } else {
+            personRepo.manualSuccess()
+        }
+    }
+    
+    func saveExclusion(personRepo: PersonRepository, environment: AppEnvironment, exclusion: String) async {
+        guard var editedPerson = environment.currentUser else { return }
+        if !editedPerson.exceptions.contains(where: { $0 == exclusion }) {
+            editedPerson.exceptions.append(exclusion)
+            await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
+        } else {
+            personRepo.manualSuccess()
+        }
+    }
+    
+    func deleteExclusion(personRepo: PersonRepository, environment: AppEnvironment, exclusion: String) async {
+        guard var editedPerson = environment.currentUser else { return }
+        if editedPerson.exceptions.contains(where: { $0 == exclusion }) {
+            editedPerson.exceptions.removeAll(where: { $0 == exclusion })
+            await putAndSave(personRepo: personRepo, environment: environment, editedPerson: editedPerson)
+        } else {
+            personRepo.manualSuccess()
+        }
     }
     
     private func putAndSave(personRepo: PersonRepository, environment: AppEnvironment, editedPerson: Person) async {

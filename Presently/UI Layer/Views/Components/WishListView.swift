@@ -32,7 +32,6 @@ struct WishListView: View {
                                     .frame(maxHeight: 15)
                                     .padding(.horizontal, 2)
                                 }
-//                                .fixedSize(horizontal: true, vertical: false)
                                 .allowsTightening(true)
                                 .padding(.trailing, 8)
                             }

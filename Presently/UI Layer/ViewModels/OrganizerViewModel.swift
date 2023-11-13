@@ -134,7 +134,7 @@ class OrganizerViewModel: ObservableObject {
                 if possibleRecipients.count > 0 {
                     let recipient = possibleRecipients.randomElement()!
                     var giver = person
-                    giver.recipient = recipient.id
+                    giver.recipient = recipient.personId
                     
                     var needToGiveCopy = needToGive
                     var needToReceiveCopy = needToReceive
