@@ -88,6 +88,16 @@ struct SwipeBar: View {
             .shadow(radius: depth, x: 2, y: 2)
             .padding(depth)
             .offset(CGSize(width: swipeOffset, height: 0))
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    swipeOffset = 20
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        swipeOffset = 0
+                    }
+                }
+            }
             .highPriorityGesture(
                 DragGesture(coordinateSpace: .local)
                     .onChanged { currentState in

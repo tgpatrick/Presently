@@ -17,6 +17,7 @@ struct OrganizerView: View {
     
     @State private var blur: Double = 0
     @State private var showAssign = false
+    @State private var copiedId: String?
     
     var body: some View {
         ZStack {
@@ -91,15 +92,34 @@ struct OrganizerView: View {
                                 ForEach(allCurrentPeople.sorted()) { person in
                                     VStack {
                                         HStack {
+                                            Image(systemName: person.setUp ? "checkmark.diamond.fill" : "xmark.diamond")
+                                                .bold()
                                             Text(person.name)
                                             Spacer()
-                                            Image(systemName: person.setUp ? "checkmark.diamond.fill" : "xmark.diamond")
+                                            
+                                            Text(person.exchangeId + "-" + person.personId)
+                                                .font(.caption)
+                                            Button {
+                                                let pasteboard = UIPasteboard.general
+                                                pasteboard.string = person.id
+                                                if let string = pasteboard.string, string == person.id {
+                                                    copiedId = person.personId
+                                                }
+                                            } label: {
+                                                Image(systemName: copiedId == person.personId ? "checkmark" : "doc.on.doc")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 15, height: 15)
+                                                    .fontWeight(.heavy)
+                                            }
                                         }
                                         Divider()
                                     }
                                 }
                             }
                             .mainContentBox()
+                            .buttonStyle(DepthButtonStyle(shadowRadius: 2, padding: 1))
+                            .symbolTransitionIfAvailable()
                         }
                     }
                     .blur(radius: blur)

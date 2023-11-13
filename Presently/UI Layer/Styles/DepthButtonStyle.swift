@@ -11,11 +11,13 @@ struct DepthButtonStyle: ButtonStyle {
     let shape: AnyShape
     let backgroundColor: Color
     let shadowRadius: CGFloat
+    let padding: CGFloat
     
-    init(shape: any Shape = Capsule(), backgroundColor: Color = Color(.accentBackground), shadowRadius: CGFloat = 10) {
+    init(shape: any Shape = Capsule(), backgroundColor: Color = Color(.accentBackground), shadowRadius: CGFloat = 10, padding: CGFloat = 5) {
         self.shape = AnyShape(shape)
         self.backgroundColor = backgroundColor
         self.shadowRadius = shadowRadius
+        self.padding = padding + 5
     }
     
     func makeBody(configuration: Self.Configuration) -> some View {
@@ -23,7 +25,7 @@ struct DepthButtonStyle: ButtonStyle {
             configuration.label
                 .scaleEffect(configuration.isPressed ? 0.92 : 1)
         }
-        .padding(10)
+        .padding(padding)
         .background(
             shape
                 .fill(.shadow(.inner(radius: configuration.isPressed ? 0 : 5)))

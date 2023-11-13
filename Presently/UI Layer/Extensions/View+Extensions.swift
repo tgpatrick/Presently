@@ -88,4 +88,13 @@ extension View {
             self
         }
     }
+    
+    @ViewBuilder
+    func symbolTransitionIfAvailable() -> some View {
+        if #available(iOS 17.0, *) {
+            self.contentTransition(.symbolEffect(.replace))
+        } else {
+            self
+        }
+    }
 }

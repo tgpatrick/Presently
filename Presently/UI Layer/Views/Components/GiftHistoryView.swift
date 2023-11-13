@@ -43,6 +43,7 @@ struct GiftHistoryView: View {
                 } else {
                     ScrollView(.horizontal) {
                         giftHistoryItem
+                            .fixedSize(horizontal: true, vertical: true)
                     }
                 }
             } else {
