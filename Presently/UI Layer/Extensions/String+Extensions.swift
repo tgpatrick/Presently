@@ -9,14 +9,14 @@ import SwiftUI
 
 extension String {
     func isValidURL() -> Bool {
-        if let url = URL(string: self) {
-            return UIApplication.shared.canOpenURL(url)
+        if let url = URL(string: self), url.host != nil {
+          return true
         }
         return false
     }
     
     func getURLIfValid() -> URL? {
-        if let url = URL(string: self), UIApplication.shared.canOpenURL(url) {
+        if let url = URL(string: self), url.host != nil {
             return url
         } else {
             return nil

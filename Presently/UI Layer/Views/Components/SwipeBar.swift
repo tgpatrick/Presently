@@ -18,7 +18,6 @@ struct SwipeBar: View {
     @State private var circleDiameter: CGFloat = .zero
     @State private var barWidth: CGFloat = .zero
     @State private var circleMaxX: CGFloat = .zero
-    @State private var descriptionMinX: CGFloat = .zero
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -28,26 +27,28 @@ struct SwipeBar: View {
                     .foregroundStyle(.ultraThinMaterial)
                     .background {
                         GeometryReader { geo in
-                            Color(.accentBackground).opacity(swipeOffset / barWidth + 0.3)
+                            Color(.accentBackground).opacity(0.25)
                                 .onAppear {
                                     barWidth = geo.size.width - depth * 2
                                 }
                         }
                     }
+                    .background {
+                        Color(.accentBackground)
+                            .opacity((swipeOffset / barWidth + 0.4))
+                            .offset(CGSize(width: (-1 * barWidth) + swipeOffset, height: 0))
+                    }
                 if let description {
-                    Text(description)
-                        .multilineTextAlignment(.center)
-                        .opacity(0.5)
-                        .bold()
-                        .blur(radius: 10 * (swipeOffset / barWidth))
-                        .padding(.leading, descriptionMinX > circleMaxX ? 0 : circleDiameter)
-                        .background {
-                            GeometryReader { geo in
-                                Color.clear.onAppear {
-                                    descriptionMinX = geo.frame(in: .global).minX
-                                }
-                            }
-                        }
+                    HStack {
+                        Text(description)
+                            .multilineTextAlignment(.center)
+                            .opacity(0.5)
+                            .bold()
+                            .blur(radius: 10 * (swipeOffset / barWidth))
+                            .offset(CGSize(width: swipeOffset / 1.5, height: 0))
+                    }
+                    .padding(.leading, circleDiameter)
+                    .padding(.trailing, depth)
                 }
             }
             .frame(maxHeight: maxHeight)
@@ -67,7 +68,7 @@ struct SwipeBar: View {
                 Image(systemName: "arrow.forward")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .opacity(0.8)
+                    .opacity(0.9)
                     .padding(20)
                     .fontWeight(.heavy)
             }
@@ -86,7 +87,7 @@ struct SwipeBar: View {
             .clipShape(Circle())
             .shadow(radius: depth, x: 2, y: 2)
             .padding(depth)
-            .offset(CGSize(width: swipeOffset, height: 0.0))
+            .offset(CGSize(width: swipeOffset, height: 0))
             .highPriorityGesture(
                 DragGesture(coordinateSpace: .local)
                     .onChanged { currentState in

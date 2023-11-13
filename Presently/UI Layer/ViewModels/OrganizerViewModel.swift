@@ -19,11 +19,19 @@ class OrganizerViewModel: ObservableObject {
     @Published var animationCurrentRecipient: String = ""
     @Published var animationAssignedPeople: People = []
     
+    @MainActor
     func saveDates(exchangeRepo: ExchangeRepository, environment: AppEnvironment) async {
         guard var editedExchange = environment.currentExchange else { return }
         editedExchange.assignDate = startDate
         editedExchange.theBigDay = giftDate
         await exchangeRepo.put(editedExchange)
+        if exchangeRepo.succeeded {
+            withAnimation {
+                environment.currentExchange?.assignDate = startDate
+                environment.currentExchange?.theBigDay = giftDate
+                newDate = false
+            }
+        }
     }
     
     func getShareString() -> String {
