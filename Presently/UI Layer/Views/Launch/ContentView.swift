@@ -32,10 +32,13 @@ struct ContentView: View {
     @State private var ribbonHeight: CGFloat = 0
     @State private var navItems: [any NavItemView] = []
     
+    @State private var showOnboardingAlert: Bool = false
+    @StateObject private var personRepo = PersonRepository()
+    
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                if !navItems.isEmpty {
+                if isLoggedIn, !navItems.isEmpty {
                     NavigationScrollView(
                         viewModel: scrollViewModel,
                         items: navItems,
@@ -46,6 +49,9 @@ struct ContentView: View {
                     .environmentObject(scrollViewModel)
                     .transition(.opacity)
                     .accessibilityIdentifier("NavScrollView")
+                    .onDisappear {
+                        navItems = []
+                    }
                 }
                 
                 ZStack {
@@ -134,6 +140,58 @@ struct ContentView: View {
                             }
                         }
                     }
+            } else if environment.barState == .bottomFocus && environment.showOnboarding {
+                Spacer()
+                ZStack {
+                    Text("Set up")
+                        .font(.largeTitle)
+                        .bold()
+                    HStack {
+                        Spacer()
+                        Button {
+                            showOnboardingAlert = true
+                        } label: {
+                            Image(systemName: "xmark")
+                                .bold()
+                        }
+                        .alert("Hang on", isPresented: $showOnboardingAlert, actions: {
+                            
+                            Button("Good point, I'll stay") {}
+                            Button("Remind me next time") {
+                                withAnimation(.bouncy) {
+                                    environment.showOnboarding = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        withAnimation(.bouncy) {
+                                            environment.shouldOpen = true
+                                        }
+                                    }
+                                }
+                            }
+                            Button("I'll do this later in my profile") {
+                                
+                                withAnimation(.bouncy) {
+                                    environment.showOnboarding = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        withAnimation(.bouncy) {
+                                            environment.shouldOpen = true
+                                        }
+                                    }
+                                }
+                                if var editedUser = environment.currentUser {
+                                    editedUser.setUp = true
+                                    Task {
+                                        await personRepo.put(editedUser)
+                                    }
+                                }
+                            }
+                        }) {
+                            Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
+                        }
+                    }
+                    .padding(.trailing)
+                }
+                .offset(y: 15)
+                .buttonStyle(DepthButtonStyle())
             }
             Spacer()
             Divider()

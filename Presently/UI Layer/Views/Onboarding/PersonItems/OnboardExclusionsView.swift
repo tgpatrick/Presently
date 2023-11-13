@@ -1,42 +1,40 @@
 //
-//  OnboardHistoryView.swift
+//  OnboardExceptionsView.swift
 //  Presently
 //
-//  Created by Thomas Patrick on 11/3/23.
+//  Created by Thomas Patrick on 11/12/23.
 //
 
 import SwiftUI
 
-struct OnboardHistoryView: View {
+struct OnboardExclusionsView: View {
     @EnvironmentObject var environment: AppEnvironment
     @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
     
-    private let thisYear: Int = Calendar.current.component(.year, from: .now)
-    @State private var year = Calendar.current.component(.year, from: Calendar.current.date(byAdding: .year, value: -1, to: .now) ?? .now)
-    @State private var recipientId = ""
+    @State private var exclusionId = ""
     @State private var showEdit = false
     
     var body: some View {
         VStack {
-            Text("Gift History")
+            Text("Exclusions")
                 .font(.title)
                 .bold()
-            Text("Tell us who you've given to in this group (even before Presently!) so that the algorithm can make the best assignments.")
+            Text("Is there anyone you can't give to in this group? Depending on the rules, this may be a significant other, family member, or close work colleague.")
                 .multilineTextAlignment(.center)
                 .padding()
             VStack {
                 Spacer()
-                if !onboardingViewModel.giftHistory.isEmpty && !showEdit {
+                if !onboardingViewModel.exclusions.isEmpty && !showEdit {
                     ScrollView {
                         VStack(alignment: .leading) {
-                            ForEach(onboardingViewModel.giftHistory, id: \.self) { gift in
-                                if let person = environment.getPerson(id: gift.recipientId) {
+                            ForEach(onboardingViewModel.exclusions, id: \.self) { exclusion in
+                                if let person = environment.getPerson(id: exclusion) {
                                     HStack {
-                                        Text("In \(String(gift.year)), you gave to \(person.name)")
+                                        Text(person.name)
                                         Spacer()
                                         Button("Delete") {
                                             withAnimation {
-                                                onboardingViewModel.giftHistory.removeAll(where: { $0 == gift })
+                                                onboardingViewModel.exclusions.removeAll(where: { $0 == exclusion })
                                             }
                                         }
                                         .buttonStyle(DepthButtonStyle(backgroundColor: .red))
@@ -50,16 +48,8 @@ struct OnboardHistoryView: View {
                 } else if showEdit {
                     VStack(spacing: 0) {
                         HStack {
-                            Text("In")
-                            Picker("Select a year", selection: $year) {
-                                ForEach(2000..<thisYear, id: \.self) { year in
-                                    Text("\(String(year))").tag(year)
-                                }
-                            }
-                        }
-                        HStack {
-                            Text("I gave to")
-                            Picker("Select a name", selection: $recipientId) {
+                            Text("I can't give to")
+                            Picker("Select a name", selection: $exclusionId) {
                                 ForEach(environment.allCurrentPeople ?? []) { person in
                                     if person != environment.currentUser {
                                         Text(person.name).tag(person.personId)
@@ -67,6 +57,7 @@ struct OnboardHistoryView: View {
                                 }
                             }
                         }
+                        .padding(.horizontal)
                         HStack {
                             Spacer()
                             Button("Cancel") {
@@ -77,16 +68,10 @@ struct OnboardHistoryView: View {
                             .buttonStyle(DepthButtonStyle(backgroundColor: .red))
                             Spacer()
                             Button("Save") {
-                                onboardingViewModel.giftHistory.append(
-                                    HistoricalGift(
-                                        year: year,
-                                        recipientId: recipientId,
-                                        description: "")
-                                )
-                                onboardingViewModel.giftHistory.sort { lhs, rhs in
-                                    lhs > rhs
-                                }
                                 withAnimation {
+                                    if exclusionId != "" {
+                                        onboardingViewModel.exclusions.append(exclusionId)
+                                    }
                                     showEdit = false
                                 }
                             }
@@ -94,9 +79,10 @@ struct OnboardHistoryView: View {
                             Spacer()
                         }
                         .padding(.vertical)
+                        .foregroundStyle(Color.black)
                     }
                 } else {
-                    Text("(no record yet)")
+                    Text("(no exclusions)")
                 }
                 Spacer()
             }
@@ -104,7 +90,7 @@ struct OnboardHistoryView: View {
             .mainContentBox(material: .ultraThin, padding: 0)
             .padding()
             Spacer()
-            Button("Add a gift") {
+            Button("Add") {
                 withAnimation {
                     showEdit = true
                 }
@@ -115,9 +101,6 @@ struct OnboardHistoryView: View {
             .disabled(showEdit)
             .opacity(showEdit ? 0 : 1)
         }
-        .onAppear {
-            recipientId = environment.allCurrentPeople?.first?.personId ?? ""
-        }
     }
 }
 
@@ -125,8 +108,8 @@ struct OnboardHistoryView: View {
     let environment = AppEnvironment()
     return OnboardingView(
         items: [
-            OnboardHistoryView().asAnyView(),
-            OnboardWishListView().asAnyView()
+            OnboardExclusionsView().asAnyView(),
+            OnboardHistoryView().asAnyView()
         ],
         onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }

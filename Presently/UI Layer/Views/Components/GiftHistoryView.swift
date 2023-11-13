@@ -90,9 +90,11 @@ struct GiftHistoryView: View {
                                 .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                                 if giftToDeleteMatches((year, description)) {
                                     Text("Are you sure?")
+                                        .foregroundStyle(Color.primary)
                                 }
                             }
                             .font(.caption)
+                            .foregroundStyle(Color.black)
                         }
                     }
                     Text(description)

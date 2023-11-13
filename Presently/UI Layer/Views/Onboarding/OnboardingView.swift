@@ -20,49 +20,13 @@ struct OnboardingView: View {
     
     @State private var scrollPosition: Int? = 0
     @State private var movingForward: Bool = true
-    @State private var showAlert: Bool = false
     
     var body: some View {
         VStack {
-            if !onboardingViewModel.hideButtons {
-                ZStack {
-                    Text("Set Up")
-                        .font(.largeTitle)
-                        .bold()
-                    HStack {
-                        Spacer()
-                        Button {
-                            showAlert = true
-                        } label: {
-                            Image(systemName: "xmark")
-                                .bold()
-                        }
-                    }
-                    .buttonStyle(DepthButtonStyle())
-                    .alert("Hang on", isPresented: $showAlert, actions: {
-                        Button("Good point, I'll stay") {}
-                        Button("Remind me next time") {
-                            onClose()
-                        }
-                        Button("I'll do this later in my profile") {
-                            if let currentUser = environment.currentUser {
-                                Task {
-                                    await onboardingViewModel.finish(personRepo: personRepo, environment: environment, person: currentUser)
-                                }
-                            }
-                        }
-                    }) {
-                        Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.top)
-            }
             GeometryReader { geo in
-                //TODO: See if ScrollView version can be patched to work on smaller phones
-                if #available(iOS 17.0, *), geo.size.width > 390 {
+                if #available(iOS 17.0, *) {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack {
+                        HStack {
                             ForEach(items.indices, id: \.self) { index in
                                 onboardingItem(
                                     content: items[index],

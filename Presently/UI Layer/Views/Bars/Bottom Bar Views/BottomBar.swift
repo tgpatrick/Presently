@@ -40,8 +40,10 @@ struct BottomBar: View {
                         OnboardingView(
                             items: [
                                 OnboardWelcomePersonView().asAnyView(),
+                                OnboardExchangeView().asAnyView(),
                                 OnboardGreetingView().asAnyView(),
                                 OnboardWishListView().asAnyView(),
+                                OnboardExclusionsView().asAnyView(),
                                 OnboardHistoryView().asAnyView(),
                                 OnboardFinishPersonView().asAnyView()
                             ],

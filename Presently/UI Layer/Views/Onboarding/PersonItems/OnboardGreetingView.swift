@@ -24,9 +24,10 @@ struct OnboardGreetingView: View {
                     .transition(.opacity)
             }
             TextField("", text: $onboardingViewModel.greeting, axis: .vertical)
-                .textFieldStyle(InsetTextFieldStyle(shape: RoundedRectangle(cornerRadius: 15), alignment: .leading, minHeight: 100, maxHeight: 100))
+                .textFieldStyle(InsetTextFieldStyle(shape: RoundedRectangle(cornerRadius: 15), alignment: .leading, minHeight: 100))
                 .focused($textFieldFocused)
                 .padding()
+                .padding(.bottom, onboardingViewModel.hideButtons ? 0 : 75)
             Spacer()
             if textFieldFocused {
                 Button("Done") {
@@ -49,7 +50,7 @@ struct OnboardGreetingView: View {
     OnboardingView(
         items: [
             OnboardGreetingView().asAnyView(),
-            Text("Second View").asAnyView()
+            OnboardWishListView().asAnyView()
         ],
         onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }

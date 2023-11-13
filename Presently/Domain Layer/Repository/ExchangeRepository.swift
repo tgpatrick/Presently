@@ -41,9 +41,7 @@ class ExchangeRepository: Repository {
     func put(_ exchange: Exchange) async {
         loadingState = .loading
         #if targetEnvironment(simulator)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            self.loadingState = .success
-        }
+        self.loadingState = .success
         #else
         if let request = Requests.putExchange(exchange) {
             let result = await Network.load(request)

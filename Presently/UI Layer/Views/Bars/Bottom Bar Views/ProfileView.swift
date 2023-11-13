@@ -115,6 +115,7 @@ struct ProfileView: View {
                                         .buttonStyle(DepthButtonStyle(backgroundColor: .green))
                                         .disabled(personRepo.isLoading)
                                     }
+                                    .foregroundStyle(Color.black)
                                     .matchedGeometryEffect(id: "greetingButton", in: profileNamespace)
                                     .bold()
                                 }
@@ -380,7 +381,7 @@ struct ProfileView: View {
                                 }
                                 .padding(.horizontal, 2)
                             }
-                            .padding(.trailing, 8)
+                            .padding(.leading)
                         }
                         Spacer()
                         if deletedWishes.first(where: { $0 == wish }) == nil {
@@ -401,9 +402,11 @@ struct ProfileView: View {
                                         wishlistFieldFocused = true
                                     }
                                 }
+                                .foregroundStyle(Color.black)
                                 .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                             }
                             .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
+                            .foregroundStyle(Color.black)
                         } else {
                             HStack {
                                 Button {
@@ -428,17 +431,20 @@ struct ProfileView: View {
                                 }
                                 .buttonStyle(DepthButtonStyle(backgroundColor: .green, shadowRadius: 5))
                             }
+                            .foregroundStyle(Color.black)
                             .matchedGeometryEffect(id: wish.description + "-buttons", in: profileNamespace)
                             Text("Are you sure?")
                         }
                     }
                     .font(.caption)
                     .frame(maxHeight: 25)
+                    .padding(.vertical)
                     .matchedGeometryEffect(id: "\(wish.description)-WishListButton", in: profileNamespace)
                     Divider()
                         .foregroundStyle(.primary)
                         .bold()
                 }
+                .padding(.top)
             }
         }
     }

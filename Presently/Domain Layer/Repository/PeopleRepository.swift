@@ -38,9 +38,7 @@ class PeopleRepository: Repository {
     func put(_ people: People) async {
         loadingState = .loading
         #if targetEnvironment(simulator)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            self.loadingState = .success
-        }
+        self.loadingState = .success
         #else
         for person in people {
             if let request = Requests.putPerson(person) {
