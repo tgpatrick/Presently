@@ -40,7 +40,7 @@ struct AllLoginsView: View {
                                             if item.exchangeID != currentUser.exchangeId || item.personID != currentUser.personId {
                                                 VStack {
                                                     loginItem(item: item, current: false)
-                                                        .padding()
+                                                        .padding(.vertical, 5)
                                                 }
                                                 .animation(.easeInOut, value: loginStorage.items)
                                             }

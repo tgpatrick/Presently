@@ -28,11 +28,15 @@ struct NavigationScrollView: View {
     var bottomInset: CGFloat = 10
     @State var maxHeight: CGFloat = 1
     @State var showCards = false
+    @State var isRefreshing = false
     
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
                 VStack {
+                    if isRefreshing {
+                        ProgressView()
+                    }
                     ForEach(translatedItems) { item in
                         if showCards {
                             item.view
@@ -69,6 +73,7 @@ struct NavigationScrollView: View {
             }
             .scrollDisabled(viewModel.focusedId != nil)
             .onAppear {
+                UIRefreshControl.appearance().tintColor = .clear
                 viewModel.scrollViewReader = reader
             }
         }

@@ -22,6 +22,7 @@ struct NavTitleModifier: ViewModifier {
             .padding(.vertical, 7.5)
             .padding(.horizontal, 40)
             .navTitleMatchAnimation(namespace: namespace)
+            .fixedSize(horizontal: false, vertical: true)
             .offset(x: swipeOffset)
             .opacity(backswipeOpacity)
             .background(

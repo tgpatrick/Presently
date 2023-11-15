@@ -35,12 +35,12 @@ class AppEnvironment: ObservableObject {
                let user = peopleRepo.storage?.first(where: {
                    $0.personId == personID}) {
                 
-                currentExchange = exchangeRepo.storage
-                allCurrentPeople = peopleRepo.storage
-                currentUser = user
-                userAssignment = peopleRepo.storage?.first(where: {
-                    $0.personId == user.recipient
-                })
+                withAnimation {
+                    currentExchange = exchangeRepo.storage
+                    allCurrentPeople = peopleRepo.storage
+                    currentUser = user
+                    userAssignment = peopleRepo.storage?.getPersonById(user.recipient)
+                }
             }
         }
     }

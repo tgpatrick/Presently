@@ -100,9 +100,10 @@ struct OrganizerView: View {
                                             Text(person.exchangeId + "-" + person.personId)
                                                 .font(.caption)
                                             Button {
+                                                let invite = "Your Presently code is \(person.id)"
                                                 let pasteboard = UIPasteboard.general
-                                                pasteboard.string = person.id
-                                                if let string = pasteboard.string, string == person.id {
+                                                pasteboard.string = invite
+                                                if let string = pasteboard.string, string == invite {
                                                     copiedId = person.personId
                                                 }
                                             } label: {
@@ -124,6 +125,11 @@ struct OrganizerView: View {
                     }
                     .blur(radius: blur)
                     .padding(.horizontal)
+                    .refreshable {
+                        Task {
+                            await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
+                        }
+                    }
                 if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, showAssign == false {
                     Group {
                         if !currentExchange.started {

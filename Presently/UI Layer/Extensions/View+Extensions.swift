@@ -32,7 +32,7 @@ extension View {
     
     func navTitleMatchAnimation(namespace: Namespace.ID, customTitle: String? = nil) -> some View {
         self
-            .fixedSize(horizontal: true, vertical: false)
+            .allowsTightening(true)
             .matchedGeometryEffect(id: customTitle ?? "title", in: namespace)
     }
     

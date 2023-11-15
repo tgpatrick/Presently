@@ -24,7 +24,7 @@ struct AllPeopleNavItem: NavItemView {
                     .font(.title2)
                     .bold()
             }
-            ForEach(allPeople) { person in
+            ForEach(allPeople.sorted()) { person in
                 if (person.personId != environment.currentUser?.personId && person.personId != environment.userAssignment?.personId) &&
                     (viewModel.focusedId == nil || focusedPerson == person) {
                     Button {
