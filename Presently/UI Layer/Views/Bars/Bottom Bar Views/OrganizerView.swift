@@ -342,6 +342,7 @@ struct OrganizerView: View {
         .onChange(of: organizerViewModel.animating) { newValue in
             if !newValue {
                 withAnimation {
+                    environment.hideTabBar = false
                     showRestartAnimation = newValue
                     blur = 0
                 }
