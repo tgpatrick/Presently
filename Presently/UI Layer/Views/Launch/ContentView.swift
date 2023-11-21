@@ -24,8 +24,6 @@ struct ContentView: View {
     
     @StateObject var scrollViewModel = ScrollViewModel()
     @StateObject var loginViewModel = LoginViewModel()
-    @StateObject var exchangeRepo = ExchangeRepository()
-    @StateObject var peopleRepo = PeopleRepository()
     @Namespace private var mainNamespace
     private var isLoggedIn: Bool {
         environment.currentExchange != nil && environment.currentUser != nil
@@ -51,11 +49,6 @@ struct ContentView: View {
                     .environmentObject(scrollViewModel)
                     .transition(.opacity)
                     .accessibilityIdentifier("NavScrollView")
-                    .refreshable {
-                        Task {
-                            await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
-                        }
-                    }
                 }
                 
                 ZStack {

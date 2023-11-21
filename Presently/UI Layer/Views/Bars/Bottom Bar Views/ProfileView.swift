@@ -476,6 +476,7 @@ struct ProfileView: View {
             ForEach(wishlist, id: \.self) { wish in
                 VStack(alignment: .leading) {
                     Text(wish.description)
+                        .fixedSize(horizontal: false, vertical: true)
                         .matchedGeometryEffect(id: wish.description, in: profileNamespace)
                     HStack {
                         if !wish.link.isEmpty, let url = URL(string: wish.link) {

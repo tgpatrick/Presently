@@ -71,6 +71,17 @@ struct NavigationScrollView: View {
                         }
                 }
             }
+            .refreshable {
+                isRefreshing = true
+                Task {
+                    await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            isRefreshing = false
+                        }
+                    }
+                }
+            }
             .scrollDisabled(viewModel.focusedId != nil)
             .onAppear {
                 UIRefreshControl.appearance().tintColor = .clear

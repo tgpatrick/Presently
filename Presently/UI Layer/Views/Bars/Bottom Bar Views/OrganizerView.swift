@@ -15,6 +15,7 @@ struct OrganizerView: View {
     @StateObject var exchangeRepo = ExchangeRepository()
     @StateObject var peopleRepo = PeopleRepository()
     
+    @State var isRefreshing = false
     @State private var blur: Double = 0
     @State private var showAssignAnimation = false
     @State private var showRestartAnimation = false
@@ -31,6 +32,9 @@ struct OrganizerView: View {
                     title: "Organizer Tools",
                     namespace: namespace,
                     material: .ultraThin) {
+                        if isRefreshing {
+                            ProgressView()
+                        }
                         if let currentExchange = environment.currentExchange, let allCurrentPeople = environment.allCurrentPeople {
                             SectionView(title: "Dates") {
                                 if currentExchange.assignDate != nil {
@@ -156,8 +160,14 @@ struct OrganizerView: View {
                     .blur(radius: blur)
                     .padding(.horizontal)
                     .refreshable {
+                        isRefreshing = true
                         Task {
                             await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
+                            DispatchQueue.main.async {
+                                withAnimation {
+                                    isRefreshing = false
+                                }
+                            }
                         }
                     }
                 if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, !showingAnimation {
