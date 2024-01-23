@@ -15,9 +15,15 @@ struct OrganizerView: View {
     @StateObject var exchangeRepo = ExchangeRepository()
     @StateObject var peopleRepo = PeopleRepository()
     
+    @State var isRefreshing = false
     @State private var blur: Double = 0
-    @State private var showAssign = false
+    @State private var showAssignAnimation = false
+    @State private var showRestartAnimation = false
+    @State private var showDeleteAnimation = false
     @State private var copiedId: String?
+    private var showingAnimation: Bool {
+        return showAssignAnimation || showRestartAnimation || showDeleteAnimation
+    }
     
     var body: some View {
         ZStack {
@@ -26,6 +32,9 @@ struct OrganizerView: View {
                     title: "Organizer Tools",
                     namespace: namespace,
                     material: .ultraThin) {
+                        if isRefreshing {
+                            ProgressView()
+                        }
                         if let currentExchange = environment.currentExchange, let allCurrentPeople = environment.allCurrentPeople {
                             SectionView(title: "Dates") {
                                 if currentExchange.assignDate != nil {
@@ -88,6 +97,31 @@ struct OrganizerView: View {
                                 }
                             }
                             
+                            if currentExchange.started {
+                                ZStack(alignment: .topTrailing) {
+                                    SectionView(title: "Assignments") {
+                                        if let allCurrentPeople = environment.allCurrentPeople {
+                                            ForEach(allCurrentPeople) { person in
+                                                HStack {
+                                                    Text(person.name)
+                                                    Spacer()
+                                                    Image(systemName: "arrow.forward")
+                                                    Spacer()
+                                                    Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
+                                                }
+                                                .bold()
+                                            }
+                                        }
+                                    }
+                                    ShareLink(item: organizerViewModel.getShareString()) {
+                                        Image(systemName: "square.and.arrow.up")
+                                    }
+                                    .padding(.horizontal)
+                                }
+                                .fillHorizontally()
+                                .mainContentBox()
+                            }
+                            
                             SectionView(title: "Who is set up?") {
                                 ForEach(allCurrentPeople.sorted()) { person in
                                     VStack {
@@ -126,21 +160,27 @@ struct OrganizerView: View {
                     .blur(radius: blur)
                     .padding(.horizontal)
                     .refreshable {
+                        isRefreshing = true
                         Task {
                             await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
+                            DispatchQueue.main.async {
+                                withAnimation {
+                                    isRefreshing = false
+                                }
+                            }
                         }
                     }
-                if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, showAssign == false {
+                if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, !showingAnimation {
                     Group {
                         if !currentExchange.started {
                             SwipeBar(
-                                description: "Swipe to make assignments",
+                                description: "Slide to make assignments",
                                 onChanged: adjustBlur,
                                 action: {
                                     let (success, exchange, people) = organizerViewModel.assignGifts(exchange: currentExchange, people: currentPeople)
                                     if success {
                                         withAnimation {
-                                            showAssign = true
+                                            showAssignAnimation = true
                                             environment.hideTabBar = true
                                         }
                                         organizerViewModel.assignUploadAndAnimate(
@@ -154,21 +194,46 @@ struct OrganizerView: View {
                                         return false
                                     }
                                 })
-                            .matchedGeometryEffect(id: "Assignments", in: namespace)
+                            .matchedGeometryEffect(id: "AssignmentsAnimation", in: namespace)
                         } else {
-                            // TODO: add action
                             SwipeBar(
-                                description: "Swipe to finish exchange",
+                                description: "Slide to finish exchange",
                                 onChanged: adjustBlur,
-                                action: { false })
+                                action: {
+                                    if let exchange = environment.currentExchange,
+                                       let people = environment.allCurrentPeople,
+                                    let (endedExchange, peopleWithHistory) =
+                                        organizerViewModel.endExchange(
+                                            exchange: exchange,
+                                            people: people) {
+                                        
+                                        withAnimation {
+                                            showRestartAnimation = true
+                                            environment.hideTabBar = true
+                                        }
+                                        
+                                        organizerViewModel.endUploadAndAnimate(
+                                            environment: environment,
+                                            exchange: endedExchange,
+                                            people: peopleWithHistory,
+                                            exchangeRepo: exchangeRepo,
+                                            peopleRepo: peopleRepo)
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                })
                         }
                     }
                     .padding(.horizontal)
                 }
             }
             
-            if showAssign {
+            if showAssignAnimation {
                 makingAssignmentsView
+            }
+            if showRestartAnimation {
+                restartingExchangeView
             }
         }
     }
@@ -223,7 +288,7 @@ struct OrganizerView: View {
                                 withAnimation {
                                     organizerViewModel.animationAssignedPeople = []
                                     environment.hideTabBar = false
-                                    showAssign = false
+                                    showAssignAnimation = false
                                     blur = 0
                                 }
                             } label: {
@@ -253,8 +318,46 @@ struct OrganizerView: View {
             .padding()
         }
         .fillHorizontally()
-        .matchedGeometryEffect(id: "Assignments", in: namespace)
+        .matchedGeometryEffect(id: "AssignmentsAnimation", in: namespace)
         .scrollDisabled(organizerViewModel.animating)
+    }
+    
+    var restartingExchangeView: some View {
+        VStack {
+            if let animationCurrentPerson = organizerViewModel.animationCurrentPerson {
+                Text(animationCurrentPerson.name)
+                    .id(animationCurrentPerson.name)
+                    .transition(
+                        .asymmetric(
+                            insertion: .move(edge: .bottom).combined(with: .opacity),
+                            removal: .move(edge: .top).combined(with: .opacity))
+                    )
+                Spacer()
+            }
+            Text("gave to")
+            Spacer()
+            Text(organizerViewModel.animationCurrentRecipient)
+                .id(organizerViewModel.animationCurrentRecipient)
+                .transition(
+                    .asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal: .move(edge: .top).combined(with: .opacity))
+                )
+        }
+        .padding()
+        .frame(maxHeight: 150)
+        .mainContentBox()
+        .padding()
+        .transition(.move(edge: .top).combined(with: .opacity))
+        .onChange(of: organizerViewModel.animating) { newValue in
+            if !newValue {
+                withAnimation {
+                    environment.hideTabBar = false
+                    showRestartAnimation = newValue
+                    blur = 0
+                }
+            }
+        }
     }
     
     func adjustBlur(percent: Double) {

@@ -33,6 +33,7 @@ class ScrollViewModel: ObservableObject {
             withAnimation(.spring()) {
                 focusedId = nil
             }
+            scrollTo(id, after: 0.2)
         }
     }
     

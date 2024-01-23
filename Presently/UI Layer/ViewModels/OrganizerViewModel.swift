@@ -19,6 +19,8 @@ class OrganizerViewModel: ObservableObject {
     @Published var animationCurrentRecipient: String = ""
     @Published var animationAssignedPeople: People = []
     
+    @Published var showEndWarning: Bool = false
+    
     @MainActor
     func saveDates(exchangeRepo: ExchangeRepository, environment: AppEnvironment) async {
         guard var editedExchange = environment.currentExchange else { return }
@@ -45,14 +47,18 @@ class OrganizerViewModel: ObservableObject {
     func assignUploadAndAnimate(environment: AppEnvironment, assignedExchange: Exchange, assignedPeople: People, exchangeRepo: ExchangeRepository, peopleRepo: PeopleRepository) {
         
         if let currentPeople = environment.allCurrentPeople, assignedPeople.count == currentPeople.count {
-            animating = true
+            withAnimation {
+                animating = true
+            }
             
             Task {
                 let _ = await exchangeRepo.put(assignedExchange)
                 let _ = await peopleRepo.put(assignedPeople)
             }
             
-            Timer.scheduledTimer(withTimeInterval: animationLength, repeats: true) { [self] timer1 in
+            let realAnimationLength: Double = min(animationLength, Double(60.0 / Double(assignedPeople.count)))
+            
+            Timer.scheduledTimer(withTimeInterval: realAnimationLength, repeats: true) { [self] timer1 in
                 if let animationCurrentPerson {
                     withAnimation {
                         animationAssignedPeople.insert(animationCurrentPerson, at: 0)
@@ -160,5 +166,79 @@ class OrganizerViewModel: ObservableObject {
         }
         
         return (giftHelper(), assignedExchange, assignedPeople.shuffled())
+    }
+    
+    func deleteExchange(environment: AppEnvironment, exchangeId: String, exchangeRepo: ExchangeRepository, peopleRepo: PeopleRepository) {
+        Task {
+            let _ = await exchangeRepo.delete(exchangeId)
+            let _ = await peopleRepo.delete(exchangeId)
+        }
+    }
+    
+    func endUploadAndAnimate(environment: AppEnvironment, exchange: Exchange, people: People, exchangeRepo: ExchangeRepository, peopleRepo: PeopleRepository) {
+        
+        withAnimation {
+            animating = true
+        }
+        
+        Task {
+            let _ = await exchangeRepo.put(exchange)
+            let _ = await peopleRepo.put(people)
+        }
+        
+        Timer.scheduledTimer(withTimeInterval: animationLength / 2, repeats: true) { [self] timer in
+            withAnimation(.easeInOut(duration: 0.5)) {
+                animationCurrentPerson = people[currentPersonIndex]
+            }
+            withAnimation(.easeInOut(duration: 1)) {
+                if let recipient = people.getPersonById(people[currentPersonIndex].giftHistory.first?.recipientId ?? "") {
+                    animationCurrentRecipient = recipient.name
+                }
+            }
+            
+            currentPersonIndex += 1
+            if currentPersonIndex >= people.count {
+                currentPersonIndex = 0
+                if let animationCurrentPerson {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + animationLength) {
+                        withAnimation {
+                            self.animationAssignedPeople.insert(animationCurrentPerson, at: 0)
+                            self.animationCurrentPerson = nil
+                            self.animating = false
+                        }
+                    }
+                }
+                timer.invalidate()
+            }
+        }.fire()
+    }
+    
+    func endExchange(exchange: Exchange, people: People) -> (Exchange, People)? {
+        if !exchange.repeating {
+            showEndWarning = true
+            return nil
+        } else {
+            var peopleWithHistory: People = []
+            for person in people {
+                var giver = person
+                giver.giftHistory.append(
+                    HistoricalGift(
+                        year: exchange.year,
+                        recipientId: giver.recipient,
+                        description: ""))
+                giver.recipient = ""
+                peopleWithHistory.append(giver)
+            }
+            
+            var exchangeWithNewDates = exchange
+            exchangeWithNewDates.started = false
+            if let assignDate = exchangeWithNewDates.assignDate {
+                exchangeWithNewDates.assignDate = Calendar.current.date(byAdding: .year, value: 1, to: assignDate)
+            }
+            if let theBigDay = exchangeWithNewDates.theBigDay {
+                exchangeWithNewDates.theBigDay = Calendar.current.date(byAdding: .year, value: 1, to: theBigDay)
+            }
+            return (exchangeWithNewDates, peopleWithHistory)
+        }
     }
 }
