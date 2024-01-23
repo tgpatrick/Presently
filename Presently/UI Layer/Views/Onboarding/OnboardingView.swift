@@ -24,48 +24,28 @@ struct OnboardingView: View {
     var body: some View {
         VStack {
             GeometryReader { geo in
-                if #available(iOS 17.0, *) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(items.indices, id: \.self) { index in
-                                onboardingItem(
-                                    content: items[index],
-                                    index: index,
-                                    width: geo.size.width,
-                                    height: geo.size.height
-                                )
-                                .scrollTransition { content, phase in
-                                    content
-                                        .opacity(phase.isIdentity ? 1 : 0)
-                                        .scaleEffect(phase.isIdentity ? 1 : 0.75)
-                                        .blur(radius: phase.isIdentity ? 0 : 10)
-                                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(items.indices, id: \.self) { index in
+                            onboardingItem(
+                                content: items[index],
+                                index: index,
+                                width: geo.size.width,
+                                height: geo.size.height
+                            )
+                            .scrollTransition { content, phase in
+                                content
+                                    .opacity(phase.isIdentity ? 1 : 0)
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.75)
+                                    .blur(radius: phase.isIdentity ? 0 : 10)
                             }
                         }
-                        .scrollTargetLayout()
                     }
-                    .scrollTargetBehavior(.viewAligned)
-                    .scrollPosition(id: $scrollPosition)
-                    .scrollDisabled(personRepo.isLoading || personRepo.succeeded)
-                } else {
-                    onboardingItem(
-                        content: items[scrollPosition ?? 0],
-                        index: scrollPosition ?? 0,
-                        width: geo.size.width,
-                        height: geo.size.height
-                    )
-                    .id(scrollPosition)
-                    .transition(movingForward ?
-                        .asymmetric(
-                            insertion: .move(edge: .trailing),
-                            removal: .move(edge: .leading)
-                        ) :
-                            .asymmetric(
-                                insertion: .move(edge: .leading),
-                                removal: .move(edge: .trailing)
-                            )
-                    )
+                    .scrollTargetLayout()
                 }
+                .scrollTargetBehavior(.viewAligned)
+                .scrollPosition(id: $scrollPosition)
+                .scrollDisabled(personRepo.isLoading || personRepo.succeeded)
             }
             HStack {
                 ForEach(items.indices, id: \.self) { index in

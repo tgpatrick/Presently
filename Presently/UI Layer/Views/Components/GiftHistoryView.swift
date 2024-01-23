@@ -33,19 +33,12 @@ struct GiftHistoryView: View {
     var body: some View {
         VStack {
             if !user.giftHistory.isEmpty {
-                if #available(iOS 17.0, *) {
-                    ScrollView(.horizontal) {
-                        giftHistoryItem
-                            .scrollTargetLayout()
-                    }
-                    .scrollTargetBehavior(.viewAligned)
-                    .padding(.horizontal, -10)
-                } else {
-                    ScrollView(.horizontal) {
-                        giftHistoryItem
-                            .fixedSize(horizontal: true, vertical: true)
-                    }
+                ScrollView(.horizontal) {
+                    giftHistoryItem
+                        .scrollTargetLayout()
                 }
+                .scrollTargetBehavior(.viewAligned)
+                .padding(.horizontal, -10)
             } else {
                 HStack {
                     Spacer()

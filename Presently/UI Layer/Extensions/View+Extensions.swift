@@ -37,7 +37,8 @@ extension View {
     }
     
     func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
-        self.modifier(
+        viewModel.scrollViewReader = scrollViewReader
+        return self.modifier(
             NavigationCardModifier(
                 id: id,
                 title: title,
@@ -91,10 +92,6 @@ extension View {
     
     @ViewBuilder
     func symbolTransitionIfAvailable() -> some View {
-        if #available(iOS 17.0, *) {
-            self.contentTransition(.symbolEffect(.replace))
-        } else {
-            self
-        }
+        self.contentTransition(.symbolEffect(.replace))
     }
 }
