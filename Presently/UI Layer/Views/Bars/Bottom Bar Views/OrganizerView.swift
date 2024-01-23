@@ -15,7 +15,6 @@ struct OrganizerView: View {
     @StateObject var exchangeRepo = ExchangeRepository()
     @StateObject var peopleRepo = PeopleRepository()
     
-    @State var isRefreshing = false
     @State private var blur: Double = 0
     @State private var showAssignAnimation = false
     @State private var showRestartAnimation = false
@@ -27,207 +26,199 @@ struct OrganizerView: View {
     
     var body: some View {
         ZStack {
-            VStack(spacing: 5) {
-                TitledScrollView(
-                    title: "Organizer Tools",
-                    namespace: namespace,
-                    material: .ultraThin) {
-                        if isRefreshing {
-                            ProgressView()
+            TitledScrollView(
+                title: "Organizer Tools",
+                namespace: namespace,
+                material: .ultraThin) {
+                    if let currentExchange = environment.currentExchange, let allCurrentPeople = environment.allCurrentPeople {
+                        SectionView(title: "Dates") {
+                            if currentExchange.assignDate != nil {
+                                DatePicker("Start Date", selection: $organizerViewModel.startDate, displayedComponents: .date)
+                            } else {
+                                HStack {
+                                    Text("Start Date")
+                                    Spacer()
+                                    Button("Add") {
+                                        withAnimation {
+                                            environment.currentExchange?.assignDate = .now
+                                            organizerViewModel.newDate = true
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if currentExchange.theBigDay != nil {
+                                DatePicker("Gift Date", selection: $organizerViewModel.giftDate, displayedComponents: .date)
+                            } else {
+                                HStack {
+                                    Text("Gift Date")
+                                    Spacer()
+                                    Button("Add") {
+                                        withAnimation {
+                                            environment.currentExchange?.theBigDay = .now
+                                            organizerViewModel.newDate = true
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if organizerViewModel.startDate != currentExchange.assignDate || currentExchange.theBigDay != organizerViewModel.giftDate || organizerViewModel.newDate {
+                                HStack {
+                                    Spacer()
+                                    Button {
+                                        Task {
+                                            await organizerViewModel.saveDates(exchangeRepo: exchangeRepo, environment: environment)
+                                        }
+                                    } label: {
+                                        if exchangeRepo.isLoading {
+                                            ProgressView()
+                                        } else {
+                                            Text("Save")
+                                        }
+                                    }
+                                    .bold()
+                                    Spacer()
+                                }
+                            }
                         }
-                        if let currentExchange = environment.currentExchange, let allCurrentPeople = environment.allCurrentPeople {
-                            SectionView(title: "Dates") {
-                                if currentExchange.assignDate != nil {
-                                    DatePicker("Start Date", selection: $organizerViewModel.startDate, displayedComponents: .date)
-                                } else {
-                                    HStack {
-                                        Text("Start Date")
-                                        Spacer()
-                                        Button("Add") {
-                                            withAnimation {
-                                                environment.currentExchange?.assignDate = .now
-                                                organizerViewModel.newDate = true
+                        .mainContentBox()
+                        .buttonStyle(DepthButtonStyle())
+                        .onAppear {
+                            if let assignDate = currentExchange.assignDate {
+                                organizerViewModel.startDate = assignDate
+                            }
+                            if let theBigDay = currentExchange.theBigDay {
+                                organizerViewModel.giftDate = theBigDay
+                            }
+                        }
+                        
+                        if currentExchange.started {
+                            ZStack(alignment: .topTrailing) {
+                                SectionView(title: "Assignments") {
+                                    if let allCurrentPeople = environment.allCurrentPeople {
+                                        ForEach(allCurrentPeople) { person in
+                                            HStack {
+                                                Text(person.name)
+                                                Spacer()
+                                                Image(systemName: "arrow.forward")
+                                                Spacer()
+                                                Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
                                             }
+                                            .bold()
                                         }
                                     }
                                 }
-                                
-                                if currentExchange.theBigDay != nil {
-                                    DatePicker("Gift Date", selection: $organizerViewModel.giftDate, displayedComponents: .date)
-                                } else {
-                                    HStack {
-                                        Text("Gift Date")
-                                        Spacer()
-                                        Button("Add") {
-                                            withAnimation {
-                                                environment.currentExchange?.theBigDay = .now
-                                                organizerViewModel.newDate = true
-                                            }
-                                        }
-                                    }
+                                ShareLink(item: organizerViewModel.getShareString()) {
+                                    Image(systemName: "square.and.arrow.up")
                                 }
-                                
-                                if organizerViewModel.startDate != currentExchange.assignDate || currentExchange.theBigDay != organizerViewModel.giftDate || organizerViewModel.newDate {
+                                .padding(.horizontal)
+                            }
+                            .fillHorizontally()
+                            .mainContentBox()
+                        }
+                        
+                        SectionView(title: "Who is set up?") {
+                            ForEach(allCurrentPeople.sorted()) { person in
+                                VStack {
                                     HStack {
+                                        Image(systemName: person.setUp ? "checkmark.diamond.fill" : "xmark.diamond")
+                                            .bold()
+                                        Text(person.name)
                                         Spacer()
+                                        
+                                        Text(person.exchangeId + "-" + person.personId)
+                                            .font(.caption)
                                         Button {
-                                            Task {
-                                                await organizerViewModel.saveDates(exchangeRepo: exchangeRepo, environment: environment)
+                                            let invite = "Your Presently code is \(person.id)"
+                                            let pasteboard = UIPasteboard.general
+                                            pasteboard.string = invite
+                                            if let string = pasteboard.string, string == invite {
+                                                copiedId = person.personId
                                             }
                                         } label: {
-                                            if exchangeRepo.isLoading {
-                                                ProgressView()
-                                            } else {
-                                                Text("Save")
-                                            }
-                                        }
-                                        .bold()
-                                        Spacer()
-                                    }
-                                }
-                            }
-                            .mainContentBox()
-                            .buttonStyle(DepthButtonStyle())
-                            .onAppear {
-                                if let assignDate = currentExchange.assignDate {
-                                    organizerViewModel.startDate = assignDate
-                                }
-                                if let theBigDay = currentExchange.theBigDay {
-                                    organizerViewModel.giftDate = theBigDay
-                                }
-                            }
-                            
-                            if currentExchange.started {
-                                ZStack(alignment: .topTrailing) {
-                                    SectionView(title: "Assignments") {
-                                        if let allCurrentPeople = environment.allCurrentPeople {
-                                            ForEach(allCurrentPeople) { person in
-                                                HStack {
-                                                    Text(person.name)
-                                                    Spacer()
-                                                    Image(systemName: "arrow.forward")
-                                                    Spacer()
-                                                    Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
-                                                }
-                                                .bold()
-                                            }
+                                            Image(systemName: copiedId == person.personId ? "checkmark" : "doc.on.doc")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 15, height: 15)
+                                                .fontWeight(.heavy)
                                         }
                                     }
-                                    ShareLink(item: organizerViewModel.getShareString()) {
-                                        Image(systemName: "square.and.arrow.up")
-                                    }
-                                    .padding(.horizontal)
-                                }
-                                .fillHorizontally()
-                                .mainContentBox()
-                            }
-                            
-                            SectionView(title: "Who is set up?") {
-                                ForEach(allCurrentPeople.sorted()) { person in
-                                    VStack {
-                                        HStack {
-                                            Image(systemName: person.setUp ? "checkmark.diamond.fill" : "xmark.diamond")
-                                                .bold()
-                                            Text(person.name)
-                                            Spacer()
-                                            
-                                            Text(person.exchangeId + "-" + person.personId)
-                                                .font(.caption)
-                                            Button {
-                                                let invite = "Your Presently code is \(person.id)"
-                                                let pasteboard = UIPasteboard.general
-                                                pasteboard.string = invite
-                                                if let string = pasteboard.string, string == invite {
-                                                    copiedId = person.personId
-                                                }
-                                            } label: {
-                                                Image(systemName: copiedId == person.personId ? "checkmark" : "doc.on.doc")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 15, height: 15)
-                                                    .fontWeight(.heavy)
-                                            }
-                                        }
-                                        Divider()
-                                    }
-                                }
-                            }
-                            .mainContentBox()
-                            .buttonStyle(DepthButtonStyle(shadowRadius: 2, padding: 1))
-                            .symbolTransitionIfAvailable()
-                        }
-                    }
-                    .blur(radius: blur)
-                    .padding(.horizontal)
-                    .refreshable {
-                        isRefreshing = true
-                        Task {
-                            await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
-                            DispatchQueue.main.async {
-                                withAnimation {
-                                    isRefreshing = false
+                                    Divider()
                                 }
                             }
                         }
+                        .mainContentBox()
+                        .buttonStyle(DepthButtonStyle(shadowRadius: 2, padding: 1))
+                        .symbolTransitionIfAvailable()
                     }
-                if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, !showingAnimation {
-                    Group {
-                        if !currentExchange.started {
-                            SwipeBar(
-                                description: "Slide to make assignments",
-                                onChanged: adjustBlur,
-                                action: {
-                                    let (success, exchange, people) = organizerViewModel.assignGifts(exchange: currentExchange, people: currentPeople)
-                                    if success {
-                                        withAnimation {
-                                            showAssignAnimation = true
-                                            environment.hideTabBar = true
-                                        }
-                                        organizerViewModel.assignUploadAndAnimate(
-                                            environment: environment,
-                                            assignedExchange: exchange,
-                                            assignedPeople: people,
-                                            exchangeRepo: exchangeRepo,
-                                            peopleRepo: peopleRepo)
-                                        return true
-                                    } else {
-                                        return false
-                                    }
-                                })
-                            .matchedGeometryEffect(id: "AssignmentsAnimation", in: namespace)
-                        } else {
-                            SwipeBar(
-                                description: "Slide to finish exchange",
-                                onChanged: adjustBlur,
-                                action: {
-                                    if let exchange = environment.currentExchange,
-                                       let people = environment.allCurrentPeople,
-                                    let (endedExchange, peopleWithHistory) =
-                                        organizerViewModel.endExchange(
-                                            exchange: exchange,
-                                            people: people) {
-                                        
-                                        withAnimation {
-                                            showRestartAnimation = true
-                                            environment.hideTabBar = true
-                                        }
-                                        
-                                        organizerViewModel.endUploadAndAnimate(
-                                            environment: environment,
-                                            exchange: endedExchange,
-                                            people: peopleWithHistory,
-                                            exchangeRepo: exchangeRepo,
-                                            peopleRepo: peopleRepo)
-                                        return true
-                                    } else {
-                                        return false
-                                    }
-                                })
-                        }
-                    }
-                    .padding(.horizontal)
                 }
-            }
+                .blur(radius: blur)
+                .padding(.horizontal)
+                .refreshable {
+                    await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    if let currentExchange = environment.currentExchange, let currentPeople = environment.allCurrentPeople, !showingAnimation {
+                        Group {
+                            // TODO: Make swipe bar only show when appropriate dates are near
+                            if !currentExchange.started {
+                                SwipeBar(
+                                    description: "Slide to make assignments",
+                                    onChanged: adjustBlur,
+                                    action: {
+                                        let (success, exchange, people) = organizerViewModel.assignGifts(exchange: currentExchange, people: currentPeople)
+                                        if success {
+                                            withAnimation {
+                                                showAssignAnimation = true
+                                                environment.hideTabBar = true
+                                            }
+                                            organizerViewModel.assignUploadAndAnimate(
+                                                environment: environment,
+                                                assignedExchange: exchange,
+                                                assignedPeople: people,
+                                                exchangeRepo: exchangeRepo,
+                                                peopleRepo: peopleRepo)
+                                            return true
+                                        } else {
+                                            return false
+                                        }
+                                    })
+                                .matchedGeometryEffect(id: "AssignmentsAnimation", in: namespace)
+                            } else {
+                                SwipeBar(
+                                    description: "Slide after gifting",
+                                    onChanged: adjustBlur,
+                                    action: {
+                                        if let exchange = environment.currentExchange,
+                                           let people = environment.allCurrentPeople,
+                                           let (endedExchange, peopleWithHistory) =
+                                            organizerViewModel.endExchange(
+                                                exchange: exchange,
+                                                people: people) {
+                                            
+                                            withAnimation {
+                                                showRestartAnimation = true
+                                                environment.hideTabBar = true
+                                            }
+                                            
+                                            organizerViewModel.endUploadAndAnimate(
+                                                environment: environment,
+                                                exchange: endedExchange,
+                                                people: peopleWithHistory,
+                                                exchangeRepo: exchangeRepo,
+                                                peopleRepo: peopleRepo)
+                                            return true
+                                        } else {
+                                            return false
+                                        }
+                                    })
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.horizontal)
+                        .padding(.bottom)
+                    }
+                }
             
             if showAssignAnimation {
                 makingAssignmentsView
