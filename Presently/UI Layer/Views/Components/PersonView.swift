@@ -13,9 +13,10 @@ struct PersonView: View {
     @EnvironmentObject var scrollViewModel: ScrollViewModel
     @State var person: Person
     var namespace: Namespace.ID
+    var customMatchTitle: String? = nil
     
     var body: some View {
-        TitledScrollView(title: person.name, namespace: namespace) {
+        TitledScrollView(title: person.name, namespace: namespace, customMatchTitle: customMatchTitle) {
             VStack(alignment: .leading, spacing: 25) {
                 if person.organizer {
                     HStack(spacing: 3) {
@@ -33,6 +34,7 @@ struct PersonView: View {
                 if let greeting = person.greeting {
                     SectionView(title: "Intro") {
                         Text(greeting)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 
@@ -50,7 +52,7 @@ struct PersonView: View {
                 
                 if let currentExchange = environment.currentExchange,
                    currentExchange.started && !currentExchange.secret,
-                   let recipient = environment.getPerson(id: person.recipient){
+                   let recipient = environment.getPerson(id: person.recipient) {
                     SectionView(title: "Giving to") {
                         VStack {
                             Text(recipient.name)

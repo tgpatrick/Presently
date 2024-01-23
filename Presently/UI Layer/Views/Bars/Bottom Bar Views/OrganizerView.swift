@@ -153,7 +153,7 @@ struct OrganizerView: View {
                     }
                 }
                 .blur(radius: blur)
-                .padding(.horizontal)
+                .safeAreaPadding(.horizontal)
                 .refreshable {
                     await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
                 }

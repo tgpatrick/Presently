@@ -81,7 +81,7 @@ struct BottomBar: View {
                                 namespace: bottomNamespace,
                                 material: .ultraThin) {
                                     ProfileView()
-                                        .padding()
+                                        .safeAreaPadding()
                                 }
                         case .organizer:
                             OrganizerView(
@@ -91,7 +91,7 @@ struct BottomBar: View {
                             EmptyView()
                         }
                     }
-                    .padding(.top)
+                    .safeAreaPadding(.top)
                     
                     HStack {
                         Spacer()

@@ -41,8 +41,6 @@ struct NavigationScrollView: View {
                                 title: item.title,
                                 viewModel: viewModel,
                                 maxHeight: maxHeight,
-                                topInset: topInset,
-                                bottomInset: bottomInset,
                                 scrollViewReader: reader)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
@@ -56,7 +54,7 @@ struct NavigationScrollView: View {
                         .opacity(0.2)
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                maxHeight = geo.size.height - topInset - bottomInset
+                                maxHeight = geo.size.height
                                 self.showCards = true
                             }
                         }

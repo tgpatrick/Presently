@@ -19,14 +19,12 @@ struct AllPeopleNavItem: NavItemView {
     
     func closedView() -> AnyView {
         VStack {
-            if viewModel.focusedId == nil {
-                Text("Everyone Else")
-                    .font(.title2)
-                    .bold()
-            }
+            Text("Everyone")
+                .font(.title2)
+                .bold()
+            
             ForEach(allPeople.sorted()) { person in
-                if (person.personId != environment.currentUser?.personId && person.personId != environment.userAssignment?.personId) &&
-                    (viewModel.focusedId == nil || focusedPerson == person) {
+                if showNameFor(person) {
                     Button {
                         withAnimation {
                             focusedPerson = person
@@ -46,10 +44,11 @@ struct AllPeopleNavItem: NavItemView {
                                 
                                 Text(person.name)
                                     .transition(.identity)
+                                    .navTitleMatchAnimation(namespace: namespace, customTitle: person.name)
                                 
                                 if let currentExchange = environment.currentExchange,
                                    let recipient = environment.getPerson(id: person.recipient),
-                                    currentExchange.started && !currentExchange.secret && viewModel.focusedId == nil {
+                                   currentExchange.started && !currentExchange.secret && viewModel.focusedId == nil {
                                     HStack {
                                         Image(systemName: "arrow.forward")
                                             .resizable()
@@ -87,6 +86,10 @@ struct AllPeopleNavItem: NavItemView {
                                 .environmentObject(environment)
                         }
                     }
+                } else {
+                    Text(person.name)
+                        .padding(.vertical, 2)
+                        .opacity(0)
                 }
             }
             .buttonStyle(NavListButtonStyle())
@@ -97,10 +100,14 @@ struct AllPeopleNavItem: NavItemView {
     func openView() -> AnyView {
         Group {
             if let focusedPerson {
-                PersonView(person: focusedPerson, namespace: namespace)
+                PersonView(person: focusedPerson, namespace: namespace, customMatchTitle: focusedPerson.name)
             }
         }
         .asAnyView()
+    }
+    
+    func showNameFor(_ person: Person) -> Bool {
+        viewModel.focusedId == nil || focusedPerson == person
     }
 }
 

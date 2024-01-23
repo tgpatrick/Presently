@@ -44,6 +44,7 @@ struct GiftHistoryView: View {
                     Text("(nothing here yet)")
                     Spacer()
                 }
+                .padding(.vertical)
             }
         }
         .scrollIndicators(.hidden)
