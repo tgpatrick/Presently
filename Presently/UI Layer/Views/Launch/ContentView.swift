@@ -38,61 +38,45 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                if !navItems.isEmpty {
-                    NavigationScrollView(
-                        viewModel: scrollViewModel,
-                        items: navItems,
-                        topInset: geo.size.height / 13,
-                        bottomInset: geo.size.height / 10
-                    )
-                    .frame(maxWidth: geo.size.width)
-                    .environmentObject(scrollViewModel)
-                    .transition(.opacity)
-                    .accessibilityIdentifier("NavScrollView")
+                VStack {
+                    if !navItems.isEmpty {
+                        NavigationScrollView(
+                            viewModel: scrollViewModel,
+                            items: navItems,
+                            topInset: geo.size.height / 13,
+                            bottomInset: geo.size.height / 10
+                        )
+                        .frame(maxWidth: geo.size.width)
+                        .environmentObject(scrollViewModel)
+                        .transition(.opacity)
+                        .accessibilityIdentifier("NavScrollView")
+                    }
+                }
+                .safeAreaInset(edge: .top) {
+                    TopBar(ribbonHeight: ribbonHeight(geoProxy: geo))
+                        .frame(height: barHeight(geoProxy: geo, bar: .top))
+                        .shiftingGlassBackground()
+                        .shadow(radius: 2)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    BottomBar(loginViewModel: loginViewModel, ribbonHeight: ribbonHeight(geoProxy: geo))
+                        .frame(height: barHeight(geoProxy: geo, bar: .bottom))
+                        .shiftingGlassBackground()
+                        .shadow(radius: 2)
                 }
                 
-                ZStack {
-                    VStack(spacing: 0) {
-                        TopBar(ribbonHeight: ribbonHeight(geoProxy: geo))
-                            .frame(height: barHeight(geoProxy: geo, bar: .top))
-                            .shiftingGlassBackground()
-                            .shadow(radius: 2)
-                        
-                        if environment.barState != .closed {
-                            Spacer()
+                loginRibbon(geoProxy: geo)
+                    .bounceTransition(
+                        transition: .move(edge: .trailing).combined(with: .opacity),
+                        animation: .barAnimation,
+                        showView: .init(get: {
+                            !environment.shouldOpen || (environment.barState == .bottomFocus && environment.showOnboarding)
+                        }, set: { _ in })) {
+                            environment.barState = .open
                         }
-                        
-                        BottomBar(loginViewModel: loginViewModel, ribbonHeight: ribbonHeight(geoProxy: geo))
-                            .frame(height: barHeight(geoProxy: geo, bar: .bottom))
-                            .shiftingGlassBackground()
-                            .shadow(radius: 2)
-                    }
-                    .zIndex(1)
-                    
-                    VStack {
-                        if environment.barState == .topFocus {
-                            Spacer()
+                        .onAppear {
+                            ribbonHeight = ribbonHeight(geoProxy: geo)
                         }
-                        
-                        loginRibbon(geoProxy: geo)
-                            .bounceTransition(
-                                transition: .move(edge: .trailing).combined(with: .opacity),
-                                animation: .barAnimation,
-                                showView: .init(get: {
-                                    !environment.shouldOpen || (environment.barState == .bottomFocus && environment.showOnboarding)
-                                }, set: { _ in })) {
-                                    environment.barState = .open
-                                }
-                                .onAppear {
-                                    ribbonHeight = ribbonHeight(geoProxy: geo)
-                                }
-                        
-                        if environment.barState == .bottomFocus {
-                            Spacer()
-                        }
-                    }
-                    .zIndex(2)
-                }
             }
             .onChange(of: environment.currentUser) { _ in
                 if let currentUser = environment.currentUser,

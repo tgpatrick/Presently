@@ -16,71 +16,75 @@ struct PersonView: View {
     
     var body: some View {
         TitledScrollView(title: person.name, namespace: namespace) {
-            if person.organizer {
-                HStack(spacing: 3) {
-                    Spacer()
-                    Image(systemName: "star.fill")
-                        .matchedGeometryEffect(id: "star", in: namespace)
-                    Text("Organizer")
-                    Spacer()
-                }
-                .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
-                .padding(.bottom, -25)
-                .offset(x: 0, y: -15)
-            }
-            
-            if let greeting = person.greeting {
-                SectionView(title: "Intro") {
-                    Text(greeting)
-                }
-            }
-            
-            SectionView(title: "Wishlist") {
-                if person.wishesPublic || person == environment.userAssignment {
-                    WishListView(wishList: person.wishList)
-                } else {
-                    HStack {
+            VStack(alignment: .leading, spacing: 25) {
+                if person.organizer {
+                    HStack(spacing: 3) {
                         Spacer()
-                        Text("(not public)")
+                        Image(systemName: "star.fill")
+                            .matchedGeometryEffect(id: "star", in: namespace)
+                        Text("Organizer")
                         Spacer()
                     }
+                    .foregroundStyle(Color(colorScheme == .light ? .primaryBackground : .secondaryBackground))
+                    .padding(.bottom, -25)
+                    .offset(x: 0, y: -15)
                 }
-            }
-            
-            if let currentExchange = environment.currentExchange,
-                currentExchange.started && !currentExchange.secret,
-               let recipient = environment.getPerson(id: person.recipient){
-                SectionView(title: "Giving to") {
-                    VStack {
-                        Text(recipient.name)
-                            .font(.title2)
-                            .bold()
+                
+                if let greeting = person.greeting {
+                    SectionView(title: "Intro") {
+                        Text(greeting)
                     }
-                    .padding()
-                    .mainContentBox()
-                    .onTapGesture {
-                        withAnimation {
-                            person = recipient
+                }
+                
+                SectionView(title: "Wishlist") {
+                    if person.wishesPublic || person == environment.userAssignment {
+                        WishListView(wishList: person.wishList)
+                    } else {
+                        HStack {
+                            Spacer()
+                            Text("(not public)")
+                            Spacer()
                         }
                     }
-                    .contextMenu {
-                        Button("Open") {
+                }
+                
+                if let currentExchange = environment.currentExchange,
+                   currentExchange.started && !currentExchange.secret,
+                   let recipient = environment.getPerson(id: person.recipient){
+                    SectionView(title: "Giving to") {
+                        VStack {
+                            Text(recipient.name)
+                                .font(.title2)
+                                .bold()
+                        }
+                        .padding()
+                        .mainContentBox()
+                        .onTapGesture {
                             withAnimation {
                                 person = recipient
                             }
                         }
-                    } preview: {
-                        PersonPreview(id: person.recipient)
-                            .environmentObject(environment)
+                        .contextMenu {
+                            Button("Open") {
+                                withAnimation {
+                                    person = recipient
+                                }
+                            }
+                        } preview: {
+                            PersonPreview(id: person.recipient)
+                                .environmentObject(environment)
+                        }
+                        .fillHorizontally()
                     }
-                    .fillHorizontally()
+                }
+                
+                SectionView(title: "History") {
+                    GiftHistoryView(user: person)
                 }
             }
-            
-            SectionView(title: "History") {
-                GiftHistoryView(user: person)
-            }
+            .safeAreaPadding(.horizontal)
         }
+        .ignoresSafeArea(.container, edges: .horizontal)
     }
 }
 
@@ -107,6 +111,7 @@ struct PersonPreview: View {
 
 #Preview {
     @Namespace var namespace: Namespace.ID
+    let environment = AppEnvironment()
     
     return ZStack {
         Color(.primaryBackground).opacity(0.2)
@@ -115,6 +120,12 @@ struct PersonPreview: View {
             .mainContentBox()
             .padding()
     }
-    .environmentObject(AppEnvironment())
     .environmentObject(ScrollViewModel())
+    .environmentObject(ScrollViewModel())
+    .environmentObject(environment)
+    .onAppear {
+        environment.currentUser = testPerson2
+        environment.currentExchange = testExchange
+        environment.allCurrentPeople = testPeople
+    }
 }

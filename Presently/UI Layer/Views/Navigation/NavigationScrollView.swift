@@ -28,36 +28,27 @@ struct NavigationScrollView: View {
     var bottomInset: CGFloat = 10
     @State var maxHeight: CGFloat = 1
     @State var showCards = false
-    @State var isRefreshing = false
     
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                VStack {
-                    if isRefreshing {
-                        ProgressView()
-                    }
-                    ForEach(translatedItems) { item in
-                        if showCards {
-                            item.view
-                                .asAnyView()
-                                .navigationCard(
-                                    id: item.id,
-                                    title: item.title,
-                                    viewModel: viewModel,
-                                    maxHeight: maxHeight,
-                                    topInset: topInset,
-                                    bottomInset: bottomInset,
-                                    scrollViewReader: reader)
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 10)
-                                .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
-                        }
+                ForEach(translatedItems) { item in
+                    if showCards {
+                        item.view
+                            .asAnyView()
+                            .navigationCard(
+                                id: item.id,
+                                title: item.title,
+                                viewModel: viewModel,
+                                maxHeight: maxHeight,
+                                topInset: topInset,
+                                bottomInset: bottomInset,
+                                scrollViewReader: reader)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
                     }
                 }
-                .padding(.top, topInset)
-                .padding(.bottom, bottomInset)
-                .padding(.vertical, 15)
             }
             .background {
                 GeometryReader { geo in
@@ -72,21 +63,9 @@ struct NavigationScrollView: View {
                 }
             }
             .refreshable {
-                isRefreshing = true
-                Task {
-                    await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
-                    DispatchQueue.main.async {
-                        withAnimation {
-                            isRefreshing = false
-                        }
-                    }
-                }
+                await environment.refreshFromServer(exchangeRepo: exchangeRepo, peopleRepo: peopleRepo)
             }
             .scrollDisabled(viewModel.focusedId != nil)
-            .onAppear {
-                UIRefreshControl.appearance().tintColor = .clear
-                viewModel.scrollViewReader = reader
-            }
         }
     }
 }

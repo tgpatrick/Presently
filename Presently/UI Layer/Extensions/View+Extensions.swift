@@ -21,7 +21,7 @@ extension View {
     
     func mainContentBox(material: Material = .thinMaterial, padding: CGFloat = 15) -> some View {
         self
-            .padding(padding)
+            .safeAreaPadding(padding)
             .background(
                 RoundedRectangle(cornerRadius: 15)
                     .fill(material)
@@ -37,7 +37,8 @@ extension View {
     }
     
     func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
-        self.modifier(
+        viewModel.scrollViewReader = scrollViewReader
+        return self.modifier(
             NavigationCardModifier(
                 id: id,
                 title: title,
@@ -53,8 +54,9 @@ extension View {
                 .font(.title2)
                 .bold()
                 .padding(.leading)
-            Divider()
-                .background(Color.primary)
+            RoundedRectangle(cornerRadius: 0.5)
+                .frame(height: 1)
+                .foregroundStyle(.secondary)
         }
         .padding(.bottom, 5)
     }
@@ -91,10 +93,6 @@ extension View {
     
     @ViewBuilder
     func symbolTransitionIfAvailable() -> some View {
-        if #available(iOS 17.0, *) {
-            self.contentTransition(.symbolEffect(.replace))
-        } else {
-            self
-        }
+        self.contentTransition(.symbolEffect(.replace))
     }
 }

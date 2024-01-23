@@ -25,90 +25,91 @@ struct NavigationCardModifier: ViewModifier {
     private var isOpen: Bool {
         viewModel.focusedId == id && viewModel.focusedExpanded
     }
+    private var isShowing: Bool {
+        viewModel.focusedId == nil || viewModel.focusedId == id
+    }
     
     func body(content: Content) -> some View {
-        if viewModel.focusedId == nil || viewModel.focusedId == id {
-            VStack(alignment: .leading) {
-                if let title {
-                    if viewModel.focusedId == nil {
-                        Text(title)
-                    } else {
-                        Text(" ")
-                    }
+        VStack(alignment: .leading) {
+            if let title {
+                if viewModel.focusedId == nil {
+                    Text(title)
+                } else {
+                    Text(" ")
                 }
-                ZStack {
-                    content
-                    if isOpen {
-                        VStack {
-                            HStack {
-                                Button {
-                                    viewModel.close(id)
-                                } label: {
-                                    Image(systemName: "chevron.backward")
-                                        .padding(.horizontal, 2)
-                                }
-                                .buttonStyle(DepthButtonStyle(shape: Circle()))
-                                .offset(x: swipeOffset)
-                                .opacity(backButtonOpacity)
-                                Spacer()
+            }
+            ZStack {
+                content
+                if isOpen {
+                    VStack {
+                        HStack {
+                            Button {
+                                viewModel.close(id)
+                            } label: {
+                                Image(systemName: "chevron.backward")
+                                    .padding(.horizontal, 2)
                             }
+                            .buttonStyle(DepthButtonStyle(shape: Circle()))
+                            .offset(x: swipeOffset)
+                            .opacity(backButtonOpacity)
                             Spacer()
                         }
+                        Spacer()
                     }
                 }
-                .fillHorizontally()
-                .mainContentBox()
-                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0, maxHeight: maxHeight)
-                .padding(.horizontal, viewModel.focusedId == id ? 0 : 10)
-                .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
-                .background(
-                    GeometryReader { geo in
-                        Color.clear
-                            .onAppear {
-                                unexpandedHeight = geo.size.height
-                                dismissSwipeDistance = geo.size.width / 2
-                                maxSwipeOffset = geo.size.width / 10
+            }
+            .fillHorizontally()
+            .mainContentBox()
+            .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0, maxHeight: maxHeight)
+            .padding(.horizontal, viewModel.focusedId == id ? 0 : 10)
+            .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
+            .background(
+                GeometryReader { geo in
+                    Color.clear
+                        .onAppear {
+                            unexpandedHeight = geo.size.height
+                            dismissSwipeDistance = geo.size.width / 2
+                            maxSwipeOffset = geo.size.width / 10
+                            minimumHeight = maxHeight
+                        }
+                }
+            )
+            .disabled(isTransitioning || swipeOffset > 0)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        if isOpen && value.startLocation.x < 15 {
+                            if minimumHeight == 0 {
                                 minimumHeight = maxHeight
                             }
+                            let percentDismissed = value.translation.width / dismissSwipeDistance
+                            backButtonOpacity = 1 - percentDismissed
+                            minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
+                            swipeOffset = maxSwipeOffset * percentDismissed
+                        }
                     }
-                )
-                .disabled(isTransitioning || swipeOffset > 0)
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            if isOpen && value.startLocation.x < 15 {
-                                if minimumHeight == 0 {
-                                    minimumHeight = maxHeight
-                                }
-                                let percentDismissed = value.translation.width / dismissSwipeDistance
-                                backButtonOpacity = 1 - percentDismissed
-                                minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
-                                swipeOffset = maxSwipeOffset * percentDismissed
-                            }
-                        }
-                        .onEnded { value in
-                            if isOpen && value.startLocation.x < 15 {
-                                if value.predictedEndTranslation.width > dismissSwipeDistance {
-                                    let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
-                                    withAnimation(.interactiveSpring()) {
-                                        minimumHeight = maxHeight * (1 - percentDismissed)
-                                        swipeOffset = maxSwipeOffset * percentDismissed
-                                    }
-                                    viewModel.close(id)
-                                }
+                    .onEnded { value in
+                        if isOpen && value.startLocation.x < 15 {
+                            if value.predictedEndTranslation.width > dismissSwipeDistance {
+                                let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
                                 withAnimation(.interactiveSpring()) {
-                                    backButtonOpacity = 1
-                                    minimumHeight = maxHeight
-                                    swipeOffset = 0
-                                    viewModel.scrollTo(id, after: 0.15)
+                                    minimumHeight = maxHeight * (1 - percentDismissed)
+                                    swipeOffset = maxSwipeOffset * percentDismissed
                                 }
+                                viewModel.close(id)
+                            }
+                            withAnimation(.interactiveSpring()) {
+                                backButtonOpacity = 1
+                                minimumHeight = maxHeight
+                                swipeOffset = 0
+                                //                                    viewModel.scrollTo(id, after: 0.15)
                             }
                         }
-                )
-            }
-            .transition(.move(edge: .leading).combined(with: .opacity))
-        } else {
-            Spacer().frame(height: unexpandedHeight)
+                    }
+            )
         }
+        .transition(.move(edge: .leading).combined(with: .opacity))
+        .opacity(isShowing ? 1 : 0)
+        .disabled(!isShowing)
     }
 }
