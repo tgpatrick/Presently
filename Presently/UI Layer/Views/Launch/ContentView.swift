@@ -50,6 +50,8 @@ struct ContentView: View {
                         .environmentObject(scrollViewModel)
                         .transition(.opacity)
                         .accessibilityIdentifier("NavScrollView")
+                    } else {
+                        Spacer()
                     }
                 }
                 .safeAreaInset(edge: .top) {
@@ -239,8 +241,8 @@ struct ContentView: View {
     return ContentView(loginViewModel: loginViewModel)
         .environmentObject(LoginStorage())
         .environmentObject(environment)
-        .onAppear(perform: {
+        .onAppear {
             loginViewModel.exchangeIdField = "0001"
             loginViewModel.personIdField = "0001"
-        })
+        }
 }
