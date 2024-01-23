@@ -38,7 +38,6 @@ struct GiftHistoryView: View {
                         .scrollTargetLayout()
                 }
                 .scrollTargetBehavior(.viewAligned)
-                .padding(.horizontal, -10)
             } else {
                 HStack {
                     Spacer()

@@ -24,7 +24,23 @@ struct TitledScrollView<Content>: View where Content: View {
     }
     
     var body: some View {
-        ZStack(alignment: .top) {
+        ScrollView {
+            GeometryReader { geo in
+                Color.clear
+                    .preference(key: ViewOffsetKey.self, value: geo.frame(in: .global).minY)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+                            self.initialY = geo.frame(in: .global).minY
+                        }
+                    }
+            }
+            .frame(height: 10)
+            VStack(alignment: .leading, spacing: 25) {
+                content
+            }
+        }
+        .scrollIndicators(.hidden)
+        .safeAreaInset(edge: .top) {
             ZStack(alignment: .bottom) {
                 Text(title)
                     .padding(.bottom, 10)
@@ -38,36 +54,15 @@ struct TitledScrollView<Content>: View where Content: View {
                     )
                 Divider()
                     .opacity(barOpacity)
-                    .padding(.horizontal, -15)
+                    .ignoresSafeArea()
             }
             .frame(maxHeight: titleHeight)
             .background(
                 Rectangle()
                     .fill(material.opacity(barOpacity))
-                    .padding(.horizontal, -16)
-                    .padding(.top, -16)
+                    .ignoresSafeArea()
                     .transition(.identity)
             )
-            .zIndex(2)
-            
-            ScrollView {
-                GeometryReader { geo in
-                    Color.clear
-                        .preference(key: ViewOffsetKey.self, value: geo.frame(in: .global).minY)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
-                                self.initialY = geo.frame(in: .global).minY
-                            }
-                        }
-                }
-                .frame(height: 10)
-                VStack(alignment: .leading, spacing: 25) {
-                    content
-                }
-                .padding(.top, titleHeight)
-            }
-            .scrollIndicators(.hidden)
-            .zIndex(1)
         }
         .onPreferenceChange(ViewOffsetKey.self) { value in
             let offset = initialY - value

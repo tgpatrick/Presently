@@ -17,6 +17,7 @@ struct WishListView: View {
                     VStack {
                         HStack {
                             Text(wish.description)
+                                .fixedSize(horizontal: false, vertical: true)
                             Spacer()
                             if let url = URL(string: wish.link) {
                                 Link(destination: url) {
@@ -30,16 +31,18 @@ struct WishListView: View {
                                             .foregroundStyle(.primary)
                                     }
                                     .frame(maxHeight: 15)
-                                    .padding(.horizontal, 2)
+                                    .padding(.vertical, 5)
                                 }
                                 .allowsTightening(true)
+                                .fixedSize()
                                 .padding(.trailing, 8)
                             }
                         }
                         Divider()
                     }
                 }
-            }.buttonStyle(DepthButtonStyle(shadowRadius: 5))
+            }
+            .buttonStyle(DepthButtonStyle(shadowRadius: 5, padding: 0))
         } else {
             HStack {
                 Spacer()
@@ -52,5 +55,22 @@ struct WishListView: View {
 }
 
 #Preview {
-    WishListView(wishList: testPerson.wishList)
+    @Namespace var namespace: Namespace.ID
+    let environment = AppEnvironment()
+    
+    return ZStack {
+        Color(.primaryBackground).opacity(0.2)
+            .ignoresSafeArea()
+        PersonView(person: testPerson, namespace: namespace)
+            .mainContentBox()
+            .padding()
+    }
+    .environmentObject(ScrollViewModel())
+    .environmentObject(ScrollViewModel())
+    .environmentObject(environment)
+    .onAppear {
+        environment.currentUser = testPerson2
+        environment.currentExchange = testExchange
+        environment.allCurrentPeople = testPeople
+    }
 }

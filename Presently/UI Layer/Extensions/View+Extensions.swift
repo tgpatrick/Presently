@@ -21,7 +21,7 @@ extension View {
     
     func mainContentBox(material: Material = .thinMaterial, padding: CGFloat = 15) -> some View {
         self
-            .padding(padding)
+            .safeAreaPadding(padding)
             .background(
                 RoundedRectangle(cornerRadius: 15)
                     .fill(material)
@@ -54,8 +54,9 @@ extension View {
                 .font(.title2)
                 .bold()
                 .padding(.leading)
-            Divider()
-                .background(Color.primary)
+            RoundedRectangle(cornerRadius: 0.5)
+                .frame(height: 1)
+                .foregroundStyle(.secondary)
         }
         .padding(.bottom, 5)
     }
