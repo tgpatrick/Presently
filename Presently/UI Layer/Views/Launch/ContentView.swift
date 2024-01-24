@@ -61,10 +61,13 @@ struct ContentView: View {
                         .shadow(radius: 2)
                 }
                 .safeAreaInset(edge: .bottom) {
-                    BottomBar(loginViewModel: loginViewModel, ribbonHeight: ribbonHeight(geoProxy: geo))
-                        .frame(height: barHeight(geoProxy: geo, bar: .bottom))
-                        .shiftingGlassBackground()
-                        .shadow(radius: 2)
+                    BottomBar(
+                        loginViewModel: loginViewModel,
+                        ribbonHeight: ribbonHeight(geoProxy: geo)
+                    )
+                    .frame(minHeight: barHeight(geoProxy: geo, bar: .bottom))
+                    .shiftingGlassBackground()
+                    .shadow(radius: 2)
                 }
                 
                 loginRibbon(geoProxy: geo)
@@ -220,16 +223,16 @@ struct ContentView: View {
     
     func barHeight(geoProxy: GeometryProxy, bar: Bar) -> CGFloat {
         let viewHeight = geoProxy.size.height
-        
+        // Since BottomBar has a minHeight, it only needs to be told to be big when closed
         switch environment.barState {
         case .open:
-            return bar == .top ? viewHeight / 13 : viewHeight / 15
+            return bar == .top ? viewHeight / 13 : 0
         case .closed:
             return viewHeight / 2
         case .topFocus:
             return bar == .top ? viewHeight : 0
         case .bottomFocus:
-            return bar == .bottom ? viewHeight : 0
+            return 0
         }
     }
 }

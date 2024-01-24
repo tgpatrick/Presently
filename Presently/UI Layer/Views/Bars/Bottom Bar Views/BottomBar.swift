@@ -24,13 +24,14 @@ struct BottomBar: View {
     @ObservedObject var loginViewModel: LoginViewModel
     @State var ribbonHeight: CGFloat
     @State var page: BottomBarPage = .home
-    @State private var barHeight: CGFloat = 50
     
     var body: some View {
-        VStack {
+        HStack {
             if !isLoggedIn {
+                Spacer()
                 BottomLoginView(loginViewModel: loginViewModel)
                     .padding(.top, ribbonHeight / 2)
+                Spacer()
             } else {
                 switch environment.barState {
                 case .open, .bottomFocus:
@@ -62,15 +63,14 @@ struct BottomBar: View {
                         .environmentObject(personOnboardingViewModel)
                     }
                 default:
-                    EmptyView()
+                    Spacer()
                 }
             }
         }
-        .fillHorizontally()
     }
     
     var tabView: some View {
-        VStack(spacing: 0) {
+        HStack {
             if environment.barState == .bottomFocus {
                 ZStack(alignment: .top) {
                     Group {
@@ -87,7 +87,7 @@ struct BottomBar: View {
                             OrganizerView(
                                 namespace: _bottomNamespace
                             )
-                        case .home:
+                        default:
                             EmptyView()
                         }
                     }
@@ -110,9 +110,11 @@ struct BottomBar: View {
                     }
                     .padding()
                 }
+            } else {
+                Spacer()
             }
-            
-            Spacer()
+        }
+        .safeAreaInset(edge: .bottom) {
             if !environment.hideTabBar {
                 bottomTabBar
                     .transition(.move(edge: .bottom))
@@ -120,7 +122,6 @@ struct BottomBar: View {
         }
     }
     
-    //TODO: Show icons on iPhone SE
     var bottomTabBar: some View {
         HStack {
             Spacer()
@@ -132,9 +133,7 @@ struct BottomBar: View {
             } label: {
                 VStack(spacing: 5) {
                     Image(systemName: page == .home ? "house.fill" : "house")
-                        .resizable()
-                        .fontWeight(.light)
-                        .aspectRatio(contentMode: .fit)
+                        .tabBarImage()
                     Text("Home")
                         .fontWeight(.black)
                 }
@@ -148,9 +147,7 @@ struct BottomBar: View {
             } label: {
                 VStack(spacing: 5) {
                     Image(systemName: page == .profile ? "person.fill" : "person")
-                        .resizable()
-                        .fontWeight(.light)
-                        .aspectRatio(contentMode: .fit)
+                        .tabBarImage()
                     Text("Profile")
                         .fontWeight(.black)
                 }
@@ -165,9 +162,7 @@ struct BottomBar: View {
                 } label: {
                     VStack(spacing: 5) {
                         Image(systemName: page == .organizer ? "wrench.and.screwdriver.fill" : "wrench.and.screwdriver")
-                            .resizable()
-                            .fontWeight(.light)
-                            .aspectRatio(contentMode: .fit)
+                            .tabBarImage()
                         Text("Tools")
                             .fontWeight(.black)
                     }
@@ -179,17 +174,15 @@ struct BottomBar: View {
         .shadow(radius: 1)
         .shadow(radius: 1)
         .foregroundStyle(Color(.accentLight))
-        .padding(.bottom, 25)
-        .padding(.top, 15)
-        .ignoresSafeArea(.container, edges: .bottom)
-        .background(
-            GeometryReader { geo in
-                Color.clear.onAppear {
-                    barHeight = geo.size.height
-                }
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
+        .background {
+            if environment.barState == .bottomFocus {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .transition(.move(edge: .bottom))
             }
-        )
-        .frame(height: barHeight)
+        }
         .id("TabBar")
     }
 }
