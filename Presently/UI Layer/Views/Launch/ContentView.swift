@@ -48,9 +48,11 @@ struct ContentView: View {
                         )
                         .frame(maxWidth: geo.size.width)
                         .environmentObject(scrollViewModel)
-                        .transition(.opacity)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                         .accessibilityIdentifier("NavScrollView")
                     } else {
+                        Spacer()
+                        ProgressView()
                         Spacer()
                     }
                 }
@@ -89,7 +91,7 @@ struct ContentView: View {
                    let allCurrentPeople = environment.allCurrentPeople {
                     navItems = []
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         var items: [any NavItemView] = []
                         items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
                         items.append(NextDateNavItem(exchange: currentExchange))
@@ -102,7 +104,9 @@ struct ContentView: View {
                             items.append(TestNavItem())
                         }
                         
-                        navItems = items
+                        withAnimation {
+                            navItems = items
+                        }
                     }
                 }
             }

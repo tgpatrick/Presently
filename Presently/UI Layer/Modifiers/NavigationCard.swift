@@ -104,6 +104,7 @@ struct NavigationCardModifier: ViewModifier {
                                     backButtonOpacity = 1
                                     minimumHeight = maxHeight
                                     swipeOffset = 0
+                                    viewModel.scrollTo(id)
                                 }
                             }
                         }
