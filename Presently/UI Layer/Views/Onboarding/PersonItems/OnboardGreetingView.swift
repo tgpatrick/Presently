@@ -38,7 +38,7 @@ struct OnboardGreetingView: View {
             }
         }
         .animation(.easeInOut, value: textFieldFocused)
-        .onChange(of: textFieldFocused) { val in
+        .onChange(of: textFieldFocused) { _, val in
             withAnimation(.easeInOut) {
                 onboardingViewModel.hideButtons = val
             }

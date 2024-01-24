@@ -29,56 +29,66 @@ struct AllLoginsView: View {
                             ProgressView()
                         } else {
                             SectionView(title: "Your current exchange") {
-                                if let currentItem = loginStorage.items.first(where: { $0.exchangeID == currentUser.exchangeId && $0.personID == currentUser.personId }) {
+                                if let currentItem = loginStorage.items.first(where: {
+                                    $0.exchangeID == currentUser.exchangeId &&
+                                    $0.personID == currentUser.personId
+                                }) {
                                     loginItem(item: currentItem)
+                                        .id(currentItem)
+                                        .transition(.slide)
                                 }
                             }
                             if loginStorage.items.count > 1 {
                                 SectionView(title: "Your other exchanges") {
                                     ScrollView {
-                                        ForEach(loginStorage.items) { item in
-                                            if item.exchangeID != currentUser.exchangeId || item.personID != currentUser.personId {
-                                                VStack {
+                                        VStack {
+                                            ForEach(loginStorage.items) { item in
+                                                if item.exchangeID != currentUser.exchangeId ||
+                                                    item.personID != currentUser.personId {
+                                                    
                                                     loginItem(item: item, current: false)
-                                                        .padding(.vertical, 5)
+                                                        .padding()
+                                                        .animation(.easeInOut, value: loginStorage.items)
                                                 }
-                                                .animation(.easeInOut, value: loginStorage.items)
                                             }
                                         }
                                     }
+                                    .scrollIndicators(.hidden)
                                 }
                             }
                         }
                     }
-                    .padding()
-                }
-                
-                HStack {
-                    if loginStorage.items.count == 1 {
-                        Spacer()
-                        Button {
-                            environment.logOut()
-                        } label: {
-                            Text("Log Out")
-                                .font(.title2)
-                                .bold()
-                                .padding(5)
-                        }
-                    }
-                    Spacer()
-                    if !showRibbon {
-                        Button {
-                            withAnimation(.bouncy) {
-                                showRibbon = true
+                    .padding(.horizontal)
+                    .safeAreaInset(edge: .bottom) {
+                        HStack {
+                            if loginStorage.items.count == 1 {
+                                Spacer()
+                                Button {
+                                    environment.logOut()
+                                } label: {
+                                    Text("Log Out")
+                                        .font(.title2)
+                                        .bold()
+                                        .padding(5)
+                                }
                             }
-                        } label: {
-                            Text("Add Another")
-                                .font(.title2)
-                                .bold()
-                                .padding(5)
+                            Spacer()
+                            if !showRibbon {
+                                Button {
+                                    withAnimation(.bouncy) {
+                                        showRibbon = true
+                                    }
+                                } label: {
+                                    Text("Add Another")
+                                        .font(.title2)
+                                        .bold()
+                                        .padding(5)
+                                }
+                                .matchedGeometryEffect(id: "LoginButton", in: allLoginsNamespace)
+                                Spacer()
+                            }
                         }
-                        .matchedGeometryEffect(id: "LoginButton", in: allLoginsNamespace)
-                        Spacer()
+                        .padding(.bottom)
                     }
                 }
             }
@@ -196,10 +206,15 @@ struct AllLoginsView: View {
                             loginViewModel.personIdField = item.personID
                             loginViewModel.login(loginStorage: loginStorage)
                         } label: {
-                            if exchangeRepo.isLoading || peopleRepo.isLoading {
-                                ProgressView()
-                            } else {
-                                Text("Switch")
+                            ZStack {
+                                if (exchangeRepo.isLoading || peopleRepo.isLoading) &&
+                                    loginViewModel.exchangeIdField == item.exchangeID &&
+                                    loginViewModel.personIdField == item.personID {
+                                    ProgressView()
+                                    Text("Switch").opacity(0)
+                                } else {
+                                    Text("Switch")
+                                }
                             }
                         }
                         .buttonStyle(DepthButtonStyle(backgroundColor: .green))
@@ -211,6 +226,7 @@ struct AllLoginsView: View {
                         } label: {
                             if loginStorage.isLoading {
                                 ProgressView()
+                                Text("Delete").opacity(0)
                             } else {
                                 Text("Delete")
                             }
@@ -220,6 +236,7 @@ struct AllLoginsView: View {
                     }
                     .foregroundStyle(Color.black)
                     .bold()
+                    .disabled(exchangeRepo.isLoading || peopleRepo.isLoading || loginStorage.isLoading)
                 }
             }
             Spacer()

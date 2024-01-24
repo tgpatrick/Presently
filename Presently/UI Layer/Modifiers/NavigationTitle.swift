@@ -31,7 +31,7 @@ struct NavTitleModifier: ViewModifier {
                         .onAppear {
                             originalMinX = geo.frame(in: .global).minX
                         }
-                        .onChange(of: geo.frame(in: .global).minX) { newValue in
+                        .onChange(of: geo.frame(in: .global).minX) { _, newValue in
                             swipeOffset = max((newValue - originalMinX) * 1.5, 0)
                             backswipeOpacity = max(1 - (swipeOffset * 2) / geo.size.width, 0.1)
                         }

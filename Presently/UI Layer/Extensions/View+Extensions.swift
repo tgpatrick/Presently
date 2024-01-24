@@ -56,7 +56,7 @@ extension View {
                 .padding(.leading)
             RoundedRectangle(cornerRadius: 0.5)
                 .frame(height: 1)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.primary.opacity(0.5))
         }
         .padding(.bottom, 5)
     }

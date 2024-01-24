@@ -100,7 +100,7 @@ struct OnboardWishListView: View {
         }
         .textFieldStyle(InsetTextFieldStyle(alignment: .leading))
         .buttonStyle(DepthButtonStyle())
-        .onChange(of: showTextFields) { val in
+        .onChange(of: showTextFields) { _, val in
             withAnimation {
                 onboardingViewModel.hideButtons = val
             }

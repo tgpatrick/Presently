@@ -30,7 +30,7 @@ struct TopLoginView: View {
                         .padding()
                         .matchedGeometryEffect(id: "appName", in: mainNamespace)
                 }
-                .onChange(of: geo.size.height) { newValue in
+                .onChange(of: geo.size.height) { _, newValue in
                     withAnimation {
                         if newValue < 200 {
                             layout = AnyLayout(HStackLayout())
@@ -74,7 +74,7 @@ struct RibbonLoginView: View {
                         .onSubmit {
                             personIdFieldFocused = true
                         }
-                        .onChange(of: loginViewModel.exchangeIdField) { _ in
+                        .onChange(of: loginViewModel.exchangeIdField) {
                             if exchangeIdFieldFocused && loginViewModel.exchangeIdField.count >= 4 {
                                 personIdFieldFocused = true
                             }
@@ -93,7 +93,7 @@ struct RibbonLoginView: View {
                             exchangeIdFieldFocused = false
                             loginViewModel.login(loginStorage: loginStorage)
                         }
-                        .onChange(of: loginViewModel.personIdField) { _ in
+                        .onChange(of: loginViewModel.personIdField) {
                             loginViewModel.onPidChange()
                         }
                         .accessibilityIdentifier("personIdTextField")

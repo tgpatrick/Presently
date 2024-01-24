@@ -92,23 +92,21 @@ struct OrganizerView: View {
                             }
                         }
                         
-                        if currentExchange.started {
+                        if currentExchange.started && !organizerViewModel.animating {
                             ZStack(alignment: .topTrailing) {
                                 SectionView(title: "Assignments") {
-                                    if let allCurrentPeople = environment.allCurrentPeople {
-                                        ForEach(allCurrentPeople) { person in
-                                            HStack {
-                                                Text(person.name)
-                                                Spacer()
-                                                Image(systemName: "arrow.forward")
-                                                Spacer()
-                                                Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
-                                            }
-                                            .bold()
+                                    ForEach(allCurrentPeople.sorted()) { person in
+                                        HStack {
+                                            Text(person.name)
+                                            Spacer()
+                                            Image(systemName: "arrow.forward")
+                                            Spacer()
+                                            Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
                                         }
+                                        .bold()
                                     }
                                 }
-                                ShareLink(item: organizerViewModel.getShareString()) {
+                                ShareLink(item: organizerViewModel.getShareString(from: allCurrentPeople)) {
                                     Image(systemName: "square.and.arrow.up")
                                 }
                                 .padding(.horizontal)
@@ -150,6 +148,26 @@ struct OrganizerView: View {
                         .mainContentBox()
                         .buttonStyle(DepthButtonStyle(shadowRadius: 2, padding: 1))
                         .symbolTransitionIfAvailable()
+                        
+                        SectionView(title: "Exclusions") {
+                            ForEach(allCurrentPeople.sorted()) { person in
+                                VStack(alignment: .leading) {
+                                    Text(person.name)
+                                        .bold()
+                                    VStack(alignment: .leading) {
+                                        if !person.exceptions.isEmpty {
+                                            ForEach(person.exceptions, id: \.self) { exclusion in
+                                                Text(allCurrentPeople.getPersonById(exclusion)?.name ?? "error")
+                                            }
+                                        } else {
+                                            Text("(none)")
+                                        }
+                                    }
+                                    .padding(.leading)
+                                }
+                            }
+                        }
+                        .mainContentBox()
                     }
                 }
                 .blur(radius: blur)
@@ -340,7 +358,7 @@ struct OrganizerView: View {
         .mainContentBox()
         .padding()
         .transition(.move(edge: .top).combined(with: .opacity))
-        .onChange(of: organizerViewModel.animating) { newValue in
+        .onChange(of: organizerViewModel.animating) { _, newValue in
             if !newValue {
                 withAnimation {
                     environment.hideTabBar = false

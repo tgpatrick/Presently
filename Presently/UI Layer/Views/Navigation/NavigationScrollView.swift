@@ -26,14 +26,14 @@ struct NavigationScrollView: View {
     }
     var topInset: CGFloat = 10
     var bottomInset: CGFloat = 10
-    @State var maxHeight: CGFloat = 1
-    @State var showCards = false
+    @State private var maxHeight: CGFloat = 1
+    @State private var showCards = false
     
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                ForEach(translatedItems) { item in
-                    if showCards {
+                VStack(spacing: 20) {
+                    ForEach(translatedItems) { item in
                         item.view
                             .asAnyView()
                             .navigationCard(
@@ -43,7 +43,6 @@ struct NavigationScrollView: View {
                                 maxHeight: maxHeight,
                                 scrollViewReader: reader)
                             .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
                             .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
                     }
                 }
@@ -55,7 +54,6 @@ struct NavigationScrollView: View {
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 maxHeight = geo.size.height
-                                self.showCards = true
                             }
                         }
                 }
