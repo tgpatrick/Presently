@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NavTitleModifier: ViewModifier {
     var namespace: Namespace.ID
-    var customTitle: String? = nil
+    var customMatchTitle: String? = nil
     @State private var originalMinX: CGFloat = 0
     @State private var swipeOffset: CGFloat = 0
     @State private var backswipeOpacity: Double = 1
@@ -21,7 +21,7 @@ struct NavTitleModifier: ViewModifier {
             .multilineTextAlignment(.center)
             .padding(.vertical, 7.5)
             .padding(.horizontal, 40)
-            .navTitleMatchAnimation(namespace: namespace)
+            .navTitleMatchAnimation(namespace: namespace, customTitle: customMatchTitle)
             .fixedSize(horizontal: false, vertical: true)
             .offset(x: swipeOffset)
             .opacity(backswipeOpacity)

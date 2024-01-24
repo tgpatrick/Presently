@@ -10,15 +10,18 @@ import SwiftUI
 struct TitledScrollView<Content>: View where Content: View {
     let title: String
     var namespace: Namespace.ID
+    var customMatchTitle: String?
     let material: Material
     let content: Content
+    @State private var safeToScroll: Bool = false
     @State private var barOpacity: Double = 0.0
     @State private var titleHeight: CGFloat = 0
     @State private var initialY: CGFloat = 0
     
-    init(title: String, namespace: Namespace.ID, material: Material = .thin, @ViewBuilder content: () -> Content) {
+    init(title: String, namespace: Namespace.ID, customMatchTitle: String? = nil, material: Material = .thin, @ViewBuilder content: () -> Content) {
         self.title = title
         self.namespace = namespace
+        self.customMatchTitle = customMatchTitle
         self.material = material
         self.content = content()
     }
@@ -31,6 +34,7 @@ struct TitledScrollView<Content>: View where Content: View {
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
                             self.initialY = geo.frame(in: .global).minY
+                            safeToScroll = true
                         }
                     }
             }
@@ -40,11 +44,12 @@ struct TitledScrollView<Content>: View where Content: View {
             }
         }
         .scrollIndicators(.hidden)
+        .scrollDisabled(!safeToScroll)
         .safeAreaInset(edge: .top) {
             ZStack(alignment: .bottom) {
                 Text(title)
                     .padding(.bottom, 10)
-                    .modifier(NavTitleModifier(namespace: namespace))
+                    .modifier(NavTitleModifier(namespace: namespace, customMatchTitle: customMatchTitle))
                     .background(
                         GeometryReader { geo in
                             Color.clear.onAppear {

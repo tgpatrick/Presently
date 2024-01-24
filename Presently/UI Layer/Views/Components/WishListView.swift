@@ -48,6 +48,7 @@ struct WishListView: View {
                 Spacer()
                 Text("(nothing here yet)")
                     .multilineTextAlignment(.center)
+                    .padding(.vertical)
                 Spacer()
             }
         }

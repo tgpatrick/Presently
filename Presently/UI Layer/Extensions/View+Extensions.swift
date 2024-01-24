@@ -36,7 +36,7 @@ extension View {
             .matchedGeometryEffect(id: customTitle ?? "title", in: namespace)
     }
     
-    func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, topInset: CGFloat, bottomInset: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
+    func navigationCard(id: String, title: String? = nil, viewModel: ScrollViewModel, maxHeight: CGFloat, scrollViewReader: ScrollViewProxy) -> some View {
         viewModel.scrollViewReader = scrollViewReader
         return self.modifier(
             NavigationCardModifier(
