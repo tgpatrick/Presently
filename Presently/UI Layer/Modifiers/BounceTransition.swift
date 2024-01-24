@@ -42,7 +42,7 @@ struct BounceTransitionModifier: ViewModifier {
                     .scaleEffect(transitionState == .bounceDown ? CGSize(width: 0.7, height: 0.7) : CGSize(width: 1, height: 1))
             }
         }
-        .onChange(of: shouldShowView.wrappedValue) { shouldShow in
+        .onChange(of: shouldShowView.wrappedValue) { _, shouldShow in
             if !shouldShow {
                 Timer.scheduledTimer(withTimeInterval: transitionLength, repeats: true) { timer in
                     switch transitionState {

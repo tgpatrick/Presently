@@ -85,7 +85,7 @@ struct ContentView: View {
                             ribbonHeight = ribbonHeight(geoProxy: geo)
                         }
             }
-            .onChange(of: environment.currentUser) { _ in
+            .onChange(of: environment.currentUser) {
                 if let currentUser = environment.currentUser,
                    let currentExchange = environment.currentExchange,
                    let allCurrentPeople = environment.allCurrentPeople {

@@ -358,7 +358,7 @@ struct OrganizerView: View {
         .mainContentBox()
         .padding()
         .transition(.move(edge: .top).combined(with: .opacity))
-        .onChange(of: organizerViewModel.animating) { newValue in
+        .onChange(of: organizerViewModel.animating) { _, newValue in
             if !newValue {
                 withAnimation {
                     environment.hideTabBar = false

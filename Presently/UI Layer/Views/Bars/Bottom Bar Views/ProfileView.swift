@@ -461,7 +461,7 @@ struct ProfileView: View {
             }
             .buttonStyle(DepthButtonStyle())
             .disabled(personRepo.isLoading)
-            .onChange(of: editState) { state in
+            .onChange(of: editState) { _, state in
                 withAnimation(.easeInOut) {
                     deletedWishes = []
                     exclusionToDelete = nil
