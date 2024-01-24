@@ -379,13 +379,13 @@ struct OrganizerView: View {
 #Preview {
     let environment = AppEnvironment()
     
-    return BottomBar(loginViewModel: LoginViewModel(), ribbonHeight: .zero, page: .organizer)
+    return BottomBar(loginViewModel: LoginViewModel(), ribbonHeight: .zero)
         .background(ShiftingBackground())
         .environmentObject(environment)
         .onAppear(perform: {
             environment.currentUser = testPerson
             environment.currentExchange = testExchange
             environment.allCurrentPeople = testPeople
-            environment.barState = .bottomFocus
+            environment.barState = .bottomFocus(.profile)
         })
 }

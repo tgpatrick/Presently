@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-enum BarState {
+enum BarState: Equatable {
     case open
     case closed
     case topFocus
-    case bottomFocus
+    case bottomFocus(BottomBarContent)
 }
 
 enum Bar {
@@ -77,7 +77,7 @@ struct ContentView: View {
                         transition: .move(edge: .trailing).combined(with: .opacity),
                         animation: .barAnimation,
                         showView: .init(get: {
-                            !environment.shouldOpen || (environment.barState == .bottomFocus && environment.showOnboarding)
+                            !environment.shouldOpen || environment.isOnboarding
                         }, set: { _ in })) {
                             environment.barState = .open
                         }
@@ -125,16 +125,15 @@ struct ContentView: View {
                     .onAppear {
                         loginViewModel.setLoginSuccess {
                             if let currentUser = environment.currentUser, !currentUser.setUp {
-                                environment.showOnboarding = true
                                 withAnimation(.bouncy) {
-                                    environment.barState = .bottomFocus
+                                    environment.barState = .bottomFocus(.personOnboarding)
                                 }
                             } else if environment.currentUser != nil {
                                 environment.shouldOpen = true
                             }
                         }
                     }
-            } else if environment.barState == .bottomFocus && environment.showOnboarding {
+            } else if environment.isOnboarding {
                 Spacer()
                 ZStack {
                     Text("Set up")
@@ -149,11 +148,10 @@ struct ContentView: View {
                                 .bold()
                         }
                         .alert("Hang on", isPresented: $showOnboardingAlert, actions: {
-                            
+                            //TODO: change for exchange onboarding
                             Button("Good point, I'll stay") {}
                             Button("Remind me next time") {
                                 withAnimation(.bouncy) {
-                                    environment.showOnboarding = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         withAnimation(.bouncy) {
                                             environment.shouldOpen = true
@@ -164,7 +162,6 @@ struct ContentView: View {
                             Button("I'll do this later in my profile") {
                                 
                                 withAnimation(.bouncy) {
-                                    environment.showOnboarding = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         withAnimation(.bouncy) {
                                             environment.shouldOpen = true

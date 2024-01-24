@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-enum BottomBarPage {
-    case home
+enum BottomBarContent {
+    case exchangeOnboarding
+    case personOnboarding
     case profile
-    case organizer
+    case tools
 }
 
 struct BottomBar: View {
@@ -23,21 +24,30 @@ struct BottomBar: View {
     @StateObject var personOnboardingViewModel = PersonOnboardingViewModel()
     @ObservedObject var loginViewModel: LoginViewModel
     @State var ribbonHeight: CGFloat
-    @State var page: BottomBarPage = .home
     
     var body: some View {
         HStack {
             if !isLoggedIn {
-                Spacer()
-                BottomLoginView(loginViewModel: loginViewModel)
-                    .padding(.top, ribbonHeight / 2)
-                Spacer()
+                if environment.barState == .bottomFocus(.exchangeOnboarding) {
+                    Text("This is where exchange onboarding will be!")
+                        .font(.largeTitle)
+                        .bold()
+                    Button("Close") {
+                        withAnimation {
+                            environment.barState = .closed
+                        }
+                    }
+                    .buttonStyle(DepthButtonStyle())
+                } else {
+                    Spacer()
+                    BottomLoginView(loginViewModel: loginViewModel)
+                        .padding(.top, ribbonHeight / 2)
+                    Spacer()
+                }
             } else {
                 switch environment.barState {
-                case .open, .bottomFocus:
-                    if !environment.showOnboarding {
-                        tabView
-                    } else if environment.barState == .bottomFocus {
+                case .open, .bottomFocus(_):
+                    if environment.barState == .bottomFocus(.personOnboarding) {
                         OnboardingView(
                             items: [
                                 OnboardWelcomePersonView().asAnyView(),
@@ -50,7 +60,6 @@ struct BottomBar: View {
                             ],
                             onClose: {
                                 withAnimation(.bouncy) {
-                                    environment.showOnboarding = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         withAnimation(.bouncy) {
                                             environment.shouldOpen = true
@@ -61,6 +70,8 @@ struct BottomBar: View {
                         )
                         .padding(.top, ribbonHeight / 2)
                         .environmentObject(personOnboardingViewModel)
+                    } else {
+                        tabView
                     }
                 default:
                     Spacer()
@@ -71,7 +82,8 @@ struct BottomBar: View {
     
     var tabView: some View {
         HStack {
-            if environment.barState == .bottomFocus {
+            switch environment.barState {
+            case .bottomFocus(let page):
                 ZStack(alignment: .top) {
                     Group {
                         switch page {
@@ -83,7 +95,7 @@ struct BottomBar: View {
                                     ProfileView()
                                         .safeAreaPadding()
                                 }
-                        case .organizer:
+                        case .tools:
                             OrganizerView(
                                 namespace: _bottomNamespace
                             )
@@ -98,7 +110,6 @@ struct BottomBar: View {
                         if !environment.hideTabBar {
                             Button {
                                 withAnimation(.spring()) {
-                                    page = .home
                                     environment.barState = .open
                                 }
                             } label: {
@@ -110,7 +121,7 @@ struct BottomBar: View {
                     }
                     .padding()
                 }
-            } else {
+            default:
                 Spacer()
             }
         }
@@ -123,16 +134,19 @@ struct BottomBar: View {
     }
     
     var bottomTabBar: some View {
-        HStack {
+        var state: BarState {
+            return environment.barState
+        }
+        
+        return HStack {
             Spacer()
             Button {
                 withAnimation(.spring()) {
-                    page = .home
                     environment.barState = .open
                 }
             } label: {
                 VStack(spacing: 5) {
-                    Image(systemName: page == .home ? "house.fill" : "house")
+                    Image(systemName: state == .open ? "house.fill" : "house")
                         .tabBarImage()
                     Text("Home")
                         .fontWeight(.black)
@@ -141,12 +155,11 @@ struct BottomBar: View {
             Spacer()
             Button {
                 withAnimation(.spring()) {
-                    page = .profile
-                    environment.barState = .bottomFocus
+                    environment.barState = .bottomFocus(.profile)
                 }
             } label: {
                 VStack(spacing: 5) {
-                    Image(systemName: page == .profile ? "person.fill" : "person")
+                    Image(systemName: state == .bottomFocus(.profile) ? "person.fill" : "person")
                         .tabBarImage()
                     Text("Profile")
                         .fontWeight(.black)
@@ -156,12 +169,11 @@ struct BottomBar: View {
             if let currentUser = environment.currentUser, currentUser.organizer {
                 Button {
                     withAnimation(.spring()) {
-                        page = .organizer
-                        environment.barState = .bottomFocus
+                        environment.barState = .bottomFocus(.tools)
                     }
                 } label: {
                     VStack(spacing: 5) {
-                        Image(systemName: page == .organizer ? "wrench.and.screwdriver.fill" : "wrench.and.screwdriver")
+                        Image(systemName: state == .bottomFocus(.tools) ? "wrench.and.screwdriver.fill" : "wrench.and.screwdriver")
                             .tabBarImage()
                         Text("Tools")
                             .fontWeight(.black)
@@ -177,15 +189,17 @@ struct BottomBar: View {
         .padding(.vertical, 2)
         .contentShape(Rectangle())
         .background {
-            if environment.barState == .bottomFocus {
+            switch environment.barState {
+            case .bottomFocus(_):
                 Rectangle()
                     .fill(.ultraThinMaterial)
                     .padding(.top, -10)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .ignoresSafeArea(edges: .bottom)
+            default:
+                Color.clear
             }
         }
-        .id("TabBar")
     }
 }
 
@@ -193,13 +207,13 @@ struct BottomBar: View {
     let environment = AppEnvironment()
     let loginViewModel = LoginViewModel()
     
-    return BottomBar(loginViewModel: loginViewModel, ribbonHeight: .zero, page: .profile)
+    return BottomBar(loginViewModel: loginViewModel, ribbonHeight: .zero)
         .background(ShiftingBackground())
         .environmentObject(environment)
         .onAppear(perform: {
             environment.currentUser = testPerson
             environment.currentExchange = testExchange
             environment.allCurrentPeople = testPeople
-            environment.barState = .bottomFocus
+            environment.barState = .bottomFocus(.profile)
         })
 }

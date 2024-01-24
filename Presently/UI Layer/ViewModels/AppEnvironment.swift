@@ -18,8 +18,10 @@ class AppEnvironment: ObservableObject {
     
     @Published var barState: BarState = .closed
     @Published var shouldOpen: Bool = false
-    @Published var showOnboarding: Bool = false
     @Published var hideTabBar: Bool = false
+    var isOnboarding: Bool {
+        return barState == .bottomFocus(.exchangeOnboarding) || barState == .bottomFocus(.personOnboarding)
+    }
     
     func getPerson(id: String) -> Person? {
         allCurrentPeople?.first(where: {$0.personId == id})
@@ -61,7 +63,6 @@ class AppEnvironment: ObservableObject {
         allCurrentPeople = nil
         barState = .closed
         shouldOpen = false
-        showOnboarding = false
         hideTabBar = false
     }
 }
