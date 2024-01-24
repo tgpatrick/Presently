@@ -180,7 +180,9 @@ struct BottomBar: View {
             if environment.barState == .bottomFocus {
                 Rectangle()
                     .fill(.ultraThinMaterial)
-                    .transition(.move(edge: .bottom))
+                    .padding(.top, -10)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .ignoresSafeArea(edges: .bottom)
             }
         }
         .id("TabBar")
