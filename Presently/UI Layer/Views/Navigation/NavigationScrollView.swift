@@ -26,8 +26,8 @@ struct NavigationScrollView: View {
     }
     var topInset: CGFloat = 10
     var bottomInset: CGFloat = 10
-    @State var maxHeight: CGFloat = 1
-    @State var showCards = false
+    @State private var maxHeight: CGFloat = 1
+    @State private var showCards = false
     
     var body: some View {
         ScrollViewReader { reader in

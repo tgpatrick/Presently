@@ -148,6 +148,26 @@ struct OrganizerView: View {
                         .mainContentBox()
                         .buttonStyle(DepthButtonStyle(shadowRadius: 2, padding: 1))
                         .symbolTransitionIfAvailable()
+                        
+                        SectionView(title: "Exclusions") {
+                            ForEach(allCurrentPeople.sorted()) { person in
+                                VStack(alignment: .leading) {
+                                    Text(person.name)
+                                        .bold()
+                                    VStack(alignment: .leading) {
+                                        if !person.exceptions.isEmpty {
+                                            ForEach(person.exceptions, id: \.self) { exclusion in
+                                                Text(allCurrentPeople.getPersonById(exclusion)?.name ?? "error")
+                                            }
+                                        } else {
+                                            Text("(none)")
+                                        }
+                                    }
+                                    .padding(.leading)
+                                }
+                            }
+                        }
+                        .mainContentBox()
                     }
                 }
                 .blur(radius: blur)
