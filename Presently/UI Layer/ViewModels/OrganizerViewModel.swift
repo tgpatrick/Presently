@@ -36,10 +36,11 @@ class OrganizerViewModel: ObservableObject {
         }
     }
     
-    func getShareString() -> String {
+    func getShareString(from people: People? = nil) -> String {
+        let unwrappedPeople = people?.sorted() ?? animationAssignedPeople.sorted()
         var shareString = ""
-        for person in animationAssignedPeople.sorted() {
-            shareString += person.name + " -> " + (animationAssignedPeople.getPersonById(person.recipient)?.name ?? "") + "\n"
+        for person in unwrappedPeople {
+            shareString += person.name + " -> " + (unwrappedPeople.getPersonById(person.recipient)?.name ?? "") + "\n"
         }
         return shareString
     }

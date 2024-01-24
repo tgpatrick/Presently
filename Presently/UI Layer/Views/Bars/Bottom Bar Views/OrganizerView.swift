@@ -92,23 +92,21 @@ struct OrganizerView: View {
                             }
                         }
                         
-                        if currentExchange.started {
+                        if currentExchange.started && !organizerViewModel.animating {
                             ZStack(alignment: .topTrailing) {
                                 SectionView(title: "Assignments") {
-                                    if let allCurrentPeople = environment.allCurrentPeople {
-                                        ForEach(allCurrentPeople) { person in
-                                            HStack {
-                                                Text(person.name)
-                                                Spacer()
-                                                Image(systemName: "arrow.forward")
-                                                Spacer()
-                                                Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
-                                            }
-                                            .bold()
+                                    ForEach(allCurrentPeople.sorted()) { person in
+                                        HStack {
+                                            Text(person.name)
+                                            Spacer()
+                                            Image(systemName: "arrow.forward")
+                                            Spacer()
+                                            Text((allCurrentPeople.getPersonById(person.recipient)?.name ?? "error"))
                                         }
+                                        .bold()
                                     }
                                 }
-                                ShareLink(item: organizerViewModel.getShareString()) {
+                                ShareLink(item: organizerViewModel.getShareString(from: allCurrentPeople)) {
                                     Image(systemName: "square.and.arrow.up")
                                 }
                                 .padding(.horizontal)
