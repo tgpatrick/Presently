@@ -22,6 +22,7 @@ struct BottomBar: View {
     }
     
     @StateObject var personOnboardingViewModel = PersonOnboardingViewModel()
+    @StateObject var exchangeOnboardingViewModel = ExchangeOnboardingViewModel()
     @ObservedObject var loginViewModel: LoginViewModel
     @State var ribbonHeight: CGFloat
     
@@ -29,7 +30,7 @@ struct BottomBar: View {
         HStack {
             if !isLoggedIn {
                 if environment.barState == .bottomFocus(.exchangeOnboarding) {
-                    OnboardingView(
+                    OnboardingView<ExchangeOnboardingViewModel>(
                         items: [
                             VStack {
                                 Text("This is where exchange onboarding will be!")
@@ -54,7 +55,7 @@ struct BottomBar: View {
                 switch environment.barState {
                 case .open, .bottomFocus(_):
                     if environment.barState == .bottomFocus(.personOnboarding) {
-                        OnboardingView(
+                        OnboardingView<PersonOnboardingViewModel>(
                             items: [
                                 OnboardWelcomePersonView().asAnyView(),
                                 OnboardExchangeView().asAnyView(),

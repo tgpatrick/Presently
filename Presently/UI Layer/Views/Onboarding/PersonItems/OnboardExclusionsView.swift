@@ -106,7 +106,7 @@ struct OnboardExclusionsView: View {
 
 #Preview {
     let environment = AppEnvironment()
-    return OnboardingView(
+    return OnboardingView<PersonOnboardingViewModel>(
         items: [
             OnboardExclusionsView().asAnyView(),
             OnboardHistoryView().asAnyView()

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct OnboardingView: View {
+struct OnboardingView<T: OnboardingViewModel>: View {
     @EnvironmentObject var environment: AppEnvironment
-    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
+    @EnvironmentObject var onboardingViewModel: T
     @StateObject var personRepo = PersonRepository()
     
     let buttonSize: CGFloat = 25
@@ -109,7 +109,7 @@ struct OnboardingView: View {
                                 }
                             } else {
                                 Task {
-                                    await onboardingViewModel.save(personRepo: personRepo, environment: environment)
+                                    await onboardingViewModel.save(repository: personRepo, environment: environment)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         if personRepo.succeeded {
                                             withAnimation(.easeInOut) {
@@ -156,7 +156,7 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView(
+    OnboardingView<PersonOnboardingViewModel>(
         items: [
             ScrollView {
                 Text("Hello, World 1!")

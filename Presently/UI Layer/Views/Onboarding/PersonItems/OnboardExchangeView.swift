@@ -93,7 +93,7 @@ struct OnboardExchangeView: View {
 
 #Preview {
     let environment = AppEnvironment()
-    return OnboardingView(
+    return OnboardingView<PersonOnboardingViewModel>(
         items: [
             OnboardExchangeView().asAnyView(),
             OnboardGreetingView().asAnyView()

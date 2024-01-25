@@ -124,7 +124,7 @@ struct OnboardHistoryView: View {
 
 #Preview {
     let environment = AppEnvironment()
-    return OnboardingView(
+    return OnboardingView<PersonOnboardingViewModel>(
         items: [
             OnboardHistoryView().asAnyView(),
             OnboardWishListView().asAnyView()
