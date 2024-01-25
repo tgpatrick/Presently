@@ -32,7 +32,8 @@ struct ContentView: View {
     @State private var ribbonHeight: CGFloat = 0
     @State private var navItems: [any NavItemView] = []
     
-    @State private var showOnboardingAlert: Bool = false
+    @State private var showPersonOnboardingAlert: Bool = false
+    @State private var showExchangeOnboardingAlert: Bool = false
     @StateObject private var personRepo = PersonRepository()
     
     var body: some View {
@@ -72,18 +73,23 @@ struct ContentView: View {
                     .shadow(radius: 2)
                 }
                 
-                loginRibbon(geoProxy: geo)
-                    .bounceTransition(
-                        transition: .move(edge: .trailing).combined(with: .opacity),
-                        animation: .barAnimation,
-                        showView: .init(get: {
-                            !environment.shouldOpen || environment.isOnboarding
-                        }, set: { _ in })) {
-                            environment.barState = .open
-                        }
-                        .onAppear {
-                            ribbonHeight = ribbonHeight(geoProxy: geo)
-                        }
+                VStack {
+                    loginRibbon(geoProxy: geo)
+                        .bounceTransition(
+                            transition: .move(edge: .trailing).combined(with: .opacity),
+                            animation: .barAnimation,
+                            showView: .init(get: {
+                                !environment.shouldOpen || environment.isOnboarding
+                            }, set: { _ in })) {
+                                environment.barState = .open
+                            }
+                            .onAppear {
+                                ribbonHeight = ribbonHeight(geoProxy: geo)
+                            }
+                    if environment.isOnboarding {
+                        Spacer()
+                    }
+                }
             }
             .onChange(of: environment.currentUser) {
                 if let currentUser = environment.currentUser,
@@ -142,14 +148,18 @@ struct ContentView: View {
                     HStack {
                         Spacer()
                         Button {
-                            showOnboardingAlert = true
+                            if environment.barState == .bottomFocus(.exchangeOnboarding) {
+                                showExchangeOnboardingAlert = true
+                            } else {
+                                showPersonOnboardingAlert = true
+                            }
                         } label: {
                             Image(systemName: "xmark")
                                 .bold()
                         }
-                        .alert("Hang on", isPresented: $showOnboardingAlert, actions: {
-                            //TODO: change for exchange onboarding
-                            Button("Good point, I'll stay") {}
+                        .alert("Hang on", isPresented: $showPersonOnboardingAlert, actions: {
+                            
+                            Button("Good point, I'll stay", role: .cancel) {}
                             Button("Remind me next time") {
                                 withAnimation(.bouncy) {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -159,7 +169,7 @@ struct ContentView: View {
                                     }
                                 }
                             }
-                            Button("I'll do this later in my profile") {
+                            Button("I'll do this later in my profile", role: .destructive) {
                                 
                                 withAnimation(.bouncy) {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -177,6 +187,17 @@ struct ContentView: View {
                             }
                         }) {
                             Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
+                        }
+                        .alert("Hang on", isPresented: $showExchangeOnboardingAlert, actions: {
+                            
+                            Button("Continue editing", role: .cancel) {}
+                            Button("I know what I'm doing", role: .destructive) {
+                                withAnimation(.bouncy) {
+                                    environment.barState = .closed
+                                }
+                            }
+                        }) {
+                            Text("If you exit now, you'll lose your progress!")
                         }
                     }
                     .padding(.trailing)

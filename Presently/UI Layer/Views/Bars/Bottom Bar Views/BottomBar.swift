@@ -29,15 +29,21 @@ struct BottomBar: View {
         HStack {
             if !isLoggedIn {
                 if environment.barState == .bottomFocus(.exchangeOnboarding) {
-                    Text("This is where exchange onboarding will be!")
-                        .font(.largeTitle)
-                        .bold()
-                    Button("Close") {
-                        withAnimation {
-                            environment.barState = .closed
+                    OnboardingView(
+                        items: [
+                            VStack {
+                                Text("This is where exchange onboarding will be!")
+                            }.asAnyView()
+                        ],
+                        onClose: {
+                            withAnimation(.bouncy) {
+                                // TODO: Actually create exchange
+                                environment.barState = .closed
+                            }
                         }
-                    }
-                    .buttonStyle(DepthButtonStyle())
+                    )
+                    .padding(.top, ribbonHeight / 2)
+                    .environmentObject(personOnboardingViewModel)
                 } else {
                     Spacer()
                     BottomLoginView(loginViewModel: loginViewModel)
