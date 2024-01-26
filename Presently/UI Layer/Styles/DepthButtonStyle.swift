@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DepthButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) var isEnabled
+    
     let shape: AnyShape
     let backgroundColor: Color
     let shadowRadius: CGFloat
@@ -29,7 +31,7 @@ struct DepthButtonStyle: ButtonStyle {
         .background(
             shape
                 .fill(.shadow(.inner(radius: configuration.isPressed ? 0 : 5)))
-                .foregroundColor(backgroundColor)
+                .foregroundColor(isEnabled ? backgroundColor : .gray)
                 .overlay {
                     LinearGradient(
                         gradient: Gradient(
@@ -49,6 +51,7 @@ struct DepthButtonStyle: ButtonStyle {
                 .clipShape(shape)
                 .shadow(radius: configuration.isPressed ? 0.5 : shadowRadius)
         )
+        .opacity(isEnabled ? 1 : 0.5)
         .scaleEffect(configuration.isPressed ? 0.925 : 1)
         .animation(.easeOut(duration: configuration.isPressed ? 0 : 0.25), value: configuration.isPressed)
     }
@@ -63,5 +66,6 @@ struct DepthButtonStyle: ButtonStyle {
                 .bold()
         }
         .buttonStyle(DepthButtonStyle())
+        .disabled(true)
     }
 }

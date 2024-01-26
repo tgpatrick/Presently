@@ -23,7 +23,9 @@ class ExchangeOnboardingViewModel: OnboardingViewModel {
     @Published var people: People = []
     @Published var organizer: Person? = nil
     
+    @Published var scrollPosition: Int? = 0
     @Published var hideButtons: Bool = false
+    @Published var canProceedTo: Int = .max
     
     func generateID() -> String {
         let possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

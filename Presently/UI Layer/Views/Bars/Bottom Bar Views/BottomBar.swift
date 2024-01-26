@@ -32,9 +32,8 @@ struct BottomBar: View {
                 if environment.barState == .bottomFocus(.exchangeOnboarding) {
                     OnboardingView<ExchangeOnboardingViewModel>(
                         items: [
-                            VStack {
-                                Text("This is where exchange onboarding will be!")
-                            }.asAnyView()
+                            OnboardWelcomeExchangeView(index: 0).asAnyView(),
+                            OnboardExchangeNameView(index: 1).asAnyView()
                         ],
                         onClose: {
                             withAnimation(.bouncy) {
@@ -44,7 +43,7 @@ struct BottomBar: View {
                         }
                     )
                     .padding(.top, ribbonHeight / 2)
-                    .environmentObject(personOnboardingViewModel)
+                    .environmentObject(exchangeOnboardingViewModel)
                 } else {
                     Spacer()
                     BottomLoginView(loginViewModel: loginViewModel)
