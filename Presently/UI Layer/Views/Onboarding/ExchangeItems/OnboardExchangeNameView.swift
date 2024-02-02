@@ -12,24 +12,54 @@ struct OnboardExchangeNameView: View {
     
     let index: Int
     
+    @FocusState private var focusState
+    
     var body: some View {
         VStack {
-            Text("First, pick the perfect name")
+            VStack(spacing: 15) {
+                Text("First, pick the perfect name")
+                    .font(.title)
+                    .bold()
+                if !focusState {
+                    Text("Go for something simple, but recognizable to your group. Maybe a family or team name?")
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+            .multilineTextAlignment(.center)
+            .padding()
+            if !focusState {
+                Spacer()
+            }
+            TextField("My Perfect Name", text: $onboardingViewModel.name)
                 .font(.title)
                 .bold()
-                .multilineTextAlignment(.center)
-            TextField("Name", text: $onboardingViewModel.name)
-                .font(.title)
-                .padding(.horizontal)
+                .padding()
+                .focused($focusState)
+            Button("Done") {
+                withAnimation(.easeInOut) {
+                    focusState = false
+                }
+            }
+            .buttonStyle(DepthButtonStyle())
+            .padding()
+            .disabled(!focusState)
+            .opacity(focusState ? 1 : 0)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+            Spacer()
             Spacer()
         }
-        .textFieldStyle(InsetTextFieldStyle())
+        .animation(.easeInOut, value: focusState)
+        .textFieldStyle(InsetTextFieldStyle(alignment: .leading))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            withAnimation {
+                focusState = false
+            }
+        }
         .onChange(of: onboardingViewModel.scrollPosition) { _, newValue in
-            if newValue == index {
-                if onboardingViewModel.name == "" {
-                    withAnimation {
-                        onboardingViewModel.canProceedTo = index
-                    }
+            if newValue == index && onboardingViewModel.name == "" {
+                withAnimation {
+                    onboardingViewModel.canProceedTo = index
                 }
             }
         }
@@ -42,6 +72,11 @@ struct OnboardExchangeNameView: View {
                 withAnimation {
                     onboardingViewModel.canProceedTo = index + 1
                 }
+            }
+        }
+        .onChange(of: focusState) { _, newValue in
+            withAnimation {
+                onboardingViewModel.hideButtons = newValue
             }
         }
     }

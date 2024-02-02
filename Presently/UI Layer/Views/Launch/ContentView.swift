@@ -97,7 +97,7 @@ struct ContentView: View {
                    let allCurrentPeople = environment.allCurrentPeople {
                     navItems = []
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         var items: [any NavItemView] = []
                         items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
                         items.append(NextDateNavItem(exchange: currentExchange))

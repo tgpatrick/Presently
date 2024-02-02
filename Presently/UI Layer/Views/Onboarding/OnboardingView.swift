@@ -51,27 +51,32 @@ struct OnboardingView<T: OnboardingViewModel>: View {
                     }
                 }
             }
-            HStack {
-                ForEach(items.indices, id: \.self) { index in
-                    Button {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            withAnimation(.easeInOut) {
-                                onboardingViewModel.scrollPosition = index
+            if !onboardingViewModel.hideButtons {
+                HStack {
+                    ForEach(items.indices, id: \.self) { index in
+                        Button {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation(.easeInOut) {
+                                    onboardingViewModel.scrollPosition = index
+                                }
                             }
+                        } label: {
+                            Capsule()
+                                .frame(width: onboardingViewModel.scrollPosition == index ? 25 : 15)
+                                .animation(.easeInOut, value: onboardingViewModel.scrollPosition)
                         }
-                    } label: {
-                        Capsule()
-                            .frame(width: onboardingViewModel.scrollPosition == index ? 25 : 15)
-                            .animation(.easeInOut, value: onboardingViewModel.scrollPosition)
+                        .foregroundStyle(onboardingViewModel.canProceedTo < index ? .gray : .accentLight)
+                        .shadow(radius: 5)
+                        .disabled(onboardingViewModel.canProceedTo < index)
                     }
-                    .foregroundStyle(onboardingViewModel.canProceedTo < index ? .gray : .accentLight)
-                    .shadow(radius: 5)
-                    .disabled(onboardingViewModel.canProceedTo < index)
                 }
+                .frame(maxHeight: 15)
+                .padding(.bottom)
+            } else {
+                Spacer()
             }
-            .frame(maxHeight: 15)
-            .padding(.bottom)
         }
+        .containerRelativeFrame(.horizontal)
     }
     
     func onboardingItem(content: AnyView, index: Int, width: CGFloat, height: CGFloat) -> some View {
@@ -149,10 +154,9 @@ struct OnboardingView<T: OnboardingViewModel>: View {
                 }
             }
         }
-        .fillHorizontally()
         .mainContentBox(material: .ultraThin)
         .padding()
-        .frame(idealWidth: width, idealHeight: height)
+        .containerRelativeFrame(.horizontal)
         .blur(radius: onboardingViewModel.canProceedTo < index ? 15 : 0)
     }
 }

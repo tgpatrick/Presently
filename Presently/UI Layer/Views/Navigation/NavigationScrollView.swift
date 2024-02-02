@@ -32,19 +32,18 @@ struct NavigationScrollView: View {
     var body: some View {
         ScrollViewReader { reader in
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 20) {
-                    ForEach(translatedItems) { item in
-                        item.view
-                            .asAnyView()
-                            .navigationCard(
-                                id: item.id,
-                                title: item.title,
-                                viewModel: viewModel,
-                                maxHeight: maxHeight,
-                                scrollViewReader: reader)
-                            .padding(.horizontal, 20)
-                            .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
-                    }
+                ForEach(translatedItems) { item in
+                    item.view
+                        .asAnyView()
+                        .navigationCard(
+                            id: item.id,
+                            title: item.title,
+                            viewModel: viewModel,
+                            maxHeight: maxHeight,
+                            scrollViewReader: reader)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .bottom)))
                 }
             }
             .background {

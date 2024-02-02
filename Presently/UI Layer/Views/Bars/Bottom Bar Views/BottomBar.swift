@@ -33,7 +33,11 @@ struct BottomBar: View {
                     OnboardingView<ExchangeOnboardingViewModel>(
                         items: [
                             OnboardWelcomeExchangeView(index: 0).asAnyView(),
-                            OnboardExchangeNameView(index: 1).asAnyView()
+                            OnboardExchangeNameView(index: 1).asAnyView(),
+                            OnboardDatesView(index: 2).asAnyView(),
+                            OnboardExchangeSettingsView(index: 3).asAnyView(),
+                            OnboardIntroAndRulesView(index: 4).asAnyView(),
+                            OnboardPeopleView(index: 5).asAnyView()
                         ],
                         onClose: {
                             withAnimation(.bouncy) {
@@ -42,8 +46,11 @@ struct BottomBar: View {
                             }
                         }
                     )
-                    .padding(.top, ribbonHeight / 2)
-                    .environmentObject(personOnboardingViewModel)
+                    .padding(.top, ribbonHeight / 4)
+                    .environmentObject(exchangeOnboardingViewModel)
+                    .onAppear {
+                        exchangeOnboardingViewModel.reset()
+                    }
                 } else {
                     Spacer()
                     BottomLoginView(loginViewModel: loginViewModel)
