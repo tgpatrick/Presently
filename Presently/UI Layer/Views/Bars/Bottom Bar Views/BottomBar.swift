@@ -43,7 +43,7 @@ struct BottomBar: View {
                         }
                     )
                     .padding(.top, ribbonHeight / 2)
-                    .environmentObject(exchangeOnboardingViewModel)
+                    .environmentObject(personOnboardingViewModel)
                 } else {
                     Spacer()
                     BottomLoginView(loginViewModel: loginViewModel)
