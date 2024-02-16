@@ -61,9 +61,9 @@ struct AssignedPersonNavItem: NavItemView {
 #Preview {
     let viewModel = ScrollViewModel()
     
-    return NavigationScrollView(viewModel: viewModel, items: [
+    return NavigationScrollView(items: .constant([
         AssignedPersonNavItem(assignedPerson: testPerson2)
-    ])
+    ]))
     .environmentObject(AppEnvironment())
     .environmentObject(viewModel)
 }

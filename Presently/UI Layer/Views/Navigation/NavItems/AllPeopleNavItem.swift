@@ -131,9 +131,9 @@ struct ViewOffsetKey: PreferenceKey {
 #Preview {
     let viewModel = ScrollViewModel()
     
-    return NavigationScrollView(viewModel: viewModel, items: [
+    return NavigationScrollView(items: .constant([
         AllPeopleNavItem(allPeople: testPeople)
-    ])
+    ]))
     .environmentObject(AppEnvironment())
     .environmentObject(viewModel)
 }

@@ -12,13 +12,12 @@ struct NavigationCardModifier: ViewModifier {
     let title: String?
     @ObservedObject var viewModel: ScrollViewModel
     let maxHeight: CGFloat
-    private let transitionTime: Double = 0.3
     @State private var maxSwipeOffset: CGFloat = 50
     @State private var swipeOffset: CGFloat = 0
     @State private var dismissSwipeDistance: CGFloat = 0
     @State private var backButtonOpacity: Double = 1
-    @State private var unexpandedHeight: CGFloat = 0
-    @State private var minimumHeight: CGFloat = 0
+    @State private var unexpandedHeight: CGFloat = 1
+    
     private var isTransitioning: Bool {
         viewModel.focusedId == id && !viewModel.focusedExpanded
     }
@@ -39,31 +38,25 @@ struct NavigationCardModifier: ViewModifier {
                         Text(" ")
                     }
                 }
-                ZStack {
+                ZStack(alignment: .topLeading) {
                     content
                     if isOpen {
-                        VStack {
-                            HStack {
-                                Button {
-                                    viewModel.close(id)
-                                } label: {
-                                    Image(systemName: "chevron.backward")
-                                        .padding(.horizontal, 2)
-                                }
-                                .buttonStyle(DepthButtonStyle(shape: Circle()))
-                                .offset(x: swipeOffset)
-                                .opacity(backButtonOpacity)
-                                Spacer()
-                            }
-                            Spacer()
+                        Button {
+                            viewModel.close(id)
+                        } label: {
+                            Image(systemName: "chevron.backward")
+                                .padding(.horizontal, 2)
                         }
+                        .buttonStyle(DepthButtonStyle(shape: Circle()))
+                        .offset(x: swipeOffset)
+                        .opacity(backButtonOpacity)
                     }
                 }
                 .fillHorizontally()
                 .mainContentBox()
                 .padding(.vertical, viewModel.focusedId == id ? 10 : 0)
-                .frame(minHeight: isOpen ? (minimumHeight == 0 ? maxHeight : minimumHeight) : 0, maxHeight: maxHeight)
                 .padding(.horizontal, viewModel.focusedId == id ? 0 : 10)
+                .frame(maxHeight: maxHeight)
                 .offset(x: isTransitioning ? maxSwipeOffset : swipeOffset)
                 .background(
                     GeometryReader { geo in
@@ -72,7 +65,6 @@ struct NavigationCardModifier: ViewModifier {
                                 unexpandedHeight = geo.size.height
                                 dismissSwipeDistance = geo.size.width / 2
                                 maxSwipeOffset = geo.size.width / 10
-                                minimumHeight = maxHeight
                             }
                     }
                 )
@@ -81,12 +73,8 @@ struct NavigationCardModifier: ViewModifier {
                     DragGesture()
                         .onChanged { value in
                             if isOpen && value.startLocation.x < 15 {
-                                if minimumHeight == 0 {
-                                    minimumHeight = maxHeight
-                                }
                                 let percentDismissed = value.translation.width / dismissSwipeDistance
                                 backButtonOpacity = 1 - percentDismissed
-                                minimumHeight = max(unexpandedHeight, min(minimumHeight, maxHeight * (1 - percentDismissed)))
                                 swipeOffset = maxSwipeOffset * percentDismissed
                             }
                         }
@@ -95,14 +83,12 @@ struct NavigationCardModifier: ViewModifier {
                                 if value.predictedEndTranslation.width > dismissSwipeDistance {
                                     let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
                                     withAnimation(.interactiveSpring()) {
-                                        minimumHeight = maxHeight * (1 - percentDismissed)
                                         swipeOffset = maxSwipeOffset * percentDismissed
                                     }
                                     viewModel.close(id)
                                 }
                                 withAnimation(.interactiveSpring()) {
                                     backButtonOpacity = 1
-                                    minimumHeight = maxHeight
                                     swipeOffset = 0
                                     viewModel.scrollTo(id)
                                 }

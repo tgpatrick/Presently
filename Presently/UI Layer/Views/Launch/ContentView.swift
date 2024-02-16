@@ -42,10 +42,7 @@ struct ContentView: View {
                 VStack {
                     if !navItems.isEmpty {
                         NavigationScrollView(
-                            viewModel: scrollViewModel,
-                            items: navItems,
-                            topInset: geo.size.height / 13,
-                            bottomInset: geo.size.height / 10
+                            items: $navItems
                         )
                         .frame(maxWidth: geo.size.width)
                         .environmentObject(scrollViewModel)
@@ -79,7 +76,7 @@ struct ContentView: View {
                             transition: .move(edge: .trailing).combined(with: .opacity),
                             animation: .barAnimation,
                             showView: .init(get: {
-                                !environment.shouldOpen || environment.isOnboarding
+                                !environment.shouldOpen
                             }, set: { _ in })) {
                                 environment.barState = .open
                             }
@@ -97,28 +94,27 @@ struct ContentView: View {
                    let allCurrentPeople = environment.allCurrentPeople {
                     navItems = []
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        var items: [any NavItemView] = []
-                        items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
-                        items.append(NextDateNavItem(exchange: currentExchange))
-                        if currentExchange.started, let userAssignment = environment.userAssignment {
-                            items.append(AssignedPersonNavItem(assignedPerson: userAssignment))
-                            items.append(WishListNavItem(assignedPerson: userAssignment))
-                        }
-                        items.append(AllPeopleNavItem(allPeople: allCurrentPeople))
-                        if currentExchange.id == "0001" {
-                            items.append(TestNavItem())
-                        }
-                        
-                        withAnimation {
-                            navItems = items
-                        }
+                    navItemsAppend(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
+                    navItemsAppend(NextDateNavItem(exchange: currentExchange), delay: 0.1)
+                    if currentExchange.started, let userAssignment = environment.userAssignment {
+                        navItemsAppend(AssignedPersonNavItem(assignedPerson: userAssignment), delay: 0.2)
+                        navItemsAppend(WishListNavItem(assignedPerson: userAssignment), delay: 0.3)
+                    }
+                    navItemsAppend(AllPeopleNavItem(allPeople: allCurrentPeople), delay: 0.4)
+                    if currentExchange.id == "0001" {
+                        navItemsAppend(TestNavItem(), delay: 0.5)
                     }
                 }
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.large)
         //TODO: Go through and set dynamicTypeSize max for different views
+    }
+    
+    func navItemsAppend(_ item: any NavItemView, delay: Double = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            navItems.append(item)
+        }
     }
     
     func loginRibbon(geoProxy: GeometryProxy) -> some View {
