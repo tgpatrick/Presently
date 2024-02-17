@@ -135,7 +135,7 @@ struct ContentView: View {
                             }
                         }
                     }
-            } else if environment.isOnboarding {
+            } else if environment.isOnboarding && !environment.shouldOpen {
                 Spacer()
                 ZStack {
                     Text("Set up")

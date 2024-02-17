@@ -46,7 +46,7 @@ struct BottomBar: View {
                             }
                         }
                     )
-                    .padding(.top, ribbonHeight / 4)
+                    .padding(.top, ribbonHeight / 3)
                     .environmentObject(exchangeOnboardingViewModel)
                     .onAppear {
                         exchangeOnboardingViewModel.reset()
