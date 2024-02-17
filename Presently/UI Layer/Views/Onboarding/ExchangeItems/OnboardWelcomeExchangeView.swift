@@ -41,7 +41,7 @@ struct OnboardWelcomeExchangeView: View {
 #Preview {
     let environment = AppEnvironment()
     
-    return OnboardingView<ExchangeOnboardingViewModel>(
+    return OnboardingView<ExchangeOnboardingViewModel, ExchangeRepository>(
         items: [
             OnboardWelcomeExchangeView(index: 0).asAnyView(),
             Text("Second View").asAnyView()

@@ -40,7 +40,7 @@ struct OnboardFinishPersonView: View {
 #Preview {
     let environment = AppEnvironment()
     
-    return OnboardingView<PersonOnboardingViewModel>(
+    return OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             OnboardFinishPersonView().asAnyView()
         ],

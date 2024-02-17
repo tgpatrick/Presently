@@ -70,7 +70,7 @@ struct OnboardExchangeSettingsView: View {
     let environment = AppEnvironment()
     let viewModel = ExchangeOnboardingViewModel()
     
-    return OnboardingView<ExchangeOnboardingViewModel>(
+    return OnboardingView<ExchangeOnboardingViewModel, ExchangeRepository>(
         items: [
             Text("First View").asAnyView(),
             OnboardExchangeSettingsView(index: 1).asAnyView(),

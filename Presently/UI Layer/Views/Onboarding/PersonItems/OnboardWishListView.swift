@@ -212,7 +212,7 @@ struct OnboardWishListView: View {
 }
 
 #Preview {
-    OnboardingView<PersonOnboardingViewModel>(
+    OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             OnboardWishListView().asAnyView(),
             Text("Second View").asAnyView()

@@ -30,7 +30,7 @@ struct BottomBar: View {
         HStack {
             if !isLoggedIn {
                 if environment.barState == .bottomFocus(.exchangeOnboarding) {
-                    OnboardingView<ExchangeOnboardingViewModel>(
+                    OnboardingView<ExchangeOnboardingViewModel, ExchangeRepository>(
                         items: [
                             OnboardWelcomeExchangeView(index: 0).asAnyView(),
                             OnboardExchangeNameView(index: 1).asAnyView(),
@@ -40,13 +40,17 @@ struct BottomBar: View {
                             OnboardPeopleView(index: 5).asAnyView()
                         ],
                         onClose: {
+                            // TODO: Actually create exchange (refactor OnboardingView to use the correct repo)
                             withAnimation(.bouncy) {
-                                // TODO: Actually create exchange
-                                environment.barState = .closed
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    withAnimation(.bouncy) {
+                                        environment.shouldOpen = true
+                                    }
+                                }
                             }
                         }
                     )
-                    .padding(.top, ribbonHeight / 3)
+                    .padding(.top, ribbonHeight / 4)
                     .environmentObject(exchangeOnboardingViewModel)
                     .onAppear {
                         exchangeOnboardingViewModel.reset()
@@ -61,7 +65,7 @@ struct BottomBar: View {
                 switch environment.barState {
                 case .open, .bottomFocus(_):
                     if environment.barState == .bottomFocus(.personOnboarding) {
-                        OnboardingView<PersonOnboardingViewModel>(
+                        OnboardingView<PersonOnboardingViewModel, PersonRepository>(
                             items: [
                                 OnboardWelcomePersonView().asAnyView(),
                                 OnboardExchangeView().asAnyView(),

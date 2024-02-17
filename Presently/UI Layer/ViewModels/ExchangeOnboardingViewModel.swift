@@ -27,6 +27,8 @@ class ExchangeOnboardingViewModel: OnboardingViewModel {
     @Published var hideButtons: Bool = false
     @Published var canProceedTo: Int = .max
     
+    @Published private var peopleRepo = PeopleRepository()
+    
     func generateID() -> String {
         let possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         let randomString = String((0..<4).map{ _ in possibleChars.randomElement()! })
@@ -46,9 +48,19 @@ class ExchangeOnboardingViewModel: OnboardingViewModel {
         await finish(exchangeRepo: exchangeRepo, environment: environment, exchange: newExchange, people: people, organizer: organizer)
     }
     
+    @MainActor
     func finish(exchangeRepo: ExchangeRepository, environment: AppEnvironment, exchange: Exchange, people: People, organizer: Person) async {
-        await exchangeRepo.put(exchange)
-        if exchangeRepo.succeeded {
+        var combinedPeople = people
+        combinedPeople.append(organizer)
+        let _ = await exchangeRepo.put(exchange)
+        let _ = await peopleRepo.put(combinedPeople)
+        if peopleRepo.succeeded && exchangeRepo.succeeded {
+            await LoginStorage().save(LoginStorageItem(
+                exchangeName: exchange.name,
+                personName: organizer.name,
+                exchangeID: exchange.id,
+                personID: organizer.id)
+            )
             environment.currentExchange = exchange
             environment.allCurrentPeople = people
             environment.allCurrentPeople?.append(organizer)

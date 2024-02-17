@@ -47,7 +47,7 @@ struct OnboardGreetingView: View {
 }
 
 #Preview {
-    OnboardingView<PersonOnboardingViewModel>(
+    OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             OnboardGreetingView().asAnyView(),
             OnboardWishListView().asAnyView()

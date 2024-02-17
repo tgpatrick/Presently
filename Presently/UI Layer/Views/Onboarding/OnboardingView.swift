@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct OnboardingView<T: OnboardingViewModel>: View {
-    @EnvironmentObject var environment: AppEnvironment
-    @EnvironmentObject var onboardingViewModel: T
-    @StateObject var personRepo = PersonRepository()
+struct OnboardingView<T: OnboardingViewModel, U: Repository>: View {
+    @EnvironmentObject private var environment: AppEnvironment
+    @EnvironmentObject private var onboardingViewModel: T
+    @StateObject private var repo = U()
     
     let buttonSize: CGFloat = 25
     let buttonPadding: CGFloat = 10
@@ -42,7 +42,7 @@ struct OnboardingView<T: OnboardingViewModel>: View {
                 }
                 .scrollTargetBehavior(.viewAligned)
                 .scrollPosition(id: $onboardingViewModel.scrollPosition)
-                .scrollDisabled(personRepo.isLoading || personRepo.succeeded)
+                .scrollDisabled(repo.isLoading || repo.succeeded)
                 .onChange(of: onboardingViewModel.scrollPosition) { _, newValue in
                     if let newValue, newValue > onboardingViewModel.canProceedTo {
                         withAnimation {
@@ -104,7 +104,7 @@ struct OnboardingView<T: OnboardingViewModel>: View {
                                     .padding(buttonPadding)
                             }
                             .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
-                            .disabled(personRepo.isLoading || personRepo.succeeded)
+                            .disabled(repo.isLoading || repo.succeeded)
                         }
                         Spacer()
                         Button {
@@ -114,9 +114,9 @@ struct OnboardingView<T: OnboardingViewModel>: View {
                                 }
                             } else {
                                 Task {
-                                    await onboardingViewModel.save(repository: personRepo, environment: environment)
+                                    await onboardingViewModel.save(repository: repo, environment: environment)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        if personRepo.succeeded {
+                                        if repo.succeeded {
                                             withAnimation(.easeInOut) {
                                                 onClose()
                                             }
@@ -126,7 +126,7 @@ struct OnboardingView<T: OnboardingViewModel>: View {
                             }
                         } label: {
                             if index == lastIndex {
-                                if personRepo.isLoading {
+                                if repo.isLoading {
                                     ProgressView()
                                         .frame(width: buttonSize, height: buttonSize)
                                         .padding(buttonPadding)
@@ -162,7 +162,7 @@ struct OnboardingView<T: OnboardingViewModel>: View {
 }
 
 #Preview {
-    OnboardingView<PersonOnboardingViewModel>(
+    OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             ScrollView {
                 Text("Hello, World 1!")

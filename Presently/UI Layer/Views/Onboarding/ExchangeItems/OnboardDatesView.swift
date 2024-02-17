@@ -110,7 +110,7 @@ struct OnboardDatesView: View {
     let environment = AppEnvironment()
     let viewModel = ExchangeOnboardingViewModel()
     
-    return OnboardingView<ExchangeOnboardingViewModel>(
+    return OnboardingView<ExchangeOnboardingViewModel, ExchangeRepository>(
         items: [
             OnboardDatesView(index: 0).asAnyView(),
             Text("Third View").asAnyView()

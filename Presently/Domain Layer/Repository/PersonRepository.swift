@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PersonRepository: Repository {
+final class PersonRepository: Repository {
     @Published var storage: Person? = nil
     @Published var loadingState: LoadingState = .resting
     
