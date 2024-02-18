@@ -40,13 +40,8 @@ struct BottomBar: View {
                             OnboardPeopleView(index: 5).asAnyView()
                         ],
                         onClose: {
-                            // TODO: Actually create exchange (refactor OnboardingView to use the correct repo)
                             withAnimation(.bouncy) {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    withAnimation(.bouncy) {
-                                        environment.shouldOpen = true
-                                    }
-                                }
+                                environment.shouldOpen = true
                             }
                         }
                     )

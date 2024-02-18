@@ -5,7 +5,7 @@
 //  Created by Thomas Patrick on 1/24/24.
 //
 
-import Foundation
+import SwiftUI
 
 class ExchangeOnboardingViewModel: OnboardingViewModel {
     @Published var id: String = ""
@@ -48,7 +48,6 @@ class ExchangeOnboardingViewModel: OnboardingViewModel {
         await finish(exchangeRepo: exchangeRepo, environment: environment, exchange: newExchange, people: people, organizer: organizer)
     }
     
-    @MainActor
     func finish(exchangeRepo: ExchangeRepository, environment: AppEnvironment, exchange: Exchange, people: People, organizer: Person) async {
         var combinedPeople = people
         combinedPeople.append(organizer)
@@ -61,10 +60,14 @@ class ExchangeOnboardingViewModel: OnboardingViewModel {
                 exchangeID: exchange.id,
                 personID: organizer.id)
             )
-            environment.currentExchange = exchange
-            environment.allCurrentPeople = people
-            environment.allCurrentPeople?.append(organizer)
-            environment.currentUser = organizer
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                withAnimation {
+                    environment.currentExchange = exchange
+                    environment.allCurrentPeople = people
+                    environment.allCurrentPeople?.append(organizer)
+                    environment.currentUser = organizer
+                }
+            }
         }
     }
     

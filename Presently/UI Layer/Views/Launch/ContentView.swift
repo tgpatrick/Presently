@@ -25,9 +25,6 @@ struct ContentView: View {
     @StateObject var scrollViewModel = ScrollViewModel()
     @StateObject var loginViewModel = LoginViewModel()
     @Namespace private var mainNamespace
-    private var isLoggedIn: Bool {
-        environment.currentExchange != nil && environment.currentUser != nil
-    }
     
     @State private var ribbonHeight: CGFloat = 0
     @State private var navItems: [any NavItemView] = []
@@ -75,14 +72,19 @@ struct ContentView: View {
                         .bounceTransition(
                             transition: .move(edge: .trailing).combined(with: .opacity),
                             animation: .barAnimation,
-                            showView: .init(get: {
-                                !environment.shouldOpen
-                            }, set: { _ in })) {
+                            showView: .init(
+                                get: {
+                                    !environment.shouldOpen
+                                },
+                                set: { _ in }
+                            ),
+                            onDismiss: {
                                 environment.barState = .open
                             }
-                            .onAppear {
-                                ribbonHeight = ribbonHeight(geoProxy: geo)
-                            }
+                        )
+                        .onAppear {
+                            ribbonHeight = ribbonHeight(geoProxy: geo)
+                        }
                     if environment.isOnboarding {
                         Spacer()
                     }
