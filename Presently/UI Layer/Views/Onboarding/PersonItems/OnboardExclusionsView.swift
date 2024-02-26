@@ -19,7 +19,7 @@ struct OnboardExclusionsView: View {
             Text("Exclusions")
                 .font(.title)
                 .bold()
-            Text("Is there anyone you can't give to in this group? Depending on the rules, this may be a significant other, family member, or close work colleague.")
+            Text("Is there anyone you can't give to in this group? Depending on the rules, this may be a significant other, family member, close work colleague, etc.")
                 .multilineTextAlignment(.center)
                 .padding()
             VStack {
@@ -106,7 +106,7 @@ struct OnboardExclusionsView: View {
 
 #Preview {
     let environment = AppEnvironment()
-    return OnboardingView(
+    return OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             OnboardExclusionsView().asAnyView(),
             OnboardHistoryView().asAnyView()

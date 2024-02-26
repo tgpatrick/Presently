@@ -28,6 +28,8 @@ protocol Repository: ObservableObject {
     
     func reset()
     func manualSuccess()
+    
+    init()
 }
 
 extension Repository {

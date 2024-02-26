@@ -1,33 +1,34 @@
 //
-//  OnboardFinishPersonView.swift
+//  OnboardWelcomeExchangeView.swift
 //  Presently
 //
-//  Created by Thomas Patrick on 11/3/23.
+//  Created by Thomas Patrick on 1/24/24.
 //
 
 import SwiftUI
 
-struct OnboardFinishPersonView: View {
-    @EnvironmentObject var environment: AppEnvironment
-    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
+struct OnboardWelcomeExchangeView: View {
+    @EnvironmentObject var onboardingViewModel: ExchangeOnboardingViewModel
     
+    let index: Int
     @State private var showContent = false
     
     var body: some View {
         VStack {
             if showContent {
-                Text("You're all set, " + (environment.currentUser?.name ?? "") + "!")
+                Text("Welcome to Presently!")
                     .font(.title)
                     .bold()
                     .transition(.fadeUp)
+                Text("You're one step closer to a better, easier gift exchange")
+                    .font(.title2)
                     .padding()
-                Text("Don't forget, you can change any of this later from your profile.")
-                .font(.title2)
                     .transition(.fadeUp)
             }
         }
         .multilineTextAlignment(.center)
         .onAppear {
+            onboardingViewModel.canProceedTo = 1
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 withAnimation(.easeInOut(duration: 1)) {
                     showContent = true
@@ -40,15 +41,13 @@ struct OnboardFinishPersonView: View {
 #Preview {
     let environment = AppEnvironment()
     
-    return OnboardingView<PersonOnboardingViewModel, PersonRepository>(
+    return OnboardingView<ExchangeOnboardingViewModel, ExchangeRepository>(
         items: [
-            OnboardFinishPersonView().asAnyView()
+            OnboardWelcomeExchangeView(index: 0).asAnyView(),
+            Text("Second View").asAnyView()
         ],
         onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }
+    .environmentObject(ExchangeOnboardingViewModel())
     .environmentObject(environment)
-    .environmentObject(PersonOnboardingViewModel())
-    .onAppear {
-        environment.currentUser = testPerson
-    }
 }

@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-enum BarState {
+enum BarState: Equatable {
     case open
     case closed
     case topFocus
-    case bottomFocus
+    case bottomFocus(BottomBarContent)
 }
 
 enum Bar {
@@ -25,14 +25,12 @@ struct ContentView: View {
     @StateObject var scrollViewModel = ScrollViewModel()
     @StateObject var loginViewModel = LoginViewModel()
     @Namespace private var mainNamespace
-    private var isLoggedIn: Bool {
-        environment.currentExchange != nil && environment.currentUser != nil
-    }
     
     @State private var ribbonHeight: CGFloat = 0
     @State private var navItems: [any NavItemView] = []
     
-    @State private var showOnboardingAlert: Bool = false
+    @State private var showPersonOnboardingAlert: Bool = false
+    @State private var showExchangeOnboardingAlert: Bool = false
     @StateObject private var personRepo = PersonRepository()
     
     var body: some View {
@@ -41,10 +39,7 @@ struct ContentView: View {
                 VStack {
                     if !navItems.isEmpty {
                         NavigationScrollView(
-                            viewModel: scrollViewModel,
-                            items: navItems,
-                            topInset: geo.size.height / 13,
-                            bottomInset: geo.size.height / 10
+                            items: $navItems
                         )
                         .frame(maxWidth: geo.size.width)
                         .environmentObject(scrollViewModel)
@@ -72,18 +67,28 @@ struct ContentView: View {
                     .shadow(radius: 2)
                 }
                 
-                loginRibbon(geoProxy: geo)
-                    .bounceTransition(
-                        transition: .move(edge: .trailing).combined(with: .opacity),
-                        animation: .barAnimation,
-                        showView: .init(get: {
-                            !environment.shouldOpen || (environment.barState == .bottomFocus && environment.showOnboarding)
-                        }, set: { _ in })) {
-                            environment.barState = .open
-                        }
+                VStack {
+                    loginRibbon(geoProxy: geo)
+                        .bounceTransition(
+                            transition: .move(edge: .trailing).combined(with: .opacity),
+                            animation: .barAnimation,
+                            showView: .init(
+                                get: {
+                                    !environment.shouldOpen
+                                },
+                                set: { _ in }
+                            ),
+                            onDismiss: {
+                                environment.barState = .open
+                            }
+                        )
                         .onAppear {
                             ribbonHeight = ribbonHeight(geoProxy: geo)
                         }
+                    if environment.isOnboarding {
+                        Spacer()
+                    }
+                }
             }
             .onChange(of: environment.currentUser) {
                 if let currentUser = environment.currentUser,
@@ -91,28 +96,27 @@ struct ContentView: View {
                    let allCurrentPeople = environment.allCurrentPeople {
                     navItems = []
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        var items: [any NavItemView] = []
-                        items.append(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
-                        items.append(NextDateNavItem(exchange: currentExchange))
-                        if currentExchange.started, let userAssignment = environment.userAssignment {
-                            items.append(AssignedPersonNavItem(assignedPerson: userAssignment))
-                            items.append(WishListNavItem(assignedPerson: userAssignment))
-                        }
-                        items.append(AllPeopleNavItem(allPeople: allCurrentPeople))
-                        if currentExchange.id == "0001" {
-                            items.append(TestNavItem())
-                        }
-                        
-                        withAnimation {
-                            navItems = items
-                        }
+                    navItemsAppend(ExchangeNavItem(userName: currentUser.name, exchange: currentExchange))
+                    navItemsAppend(NextDateNavItem(exchange: currentExchange), delay: 0.1)
+                    if currentExchange.started, let userAssignment = environment.userAssignment {
+                        navItemsAppend(AssignedPersonNavItem(assignedPerson: userAssignment), delay: 0.2)
+                        navItemsAppend(WishListNavItem(assignedPerson: userAssignment), delay: 0.3)
+                    }
+                    navItemsAppend(AllPeopleNavItem(allPeople: allCurrentPeople), delay: 0.4)
+                    if currentExchange.id == "0001" {
+                        navItemsAppend(TestNavItem(), delay: 0.5)
                     }
                 }
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.large)
         //TODO: Go through and set dynamicTypeSize max for different views
+    }
+    
+    func navItemsAppend(_ item: any NavItemView, delay: Double = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            navItems.append(item)
+        }
     }
     
     func loginRibbon(geoProxy: GeometryProxy) -> some View {
@@ -125,16 +129,15 @@ struct ContentView: View {
                     .onAppear {
                         loginViewModel.setLoginSuccess {
                             if let currentUser = environment.currentUser, !currentUser.setUp {
-                                environment.showOnboarding = true
                                 withAnimation(.bouncy) {
-                                    environment.barState = .bottomFocus
+                                    environment.barState = .bottomFocus(.personOnboarding)
                                 }
                             } else if environment.currentUser != nil {
                                 environment.shouldOpen = true
                             }
                         }
                     }
-            } else if environment.barState == .bottomFocus && environment.showOnboarding {
+            } else if environment.isOnboarding && !environment.shouldOpen {
                 Spacer()
                 ZStack {
                     Text("Set up")
@@ -143,17 +146,20 @@ struct ContentView: View {
                     HStack {
                         Spacer()
                         Button {
-                            showOnboardingAlert = true
+                            if environment.barState == .bottomFocus(.exchangeOnboarding) {
+                                showExchangeOnboardingAlert = true
+                            } else {
+                                showPersonOnboardingAlert = true
+                            }
                         } label: {
                             Image(systemName: "xmark")
                                 .bold()
                         }
-                        .alert("Hang on", isPresented: $showOnboardingAlert, actions: {
+                        .alert("Hang on", isPresented: $showPersonOnboardingAlert, actions: {
                             
-                            Button("Good point, I'll stay") {}
+                            Button("Good point, I'll stay", role: .cancel) {}
                             Button("Remind me next time") {
                                 withAnimation(.bouncy) {
-                                    environment.showOnboarding = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         withAnimation(.bouncy) {
                                             environment.shouldOpen = true
@@ -161,10 +167,9 @@ struct ContentView: View {
                                     }
                                 }
                             }
-                            Button("I'll do this later in my profile") {
+                            Button("I'll do this later in my profile", role: .destructive) {
                                 
                                 withAnimation(.bouncy) {
-                                    environment.showOnboarding = false
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                         withAnimation(.bouncy) {
                                             environment.shouldOpen = true
@@ -180,6 +185,17 @@ struct ContentView: View {
                             }
                         }) {
                             Text("Filling out this information is what makes sure you get a gift you like and give to the right person!")
+                        }
+                        .alert("Hang on", isPresented: $showExchangeOnboardingAlert, actions: {
+                            
+                            Button("Continue editing", role: .cancel) {}
+                            Button("I know what I'm doing", role: .destructive) {
+                                withAnimation(.bouncy) {
+                                    environment.barState = .closed
+                                }
+                            }
+                        }) {
+                            Text("If you exit now, you'll lose your progress!")
                         }
                     }
                     .padding(.trailing)

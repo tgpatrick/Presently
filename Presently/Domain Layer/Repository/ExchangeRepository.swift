@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ExchangeRepository: Repository {
+final class ExchangeRepository: Repository {
     @Published var storage: Exchange? = nil
     @Published var loadingState: LoadingState = .resting
     

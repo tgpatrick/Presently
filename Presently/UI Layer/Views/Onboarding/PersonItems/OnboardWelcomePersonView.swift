@@ -47,7 +47,7 @@ struct OnboardWelcomePersonView: View {
 #Preview {
     let environment = AppEnvironment()
     
-    return OnboardingView(
+    return OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             OnboardWelcomePersonView().asAnyView(),
             Text("Second View").asAnyView()

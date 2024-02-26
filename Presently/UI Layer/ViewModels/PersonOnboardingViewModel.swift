@@ -7,16 +7,19 @@
 
 import Foundation
 
-class PersonOnboardingViewModel: ObservableObject {
+class PersonOnboardingViewModel: OnboardingViewModel {
     @Published var greeting = ""
     @Published var wishList = [WishListItem]()
     @Published var giftHistory = [HistoricalGift]()
     @Published var exclusions = [String]()
-    @Published var hideButtons = false
     @Published var initialized = false
     
-    func save(personRepo: PersonRepository, environment: AppEnvironment) async {
-        guard var editedPerson = environment.currentUser else { return }
+    @Published var scrollPosition: Int? = 0
+    @Published var hideButtons = false
+    @Published var canProceedTo: Int = .max
+    
+    func save(repository: any Repository, environment: AppEnvironment) async {
+        guard var editedPerson = environment.currentUser, let personRepo = repository as? PersonRepository else { return }
         editedPerson.greeting = greeting
         editedPerson.wishList = wishList
         editedPerson.giftHistory = giftHistory

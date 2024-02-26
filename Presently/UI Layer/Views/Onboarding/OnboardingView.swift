@@ -7,19 +7,16 @@
 
 import SwiftUI
 
-struct OnboardingView: View {
-    @EnvironmentObject var environment: AppEnvironment
-    @EnvironmentObject var onboardingViewModel: PersonOnboardingViewModel
-    @StateObject var personRepo = PersonRepository()
+struct OnboardingView<T: OnboardingViewModel, U: Repository>: View {
+    @EnvironmentObject private var environment: AppEnvironment
+    @EnvironmentObject private var onboardingViewModel: T
+    @StateObject private var repo = U()
     
     let buttonSize: CGFloat = 25
     let buttonPadding: CGFloat = 10
     
     let items: [AnyView]
     var onClose: () -> Void
-    
-    @State private var scrollPosition: Int? = 0
-    @State private var movingForward: Bool = true
     
     var body: some View {
         VStack {
@@ -44,32 +41,42 @@ struct OnboardingView: View {
                     .scrollTargetLayout()
                 }
                 .scrollTargetBehavior(.viewAligned)
-                .scrollPosition(id: $scrollPosition)
-                .scrollDisabled(personRepo.isLoading || personRepo.succeeded)
-            }
-            HStack {
-                ForEach(items.indices, id: \.self) { index in
-                    Button {
-                        if let scrollPosition {
-                            movingForward = index > scrollPosition
+                .scrollPosition(id: $onboardingViewModel.scrollPosition)
+                .scrollDisabled(repo.isLoading || repo.succeeded)
+                .onChange(of: onboardingViewModel.scrollPosition) { _, newValue in
+                    if let newValue, newValue > onboardingViewModel.canProceedTo {
+                        withAnimation {
+                            onboardingViewModel.scrollPosition = onboardingViewModel.canProceedTo
                         }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            withAnimation(.easeInOut) {
-                                scrollPosition = index
-                            }
-                        }
-                    } label: {
-                        Capsule()
-                            .frame(width: scrollPosition == index ? 25 : 15)
-                            .animation(.easeInOut, value: scrollPosition)
                     }
-                    .foregroundStyle(Color(.accentLight))
-                    .shadow(radius: 5)
                 }
             }
-            .frame(maxHeight: 15)
-            .padding(.bottom)
+            if !onboardingViewModel.hideButtons {
+                HStack {
+                    ForEach(items.indices, id: \.self) { index in
+                        Button {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation(.easeInOut) {
+                                    onboardingViewModel.scrollPosition = index
+                                }
+                            }
+                        } label: {
+                            Capsule()
+                                .frame(width: onboardingViewModel.scrollPosition == index ? 25 : 15)
+                                .animation(.easeInOut, value: onboardingViewModel.scrollPosition)
+                        }
+                        .foregroundStyle(onboardingViewModel.canProceedTo < index ? .gray : .accentLight)
+                        .shadow(radius: 5)
+                        .disabled(onboardingViewModel.canProceedTo < index)
+                    }
+                }
+                .frame(maxHeight: 15)
+                .padding(.bottom)
+            } else {
+                Spacer()
+            }
         }
+        .containerRelativeFrame(.horizontal)
     }
     
     func onboardingItem(content: AnyView, index: Int, width: CGFloat, height: CGFloat) -> some View {
@@ -83,10 +90,9 @@ struct OnboardingView: View {
                     HStack {
                         if items.count > 0 && index != 0 {
                             Button {
-                                movingForward = false
-                                if scrollPosition != nil {
+                                if onboardingViewModel.scrollPosition != nil {
                                     withAnimation(.easeInOut) {
-                                        scrollPosition! -= 1
+                                        onboardingViewModel.scrollPosition! -= 1
                                     }
                                 }
                             } label: {
@@ -98,20 +104,19 @@ struct OnboardingView: View {
                                     .padding(buttonPadding)
                             }
                             .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15)))
-                            .disabled(personRepo.isLoading || personRepo.succeeded)
+                            .disabled(repo.isLoading || repo.succeeded)
                         }
                         Spacer()
                         Button {
-                            movingForward = true
-                            if scrollPosition != nil, scrollPosition! < lastIndex {
+                            if onboardingViewModel.scrollPosition != nil, onboardingViewModel.scrollPosition! < lastIndex {
                                 withAnimation(.easeInOut) {
-                                    scrollPosition! += 1
+                                    onboardingViewModel.scrollPosition! += 1
                                 }
                             } else {
                                 Task {
-                                    await onboardingViewModel.save(personRepo: personRepo, environment: environment)
+                                    await onboardingViewModel.save(repository: repo, environment: environment)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        if personRepo.succeeded {
+                                        if repo.succeeded {
                                             withAnimation(.easeInOut) {
                                                 onClose()
                                             }
@@ -121,7 +126,7 @@ struct OnboardingView: View {
                             }
                         } label: {
                             if index == lastIndex {
-                                if personRepo.isLoading {
+                                if repo.isLoading {
                                     ProgressView()
                                         .frame(width: buttonSize, height: buttonSize)
                                         .padding(buttonPadding)
@@ -143,20 +148,21 @@ struct OnboardingView: View {
                             }
                         }
                         .buttonStyle(DepthButtonStyle(shape: RoundedRectangle(cornerRadius: 15), backgroundColor: index != lastIndex ? Color(.accentBackground) : .green))
+                        .disabled(onboardingViewModel.canProceedTo <= index)
                     }
                     .padding()
                 }
             }
         }
-        .fillHorizontally()
         .mainContentBox(material: .ultraThin)
         .padding()
-        .frame(idealWidth: width, idealHeight: height)
+        .containerRelativeFrame(.horizontal)
+        .blur(radius: onboardingViewModel.canProceedTo < index ? 15 : 0)
     }
 }
 
 #Preview {
-    OnboardingView(
+    OnboardingView<PersonOnboardingViewModel, PersonRepository>(
         items: [
             ScrollView {
                 Text("Hello, World 1!")

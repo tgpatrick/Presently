@@ -131,7 +131,7 @@ struct BottomLoginView: View {
     @ObservedObject var loginViewModel: LoginViewModel
     
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
             if loginViewModel.hasError {
                 Text("There was an error logging you in.\nPlease check your code and internet and try again.")
                     .font(.caption)
@@ -139,8 +139,8 @@ struct BottomLoginView: View {
                     .multilineTextAlignment(.center)
                     .transition(.move(edge: .top).combined(with: .opacity))
                     .mainContentBox(material: .ultraThin)
-                    .padding(.bottom, 5)
             }
+            
             if exchangeID?.count ?? 0 < 4 || personID?.count ?? 0 < 4 || loginViewModel.hasError {
                 Button {
                     loginViewModel.login(loginStorage: loginStorage)
@@ -162,7 +162,22 @@ struct BottomLoginView: View {
                 .transition(.opacity)
                 .accessibilityIdentifier("LoginButton")
             }
-            Spacer()
+            
+            if exchangeID?.count ?? 0 < 4 || personID?.count ?? 0 < 4 || loginViewModel.hasError {
+                Button {
+                    withAnimation {
+                        environment.barState = .bottomFocus(.exchangeOnboarding)
+                    }
+                } label: {
+                    HStack(spacing: 5) {
+                        Text("Create a new exchange")
+                        Image(systemName: "chevron.forward")
+                    }
+                    .fontWeight(.heavy)
+                }
+                .foregroundStyle(.secondary)
+                Spacer()
+            }
         }
         .padding(.top)
         .onAppear {

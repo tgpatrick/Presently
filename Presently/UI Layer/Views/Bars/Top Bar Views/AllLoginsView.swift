@@ -168,8 +168,7 @@ struct AllLoginsView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     if let currentUser = environment.currentUser, !currentUser.setUp {
                                         withAnimation(.bouncy) {
-                                            environment.showOnboarding = true
-                                            environment.barState = .bottomFocus
+                                            environment.barState = .bottomFocus(.personOnboarding)
                                         }
                                     }
                                 }
