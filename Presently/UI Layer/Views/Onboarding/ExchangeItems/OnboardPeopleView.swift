@@ -29,13 +29,11 @@ struct OnboardPeopleView: View {
     
     var body: some View {
         VStack {
-            VStack(spacing: 15) {
-                Text("Last, let's add some people!")
-                    .font(.title)
-                    .bold()
-            }
-            .multilineTextAlignment(.center)
-            .padding()
+            Text("Now, let's add some people!")
+                .font(.title)
+                .bold()
+                .multilineTextAlignment(.center)
+                .padding()
             
             VStack(alignment: .leading) {
                 if focusState != .person {
@@ -196,7 +194,8 @@ struct OnboardPeopleView: View {
     return OnboardingView<ExchangeOnboardingViewModel, ExchangeRepository>(
         items: [
             Text("First View").asAnyView(),
-            OnboardPeopleView(index: 1).asAnyView()
+            OnboardPeopleView(index: 1).asAnyView(),
+            Text("Third View").asAnyView()
         ],
         onClose: {})
     .background { ShiftingBackground().ignoresSafeArea() }

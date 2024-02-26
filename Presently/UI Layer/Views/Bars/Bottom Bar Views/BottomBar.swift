@@ -37,7 +37,8 @@ struct BottomBar: View {
                             OnboardDatesView(index: 2).asAnyView(),
                             OnboardExchangeSettingsView(index: 3).asAnyView(),
                             OnboardIntroAndRulesView(index: 4).asAnyView(),
-                            OnboardPeopleView(index: 5).asAnyView()
+                            OnboardPeopleView(index: 5).asAnyView(),
+                            OnboardAllExclusionsView(index: 6).asAnyView()
                         ],
                         onClose: {
                             withAnimation(.bouncy) {
@@ -45,7 +46,7 @@ struct BottomBar: View {
                             }
                         }
                     )
-                    .padding(.top, ribbonHeight / 4)
+                    .padding(.top, ribbonHeight / 3)
                     .environmentObject(exchangeOnboardingViewModel)
                     .onAppear {
                         exchangeOnboardingViewModel.reset()
