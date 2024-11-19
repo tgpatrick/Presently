@@ -77,7 +77,7 @@ struct TitledScrollView<Content>: View where Content: View {
 }
 
 #Preview {
-    @Namespace var namespace: Namespace.ID
+    @Previewable @Namespace var namespace: Namespace.ID
     
     return ZStack {
         ShiftingBackground().ignoresSafeArea()

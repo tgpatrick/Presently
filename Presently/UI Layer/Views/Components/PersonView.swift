@@ -112,7 +112,7 @@ struct PersonPreview: View {
 }
 
 #Preview {
-    @Namespace var namespace: Namespace.ID
+    @Previewable @Namespace var namespace: Namespace.ID
     let environment = AppEnvironment()
     
     return ZStack {
