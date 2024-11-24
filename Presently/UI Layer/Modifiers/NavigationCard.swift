@@ -72,14 +72,14 @@ struct NavigationCardModifier: ViewModifier {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            if isOpen && value.startLocation.x < 15 {
+                            if value.startLocation.x < 15 {
                                 let percentDismissed = value.translation.width / dismissSwipeDistance
                                 backButtonOpacity = 1 - percentDismissed
                                 swipeOffset = maxSwipeOffset * percentDismissed
                             }
                         }
                         .onEnded { value in
-                            if isOpen && value.startLocation.x < 15 {
+                            if value.startLocation.x < 15 {
                                 if value.predictedEndTranslation.width > dismissSwipeDistance {
                                     let percentDismissed = value.predictedEndTranslation.width / dismissSwipeDistance
                                     withAnimation(.interactiveSpring()) {
@@ -93,7 +93,8 @@ struct NavigationCardModifier: ViewModifier {
                                     viewModel.scrollTo(id)
                                 }
                             }
-                        }
+                        },
+                    including: isOpen ? .all : .subviews
                 )
             }
             .transition(.move(edge: .leading).combined(with: .opacity))
