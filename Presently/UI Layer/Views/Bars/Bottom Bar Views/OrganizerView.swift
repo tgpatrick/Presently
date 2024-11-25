@@ -246,9 +246,9 @@ struct OrganizerView: View {
             }
         }
     }
-    
+
     var makingAssignmentsView: some View {
-        ScrollView {
+        ScrollView { VStack {
             if organizerViewModel.animating {
                 HStack {
                     if let animationCurrentPerson = organizerViewModel.animationCurrentPerson {
@@ -325,7 +325,7 @@ struct OrganizerView: View {
             .mainContentBox()
             .transition(.move(edge: .top).combined(with: .opacity))
             .padding()
-        }
+        } }
         .fillHorizontally()
         .matchedGeometryEffect(id: "AssignmentsAnimation", in: namespace)
         .scrollDisabled(organizerViewModel.animating)

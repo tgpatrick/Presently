@@ -11,16 +11,16 @@ class OrganizerViewModel: ObservableObject {
     @Published var startDate: Date = Date.now
     @Published var giftDate: Date = Date.now
     @Published var newDate = false
-    
+
     @Published var animating = false
     @Published var animationLength: Double = 5
     @Published var currentPersonIndex: Int = 0
     @Published var animationCurrentPerson: Person?
     @Published var animationCurrentRecipient: String = ""
     @Published var animationAssignedPeople: People = []
-    
+
     @Published var showEndWarning: Bool = false
-    
+
     @MainActor
     func saveDates(exchangeRepo: ExchangeRepository, environment: AppEnvironment) async {
         guard var editedExchange = environment.currentExchange else { return }
@@ -35,7 +35,7 @@ class OrganizerViewModel: ObservableObject {
             }
         }
     }
-    
+
     func getShareString(from people: People? = nil) -> String {
         let unwrappedPeople = people?.sorted() ?? animationAssignedPeople.sorted()
         var shareString = ""
@@ -44,21 +44,21 @@ class OrganizerViewModel: ObservableObject {
         }
         return shareString
     }
-    
+
     func assignUploadAndAnimate(environment: AppEnvironment, assignedExchange: Exchange, assignedPeople: People, exchangeRepo: ExchangeRepository, peopleRepo: PeopleRepository) {
-        
+
         if let currentPeople = environment.allCurrentPeople, assignedPeople.count == currentPeople.count {
             withAnimation {
                 animating = true
             }
-            
+
             Task {
                 let _ = await exchangeRepo.put(assignedExchange)
                 let _ = await peopleRepo.put(assignedPeople)
             }
-            
+
             let realAnimationLength: Double = min(animationLength, Double(60.0 / Double(assignedPeople.count)))
-            
+
             Timer.scheduledTimer(withTimeInterval: realAnimationLength, repeats: true) { [self] timer1 in
                 if let animationCurrentPerson {
                     withAnimation {
@@ -68,7 +68,7 @@ class OrganizerViewModel: ObservableObject {
                 withAnimation {
                     animationCurrentPerson = assignedPeople[currentPersonIndex]
                 }
-                
+
                 currentPersonIndex += 1
                 if currentPersonIndex >= assignedPeople.count {
                     currentPersonIndex = 0
@@ -84,7 +84,7 @@ class OrganizerViewModel: ObservableObject {
                     timer1.invalidate()
                 }
             }.fire()
-            
+
             Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [self] timer2 in
                 if !animating {
                     animationCurrentRecipient = ""
@@ -96,26 +96,26 @@ class OrganizerViewModel: ObservableObject {
                     animationCurrentRecipient = possibilities.randomElement()?.name ?? ""
                 }
             }.fire()
-            
+
             environment.currentExchange = assignedExchange
             environment.allCurrentPeople = assignedPeople
         }
     }
-    
+
     func assignGifts(exchange: Exchange, people: People) -> (Bool, Exchange, People) {
         var assignedExchange = exchange
         var assignedPeople = people
         let thisYear = Calendar.current.component(.year, from: Date())
         
         func canGive(_ thisPerson: Person, to thatPerson: Person) -> Bool {
-            if thisPerson.id == thatPerson.id
-                || thisPerson.exceptions.contains(thatPerson.id)
-                || thatPerson.recipient == thisPerson.id {
+            if thisPerson.personId == thatPerson.personId
+                || thisPerson.exceptions.contains(thatPerson.personId)
+                || thatPerson.recipient == thisPerson.personId {
                 return false
             }
             for gift in thisPerson.giftHistory {
                 if thisYear - gift.year <= exchange.yearsWithoutRepeat
-                    && gift.recipientId == thatPerson.id {
+                    && gift.recipientId == thatPerson.personId {
                     return false
                 }
             }
@@ -138,20 +138,19 @@ class OrganizerViewModel: ObservableObject {
                 var possibleRecipients = needToReceive
                 possibleRecipients.removeAll(where: {!canGive(person, to: $0)})
                 
-                if possibleRecipients.count > 0 {
-                    let recipient = possibleRecipients.randomElement()!
+                if let recipient = possibleRecipients.randomElement() {
                     var giver = person
                     giver.recipient = recipient.personId
                     
                     var needToGiveCopy = needToGive
                     var needToReceiveCopy = needToReceive
                     var assignedMembersCopy = assignedMembers
-                    needToGiveCopy.removeAll(where: {$0.id == giver.id})
-                    needToReceiveCopy.removeAll(where: {$0.id == recipient.id})
+                    needToGiveCopy.removeAll(where: {$0.personId == giver.personId})
+                    needToReceiveCopy.removeAll(where: {$0.personId == recipient.personId})
                     // Dear future self: this is so that the "giver's" recipient
                     // is saved in a place that canGive() can see it.
-                    if needToReceiveCopy.contains(where: {$0.id == giver.id}) {
-                        needToReceiveCopy.removeAll(where: {$0.id == giver.id})
+                    if needToReceiveCopy.contains(where: {$0.personId == giver.personId}) {
+                        needToReceiveCopy.removeAll(where: {$0.personId == giver.personId})
                         needToReceiveCopy.append(giver)
                     }
                     assignedMembersCopy.append(giver)
