@@ -26,7 +26,7 @@ class LoginViewModel: ObservableObject {
         if case .error = exchangeRepo.loadingState {
             return true
         }
-        if case .error = exchangeRepo.loadingState {
+        if case .error = peopleRepo.loadingState {
             return true
         }
         return false
